@@ -106,12 +106,16 @@ public class Assets {
 	public static final String TILES_CAVES	= "tiles_caves.png";
 	public static final String TILES_CITY	= "tiles_city.png";
 	public static final String TILES_HALLS	= "tiles_halls.png";
+	public static final String TILES_JAIL	= "tiles_jail.png";
 	
 	public static final String WATER_SEWERS	= "water0.png";
 	public static final String WATER_PRISON	= "water1.png";
 	public static final String WATER_CAVES	= "water2.png";
 	public static final String WATER_CITY	= "water3.png";
 	public static final String WATER_HALLS	= "water4.png";
+	//meh I'm too lazy to make my own
+	public static final String WATER	= "water1.png";
+	public static final String WATER_BLOOD	= "water3.png";
 
 	public static final String WEAK_FLOOR   = "custom_tiles/weak_floor.png";
 	public static final String PRISON_QUEST = "custom_tiles/prison_quests.png";
@@ -178,10 +182,54 @@ public class Assets {
 	public static final String SND_DEGRADE  = "snd_degrade.mp3";
 	public static final String SND_MIMIC    = "snd_mimic.mp3";
 
+//part 3
+
+	public static final String JOTARO   = "jotaro.png";
+	public static final String STAR_PLATIUNM    = "starplatinum.png";
+
+	public static final String OLD_JOSEPH = "josephpt3.png";
+
+	public static final String IGGY   = "iggy.png";
+	public static final String THE_FOOL   = "thefool.png";
+
 	public static final String POLNAREFF   = "polnareff.png";
 	public static final String CHARIOT    = "chariot.png";
 
+	public static final String KAKYOIN = "kakyoin.png";
+	public static final String HIEROPHANT = "hierophant.png";
+
+	public static final String AVDOL = "avdol.png";
+	public static final String MAGICIAN = "magician.png";
+
 	public static final String DIO   = "diopt3.png";
+	public static final String DIOTEST   = "diotest.png";
 	public static final String THE_WORLD   = "theworld.png";
+	public static final String ROAD_ROLLER   = "roadRoller.png";
+
+	public static final String ENYA   = "enya.png";
+	public static final String JUSTICE   = "justice.png";
+	public static final String JUSTICE_HAND   = "justicehand.png";
+	public static final String JUSTICE_HEAD   = "justicehead.png";
+
+	public static final String ICED   = "iced.png";
+	public static final String CREAM   = "cream.png";
+
+	public static final String HOL_HORSE   = "holhorse.png";
+
+	public static final String GRAY_FLY   = "grayfly.png";
+	public static final String TOWER_OF_GRAY   = "graytower.png";
+
+	public static final String DEVO   = "devo.png";
+	public static final String EBONY_DEVIL   = "devildoll.png";
+
+	public static final String RUBBER_SOUL   = "rsoul.png";
+	public static final String TEMPERANCE   = "temperance.png";
+
+	public static final String CHAKA   = "chaka.png";
+	public static final String GOD   = "khan.png";
+
+	public static final String DEATH   = "death.png";
+
+//part 4
 
 }

@@ -67,24 +67,6 @@ public abstract class Mob extends Char {
 		alignment = Alignment.ENEMY;
 	}
 
-    protected final double powerA = 1.50f;
-    protected final double powerB = 1.33f;
-    protected final double powerC = 1f;
-    protected final double powerD = 0.75f;
-    protected final double powerE = 0.5f;
-
-    protected final double speedA = 1.50f;
-    protected final double speedB = 1.33f;
-    protected final double speedC = 1f;
-    protected final double speedD = 0.75f;
-    protected final double speedE = 0.5f;
-
-    protected final double defA = 1.50f;
-    protected final double defB = 1.33f;
-    protected final double defC = 1f;
-    protected final double defD = 0.75f;
-    protected final double defE = 0.5f;
-
 	private static final String	TXT_DIED	= "You hear something died in the distance";
 	
 	protected static final String TXT_NOTICE1	= "?!";
@@ -116,6 +98,32 @@ public abstract class Mob extends Char {
 	private static final String STATE	= "state";
 	private static final String SEEN	= "seen";
 	private static final String TARGET	= "target";
+
+	protected Integer worldCell = null;
+
+	public void abilityOne()
+	{}
+
+	public void abilityTwo()
+	{}
+
+	public void abilityThree()
+	{}
+
+	public void cancelAbility()
+	{}
+
+
+	public void updateCell( Integer cell)
+	{
+		worldCell = cell;
+	}
+
+	public void engageEnemy(Char enemy)
+	{
+		this.enemy = enemy;
+	}
+
 	
 	@Override
 	public void storeInBundle( Bundle bundle ) {
@@ -197,7 +205,7 @@ public abstract class Mob extends Char {
 		
 		boolean enemyInFOV = enemy != null && enemy.isAlive() && fieldOfView[enemy.pos] && enemy.invisible <= 0;
 
-		return state.act( enemyInFOV, justAlerted );
+ 			return state.act( enemyInFOV, justAlerted );
 	}
 	
 	protected Char chooseEnemy() {
@@ -548,8 +556,7 @@ public abstract class Mob extends Char {
 		
 		super.damage( dmg, src );
 	}
-	
-	
+
 	@Override
 	public void destroy() {
 		

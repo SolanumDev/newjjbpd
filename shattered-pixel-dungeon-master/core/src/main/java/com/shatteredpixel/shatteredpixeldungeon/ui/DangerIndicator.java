@@ -40,11 +40,11 @@ public class DangerIndicator extends Tag {
 	private int lastNumber = -1;
 	
 	public DangerIndicator() {
-		super( 0xFF4C4C );
+		super( 0xDF278C );//0xFF4C4C
 		
 		setSize( 24, 16 );
 		
-		visible = false;
+		visible = true;
 	}
 	
 	@Override

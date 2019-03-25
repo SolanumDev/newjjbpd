@@ -59,6 +59,7 @@ public enum Icons {
 	CHALLENGE_OFF,
 	CHALLENGE_ON,
 	RESUME,
+	JOTARO,
 	SOLANUM;
 
 	public Image get() {
@@ -164,6 +165,9 @@ public enum Icons {
 		case RESUME:
 			icon.frame( icon.texture.uvRect( 13, 53, 24, 64 ) );
 			break;
+		case JOTARO:
+			icon.frame(icon.texture.uvRect(0,85,14,95));
+			break;
 		case SOLANUM:
 			icon.frame( icon.texture.uvRect( 113, 48, 126, 62 ) );
 		break;
@@ -181,6 +185,8 @@ public enum Icons {
 			return get( ROGUE );
 		case HUNTRESS:
 			return get( HUNTRESS );
+		case JOTARO:
+			return get ( JOTARO );
 		default:
 			return null;
 		}

@@ -46,13 +46,17 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SnipersMark;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TimeStop;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Stand;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.StarPlatinum;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CheckedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
@@ -110,6 +114,8 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.StatusPane;
+import com.shatteredpixel.shatteredpixeldungeon.ui.inGameButtons.SummonIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -275,7 +281,9 @@ public class Hero extends Char {
 	
 	public void live() {
 		Buff.affect( this, Regeneration.class );
-		Buff.affect( this, Hunger.class );
+		if(Dungeon.hero.givenName() == "DIO") {
+			Buff.affect(this, Hunger.class);
+		}
 	}
 	
 	public int tier() {
@@ -460,9 +468,22 @@ public class Hero extends Char {
 	public void spend( float time ) {
 		justMoved = false;
 		TimekeepersHourglass.timeFreeze buff = buff(TimekeepersHourglass.timeFreeze.class);
+		TimeStop otherBuff = buff(TimeStop.class);
+		//TODO: rework the hourglass to give the wearer immunity to frozen time
+
 		if (buff != null){
 			buff.processTime(time);
-		} else {
+		} else if(Dungeon.stand != null)
+		{
+			if(Dungeon.stand.buffs().contains(otherBuff)) {
+				otherBuff.processTime(time, 5f);
+			}
+			else
+			{
+				super.spend(time);
+			}
+		}
+		else {
 			super.spend(time);
 		}
 	}
@@ -528,7 +549,7 @@ public class Hero extends Char {
 
 				return actInteract( (HeroAction.Interact)curAction );
 				
-			} else
+			}else
 			if (curAction instanceof HeroAction.Buy) {
 
 				return actBuy( (HeroAction.Buy)curAction );
@@ -625,13 +646,16 @@ public class Hero extends Char {
 		
 		NPC npc = action.npc;
 
+
 		if (Dungeon.level.adjacent( pos, npc.pos )) {
 			
 			ready();
 			sprite.turnTo( pos, npc.pos );
 			return npc.interact();
 			
-		} else {
+		}
+
+		else {
 			
 			if (fieldOfView[npc.pos] && getCloser( npc.pos )) {
 
@@ -644,7 +668,6 @@ public class Hero extends Char {
 			
 		}
 	}
-	
 	private boolean actBuy( HeroAction.Buy action ) {
 		int dst = action.dst;
 		if (pos == dst || Dungeon.level.adjacent( pos, dst )) {
@@ -959,7 +982,8 @@ public class Hero extends Char {
 		if (belongings.armor != null) {
 			damage = belongings.armor.proc( enemy, this, damage );
 		}
-		
+
+
 		return damage;
 	}
 	
@@ -996,6 +1020,11 @@ public class Hero extends Char {
 		}
 
 		super.damage( dmg, src );
+		if(Dungeon.stand != null)
+		{
+			Dungeon.stand.HP = this.HP;
+			Dungeon.stand.sprite.showStatus(CharSprite.WARNING,String.valueOf(dmg),this);
+		}
 	}
 	
 	public void checkVisibleMobs() {
@@ -1165,7 +1194,7 @@ public class Hero extends Char {
 			if (ch instanceof NPC) {
 				curAction = new HeroAction.Interact( (NPC)ch );
 			} else {
-				curAction = new HeroAction.Attack( ch );
+				curAction = new HeroAction.Attack(ch);
 			}
 
 		} else if ((heap = Dungeon.level.heaps.get( cell )) != null
@@ -1262,6 +1291,35 @@ public class Hero extends Char {
 	
 	public boolean isStarving() {
 		return buff(Hunger.class) != null && ((Hunger)buff( Hunger.class )).isStarving();
+	}
+
+	public void summonStand(Mob heroStand)
+	{
+
+		Dungeon.stand = heroStand;
+		Dungeon.stand.alignment = alignment.ALLY;
+		ArrayList<Integer> spawnPoints = new ArrayList<>();
+
+		for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
+			int p = Dungeon.hero.pos + PathFinder.NEIGHBOURS8[i];
+			if (Actor.findChar(p) == null && (Dungeon.level.passable[p] || Dungeon.level.avoid[p])) {
+				spawnPoints.add(p);
+			}
+		}
+
+		if (spawnPoints.size() > 0) {
+
+			Dungeon.stand.pos = Random.element(spawnPoints);
+
+
+			GameScene.add(Dungeon.stand);
+			Actor.addDelayed(new Pushing(Dungeon.stand, this.pos, Dungeon.stand.pos), -1);
+		}
+		else
+		{
+			GLog.i("No valid spots to summon stand!",this);
+		}
+
 	}
 	
 	@Override
@@ -1408,7 +1466,8 @@ public class Hero extends Char {
 		if (cause instanceof Hero.Doom) {
 			((Hero.Doom)cause).onDeath();
 		}
-		
+
+		Dungeon.stand = null;
 		Dungeon.deleteGame( GamesInProgress.curSlot, true );
 	}
 

@@ -24,11 +24,11 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Goo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.PolnareffBlack;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Yog;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Polnareff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DIO;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.TestMob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.Builder;
@@ -62,7 +62,7 @@ public class SewerBossLevel extends SewerLevel {
 		for (int i = 0; i < standards; i++) {
 			initRooms.add(new EmptyRoom());
 		}
-		
+
 		initRooms.add(new RatKingRoom());
 		return initRooms;
 	}
@@ -105,7 +105,7 @@ public class SewerBossLevel extends SewerLevel {
 
 	@Override
 	protected void createMobs() {
-		DIO boss = new DIO();
+		Mob boss = new Goo();
 		Room room;
 		do {
 			room = randomRoom(StandardRoom.class);
@@ -182,4 +182,6 @@ public class SewerBossLevel extends SewerLevel {
 		stairs = bundle.getInt( STAIRS );
 		roomExit = roomEntrance;
 	}
+
+
 }

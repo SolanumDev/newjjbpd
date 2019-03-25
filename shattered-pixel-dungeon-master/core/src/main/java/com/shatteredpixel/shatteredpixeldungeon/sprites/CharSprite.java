@@ -239,7 +239,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		jumpCallback = callback;
 
 		int distance = Dungeon.level.distance( from, to );
-		jumpTweener = new JumpTweener( this, worldToCamera( to ), distance * 4, distance * 0.1f );
+		jumpTweener = new JumpTweener( this, worldToCamera( to ), distance * 4, distance * 0.1f);
 		jumpTweener.listener = this;
 		parent.add( jumpTweener );
 
@@ -633,27 +633,32 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		}
 	}
 
-	private static class JumpTweener extends Tweener {
+	protected static class JumpTweener extends Tweener {
 
 		public Visual visual;
 
 		public PointF start;
 		public PointF end;
+		public PointF vertex;//
 
 		public float height;
 
 		public JumpTweener( Visual visual, PointF pos, float height, float time ) {
 			super( visual, time );
-
+			height = height*2;
 			this.visual = visual;
 			start = visual.point();
-			end = pos;
+
+			vertex = visual.point();//vertex.set((start.x ),(start.y + 100 ));
+			//vertex = vertex.set((pos.x ),(0));
+
+			end = pos;//change back to end = pos;
 			this.height = height;
 		}
 
 		@Override
 		protected void updateValues( float progress ) {
-			visual.point( PointF.inter( start, end, progress ).offset( 0, -height * 4 * progress * (1 - progress) ) );
+			visual.point( PointF.inter( start, end, progress ).offset( 0,-height * 4 * progress * (1 - progress) ) );
 		}
 	}
 }

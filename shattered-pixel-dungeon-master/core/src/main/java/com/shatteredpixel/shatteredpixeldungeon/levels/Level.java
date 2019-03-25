@@ -98,6 +98,10 @@ public abstract class Level implements Bundlable {
 		WATER,
 		GRASS,
 		DARK
+		//MENACING
+		//STORY
+		//BOSS
+		//STANDWEAPON
 	}
 
 	protected int width;

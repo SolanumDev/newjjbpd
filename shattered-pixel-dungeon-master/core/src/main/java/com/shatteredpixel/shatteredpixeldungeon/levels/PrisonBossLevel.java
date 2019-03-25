@@ -438,6 +438,8 @@ public class PrisonBossLevel extends Level {
 
 	//TODO if I ever need to store more static maps I should externalize them instead of hard-coding
 	//Especially as I means I won't be limited to legal identifiers
+
+	//&& ((Room)new Room().set(2, 25, 8, 32)).inside(cellToPoint(cell))){
 	private static final int[] MAP_START =
 			{       W, W, W, W, W, M, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
 					W, W, W, W, e, e, e, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
@@ -541,6 +543,7 @@ public class PrisonBossLevel extends Level {
 					W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W};
 
 	private static final int[] MAP_END =
+			//Dungeon.hero.pos = 5+27*32;
 			{       W, W, W, W, W, M, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
 					W, W, W, W, e, e, e, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
 					W, W, W, W, e, E, e, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,

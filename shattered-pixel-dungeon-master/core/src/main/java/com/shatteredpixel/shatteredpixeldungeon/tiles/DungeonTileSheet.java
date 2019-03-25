@@ -200,6 +200,8 @@ public class DungeonTileSheet {
 	public static final int RAISED_WALL_ALT             = RAISED_WALLS+16;
 	public static final int RAISED_WALL_DECO_ALT        = RAISED_WALLS+20;
 	public static final int RAISED_WALL_BOOKSHELF_ALT   = RAISED_WALLS+28;
+	private static final int IRON_BARS 					= RAISED_WALLS-1;
+	private static final int IRON_BARS_LOCKED 			= RAISED_WALLS-2;
 
 	//we use an array instead of a collection because the small element count
 	// makes array traversal much faster than something like HashSet.contains.
@@ -207,7 +209,8 @@ public class DungeonTileSheet {
 	//These tiles count as wall for the purposes of wall stitching
 	private static int[] wallStitcheable = new int[]{
 			Terrain.WALL, Terrain.WALL_DECO, Terrain.SECRET_DOOR,
-			Terrain.LOCKED_EXIT, Terrain.UNLOCKED_EXIT, Terrain.BOOKSHELF, NULL_TILE
+			Terrain.LOCKED_EXIT, Terrain.UNLOCKED_EXIT, Terrain.BOOKSHELF,
+			Terrain.IRON_BARS, Terrain.IRON_BARS_LOCKED, NULL_TILE
 	};
 
 	public static boolean wallStitcheable(int tile){
@@ -354,6 +357,9 @@ public class DungeonTileSheet {
 		directVisuals.put(Terrain.LOCKED_EXIT,      LOCKED_EXIT);
 		directVisuals.put(Terrain.UNLOCKED_EXIT,    UNLOCKED_EXIT);
 		directVisuals.put(Terrain.WELL,             WELL);
+
+		directVisuals.put(Terrain.IRON_BARS,        IRON_BARS);
+		directVisuals.put(Terrain.IRON_BARS_LOCKED, IRON_BARS_LOCKED);
 
 	}
 

@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Stand;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -56,17 +57,21 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.TestJotaroLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.CharSelectPT3;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.StartScene;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.TestScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
 import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndAlchemy;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.Scene;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.FileUtils;
@@ -166,9 +171,23 @@ public class Dungeon {
 	public static int challenges;
 
 	public static Hero hero;
+
 	public static Level level;
 
-//	public static Stand stand;
+	public static Mob stand;
+
+	public static String curScene;
+	public static  int currentScene;
+    public final static  int CHARS_ORIG = 0;
+    public final static int CHARS_PB = 1;
+    public final static int CHARS_BT = 2;
+    public final static int CHARS_SDC = 3;
+    public final static int CHARS_DIU = 4;
+    public final static int CHARS_GW = 5;
+    public final static int CHARS_SO = 6;
+    public final static int CHARS_SBR = 7;
+    public final static int CHARS_JJL = 8;
+    public final static int CHARS_SCRT = 9;
 
 	public static QuickSlot quickslot = new QuickSlot();
 	
@@ -231,14 +250,54 @@ public class Dungeon {
 		hero.live();
 		
 		Badges.reset();
-		
-		StartScene.selectedClass.initHero( hero );
+
+		if(currentScene == CHARS_SDC)
+        {
+            CharSelectPT3.selectedClass.initHero(hero);
+        }
+        else {
+            StartScene.selectedClass.initHero(hero);
+        }
+
 	}
 
 	public static boolean isChallenged( int mask ) {
 		return (challenges & mask) != 0;
 	}
-	
+
+	//TODO: Rewatch/read Stardust Crusaders for level design
+	public static Level newSDCLevel() {
+
+		Dungeon.level = null;
+		Actor.clear();
+
+		depth++;
+		if (depth > Statistics.deepestFloor) {
+			Statistics.deepestFloor = depth;
+
+			if (Statistics.qualifiedForNoKilling) {
+				Statistics.completedWithNoKilling = true;
+			} else {
+				Statistics.completedWithNoKilling = false;
+			}
+		}
+
+		Level level;
+		switch (depth) {
+			case 1:
+				level = new TestJotaroLevel();
+				break;
+			default:
+				level = newLevel();
+				break;
+		}
+
+		level.create();
+
+		return level;
+	}
+
+
 	public static Level newLevel() {
 		
 		Dungeon.level = null;
@@ -258,6 +317,8 @@ public class Dungeon {
 		Level level;
 		switch (depth) {
 		case 1:
+            level = new TestJotaroLevel();
+            break;
 		case 2:
 		case 3:
 		case 4:

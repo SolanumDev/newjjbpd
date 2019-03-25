@@ -118,7 +118,7 @@ public class CityBossLevel extends Level {
 		map[exit] = Terrain.LOCKED_EXIT;
 		
 		arenaDoor = (TOP + HALL_HEIGHT) * width() + CENTER;
-		map[arenaDoor] = Terrain.DOOR;
+		map[arenaDoor] =  Terrain.DOOR;
 		
 		Painter.fill( this, LEFT, TOP + HALL_HEIGHT + 1, HALL_WIDTH, CHAMBER_HEIGHT, Terrain.EMPTY );
 		Painter.fill( this, LEFT, TOP + HALL_HEIGHT + 1, HALL_WIDTH, 1, Terrain.BOOKSHELF);

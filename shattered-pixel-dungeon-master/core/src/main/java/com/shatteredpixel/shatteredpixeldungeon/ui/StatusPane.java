@@ -29,6 +29,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.inGameButtons.SummonIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.inGameButtons.SuperOneIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.inGameButtons.SuperTwoIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.inGameButtons.SuperThreeIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndGame;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndJournal;
@@ -68,6 +72,11 @@ public class StatusPane extends Component {
 	private DangerIndicator danger;
 	private BuffIndicator buffs;
 	private Compass compass;
+
+	private SummonIndicator summon;
+	private SuperOneIndicator abOne;
+	private SuperTwoIndicator abTwo;
+	private SuperThreeIndicator abThree;
 
 	private JournalButton btnJournal;
 	private MenuButton btnMenu;
@@ -134,6 +143,18 @@ public class StatusPane extends Component {
 		buffs = new BuffIndicator( Dungeon.hero );
 		add( buffs );
 
+		summon = new SummonIndicator();
+		add( summon );
+
+		abOne = new SuperOneIndicator();
+		add(abOne);
+
+		abTwo = new SuperTwoIndicator();
+		add(abTwo);
+
+		abThree = new SuperThreeIndicator();
+		add(abThree);
+
 		add( pickedUp = new Toolbar.PickedUpItem());
 	}
 
@@ -162,6 +183,12 @@ public class StatusPane extends Component {
 		PixelScene.align(depth);
 
 		danger.setPos( width - danger.width(), 20 );
+
+		summon.setPos(left() , 35);
+
+		abOne.setPos(left(), 50);
+        abTwo.setPos(left(), 75);
+		abThree.setPos(left(), 100);
 
 		buffs.setPos( 31, 9 );
 

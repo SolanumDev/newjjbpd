@@ -22,12 +22,18 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.watabou.noosa.TextureFilm;
+import com.watabou.utils.Callback;
 
-public class HighDIOSprite extends HumanSprite {
+public class DIOHighSprite extends HumanSprite {
 
-	private Animation taunt;
-	public HighDIOSprite() {
+	public Animation taunt;
+    public Animation checkmate;
+    private int cellToAttack;
+
+	public DIOHighSprite() {
 		super();
 
 		texture( Assets.DIO );
@@ -46,16 +52,53 @@ public class HighDIOSprite extends HumanSprite {
 		attack = new Animation( 15, false );
 		attack.frames( film, 50, 51, 52, 37 );
 
-		taunt = new Animation(10, false);
+		zap = attack.clone();
+
+		taunt = new Animation(10, true);
 		taunt.frames( film, 37,37,29+37,66,67,67);
 
 		play( idle );
 	}
 
-	public void taunt()
+	public void tauntEnemy(int curPos)
 	{
-		play(taunt);
+
+			place(curPos);
+			play(taunt);
+            showStatus(255, "WRRRRY",this);
 	}
 
+    @Override
+    public void attack( int cell ) {
+        if (!Dungeon.level.adjacent( cell, ch.pos )) {
+
+            cellToAttack = cell;
+            turnTo( ch.pos , cell );
+            play( zap );
+
+        } else {
+
+            super.attack( cell );
+
+        }
+    }
+
+	@Override
+	public void onComplete( Animation anim )
+    {
+        if (anim == zap) {
+            idle();
+
+            ((MissileSprite)parent.recycle( MissileSprite.class )).
+                    reset( ch.pos, cellToAttack, new ThrowingKnife(), new Callback() {
+                        @Override
+                        public void call() {
+                            ch.onAttackComplete();
+                        }
+                    } );
+        } else {
+            super.onComplete( anim );
+        }
+    }
 }
 

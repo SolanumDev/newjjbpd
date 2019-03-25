@@ -34,7 +34,8 @@ public class Effects {
 		CHAIN,
 		DEATH_RAY,
 		LIGHT_RAY,
-		HEALTH_RAY
+		HEALTH_RAY,
+		FINGER
 	};
 	
 	public static Image get( Type type ) {
@@ -63,6 +64,10 @@ public class Effects {
 				break;
 			case HEALTH_RAY:
 				icon.frame(icon.texture.uvRect(16, 30, 32, 38));
+				break;
+			case FINGER:
+                icon.frame(icon.texture.uvRect(11, 26, 14, 41));
+				//icon.frame(icon.texture.uvRect(16, 38, 31, 41));
 				break;
 		}
 		return icon;

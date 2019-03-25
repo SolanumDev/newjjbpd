@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Chains;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Finger;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -49,6 +50,9 @@ public class Guard extends Mob {
 
 		HP = HT = 40;
 		defenseSkill = 10;
+
+		alignment = alignment.ALLY;
+		state = WANDERING;
 
 		EXP = 6;
 		maxLvl = 14;
@@ -170,7 +174,7 @@ public class Guard extends Mob {
 					&& enemyInFOV
 					&& !isCharmedBy( enemy )
 					&& !canAttack( enemy )
-					&& Dungeon.level.distance( pos, enemy.pos ) < 5
+					&& Dungeon.level.distance( pos, enemy.pos ) < 9
 					&& Random.Int(3) == 0
 					
 					&& chain(enemy.pos)){

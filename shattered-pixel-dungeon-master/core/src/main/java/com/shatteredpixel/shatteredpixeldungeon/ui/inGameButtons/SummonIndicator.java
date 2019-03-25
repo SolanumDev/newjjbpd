@@ -18,86 +18,174 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-/*
+
 package com.shatteredpixel.shatteredpixeldungeon.ui.inGameButtons;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Stand;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.StarPlatinum;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.TheWorld;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.CharSelectPT3;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.TestScene;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Tag;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Image;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
+
+import java.util.ArrayList;
 
 public class SummonIndicator extends Tag {
 	
 	public static final int COLOR	= 0xFF006E;
 
 	private Image icon;
-	private Stand stand;
+	public Mob stand = null;
 
 
 	public SummonIndicator() {
-		super( 0xFF006E );
-
+		super( COLOR );
+		flip(true);
 		setSize( 24, 16 );
 
-		if(Dungeon.hero.givenName() != joseph || Dungeon.hero.givenName() != jonathan) {
-			visible = true;
-		}
-	}
+    if(Dungeon.currentScene > Dungeon.CHARS_BT)
+    {
+     visible = true;
+    }
+    else
+    {
+        visible = false;
+    }
+    }
 
 	@Override
 	protected void createChildren() {
 		super.createChildren();
 
-		icon = SKULL
-		add( icon );
+        icon = Icons.SKULL.get();
+        add( icon );
 	}
 	
 	@Override
 	protected void layout() {
 		super.layout();
 		
-		icon.x = left() - 10;
-		icon.y = y + (height - icon.height) / 3;
+		icon.x = x + (width - icon.width) / 2;
+		icon.y = y + (height - icon.height) / 2;
 
 	}
-	
-
 	
 
 	@Override
 	protected void onClick() {
-		if (mob instanceof summonStand) {
-			mob.die(cause);
-		} else {
-			summonStand(Dungeon.hero, Dungeon.stand);
-		}
+
+	    if (stand == null) {
+
+            if(Dungeon.currentScene == Dungeon.CHARS_SDC) {
+                if (CharSelectPT3.selectedClass == HeroClass.JOTARO) {
+                    stand = new StarPlatinum(Dungeon.hero);
+                    Dungeon.hero.summonStand(stand);
+                    GameScene.flash(0x7B588E);
+                }
+            }
+            else if (Dungeon.currentScene == Dungeon.CHARS_DIU)
+                {
+
+                }
+            else if (Dungeon.currentScene == Dungeon.CHARS_GW)
+            {
+
+            }
+            else if (Dungeon.currentScene == Dungeon.CHARS_SO)
+            {
+
+            }
+            else if (Dungeon.currentScene == Dungeon.CHARS_SBR)
+            {
+
+            }
+            else if (Dungeon.currentScene == Dungeon.CHARS_JJL)
+            {
+
+            }
+            else if (Dungeon.currentScene == Dungeon.CHARS_SCRT)
+            {
+
+            }
+            else
+            {
+                GLog.w("Hey! You shouldn't be able to see this dialogue!!");
+            }
+        }
+        else if(Dungeon.level.adjacent(stand.pos,Dungeon.hero.pos ) && stand != null){
+
+	        //prevents an "infinite" time stop (removing these would either crash the game
+            // or cause frozen mob sprites to never return to action, should the ladder occur, a simple reset
+            // of the level will return the mob sprites to normal)
+            if(Dungeon.stand instanceof StarPlatinum && GameScene.freezeEmitters == true)
+            {
+             Dungeon.hero.sprite.showStatus(0x7F006E, "Time has begun to move again", Dungeon.hero);
+             Dungeon.stand.cancelAbility();
+            }else if( Dungeon.stand instanceof TheWorld  && GameScene.freezeEmitters == true)
+            {
+                Dungeon.hero.sprite.showStatus(0xEADD33, "And so time moves once more", Dungeon.hero);
+                Dungeon.stand.cancelAbility();
+            }
+
+
+	        Dungeon.stand.destroy();
+            Dungeon.stand.sprite.die();
+            Dungeon.stand = null;
+            stand = null;
+
+
+        }
+
+        else
+        {
+            GLog.w("Your stand must be next to you to recall it!");
+        }
 	}
 
     @Override
-    protected void summonStand( Mob host, Mob stand ) {
+    public void update() {
+	    if(Dungeon.hero.isAlive() && Dungeon.currentScene > Dungeon.CHARS_BT)
+        {
+            visible = true;
+        }
+        else
+        {
+            visible = false;
+        }
+        super.update();
+    }
+
+    //TODO: optimize the usage of summonStand()
+    protected void summonStand( Char host, Mob stand ) {
+
         ArrayList<Integer> spawnPoints = new ArrayList<>();
 
-        for (int i=0; i < PathFinder.NEIGHBOURS8.length; i++) {
+        for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
             int p = host.pos + PathFinder.NEIGHBOURS8[i];
-            if (Actor.findChar( p ) == null && (Dungeon.level.passable[p] || Dungeon.level.avoid[p])) {
-                spawnPoints.add( p );
+            if (Actor.findChar(p) == null && (Dungeon.level.passable[p] || Dungeon.level.avoid[p])) {
+                spawnPoints.add(p);
             }
         }
 
         if (spawnPoints.size() > 0) {
-			switch (this){
 
-			}
+            stand.pos = Random.element(spawnPoints);
+            stand.alignment = Char.Alignment.ALLY;
 
-            HeroClass.stand summonedStand = new HeroClass.stand();
-
-
-            summonedStand.pos = Random.element( spawnPoints );
-
-            GameScene.add( summonedStand );
-            Actor.addDelayed( new Pushing( summonedStand, pos, summonedStand.pos ), -1 );
+            GameScene.add(stand);
+            Actor.addDelayed(new Pushing(stand, host.pos, stand.pos), 1);
         }
 
 
@@ -105,4 +193,3 @@ public class SummonIndicator extends Tag {
 
 }
 
-*/

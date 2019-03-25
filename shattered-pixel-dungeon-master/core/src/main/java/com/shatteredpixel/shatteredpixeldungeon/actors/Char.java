@@ -99,41 +99,6 @@ public abstract class Char extends Actor {
 	public boolean rooted		= false;
 	public boolean flying		= false;
 	public int invisible		= 0;
-
-	/*
-    public int getSP() {
-        return SP;
-    }
-
-    public int setSP(int stamina) {
-        SP = stamina;
-        return this.SP;
-    }
-
-    public int changeSP(int stamina) {
-        SP += stamina;
-        return this.SP;
-    }
-
-    public int getST() {
-        return ST;
-    }
-
-    public int setST(int maxStamina) {
-        ST = maxStamina;
-        return ST;
-    }
-
-    public int getStandsActive() {
-        return standsActive;
-    }
-
-    public int setStandsActive(int currentStandsActive) {
-        standsActive = currentStandsActive;
-        return standsActive;
-    }
-
-*/
 	
     //these are relative to the hero
 	public enum Alignment{
@@ -259,6 +224,13 @@ public abstract class Char extends Actor {
 					
 				} else if (this == Dungeon.hero) {
 					GLog.i( Messages.capitalize(Messages.get(Char.class, "defeat", enemy.name)) );
+
+					/*
+					else if(enemy == someBossChar){
+					GLog.i( Messages.capitalize(Messages.get(ene "retires!")) );
+					*/
+
+
 				}
 			}
 			
@@ -386,7 +358,7 @@ public abstract class Char extends Actor {
 	}
 	
 	@Override
-	protected void spend( float time ) {
+	public void spend( float time ) {
 		
 		float timeScale = 1f;
 		if (buff( Slow.class ) != null) {

@@ -39,13 +39,13 @@ public class TheWorld extends Mob {
 
 		maxLvl = 5;
 		state = HUNTING;
+		EXP = 0;
 	}
 
 	public void standCrash(Object cause){
 	    super.die(cause);
     }
 
-	
 	@Override
 	public int damageRoll() {
 		return Random.NormalIntRange( 1, 4 );

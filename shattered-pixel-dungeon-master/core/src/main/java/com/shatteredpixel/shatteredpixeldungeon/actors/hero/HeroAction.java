@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Stand;
 
 public class HeroAction {
 	
@@ -58,7 +59,7 @@ public class HeroAction {
 			this.npc = npc;
 		}
 	}
-	
+
 	public static class Unlock extends HeroAction {
 		public Unlock( int door ) {
 			this.dst = door;

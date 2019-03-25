@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
@@ -115,6 +116,7 @@ public class TitleScene extends PixelScene {
 			@Override
 			protected void onClick() {
 				ShatteredPixelDungeon.switchNoFade( StartScene.class );
+				Dungeon.currentScene = Dungeon.CHARS_ORIG;
 			}
 		};
 		add( btnPlay );

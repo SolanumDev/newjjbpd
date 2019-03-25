@@ -124,7 +124,7 @@ public class GameScene extends PixelScene {
 	private FogOfWar fog;
 	private HeroSprite hero;
 
-	private StatusPane pane;
+	public StatusPane pane;
 	
 	private GameLog log;
 	

@@ -55,7 +55,7 @@ boolean canSummon = true;
 		HUNTING = new Hunting();
 
 		defenseSkill = 5;
-		stand.defenseSkill = (int)(defenseSkill( enemy )*defB);
+		//stand.defenseSkill = (int)(defenseSkill( enemy )*defB);
 
 		EXP = 100;
 		maxLvl = 5;

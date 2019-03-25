@@ -22,6 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Stand;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.StarPlatinum;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RatSprite;
 import com.watabou.utils.Random;
 
@@ -39,6 +41,12 @@ public class Rat extends Mob {
 	@Override
 	public int damageRoll() {
 		return Random.NormalIntRange( 1, 4 );
+	}
+
+	@Override
+	public void notice()
+	{
+
 	}
 	
 	@Override

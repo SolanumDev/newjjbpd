@@ -25,7 +25,12 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Avdol;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DIOHigh;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Gnoll;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Guard;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -36,7 +41,7 @@ import java.util.ArrayList;
 
 public class DebugStick extends Item {
 	
-	private static final float TIME_TO_Debug = 0;
+	private static final float TIME_TO_DEBUG = 1;
 	
 	private static final String AC_Debug = "Debug";
 	
@@ -62,7 +67,7 @@ public class DebugStick extends Item {
 
 		if (action.equals(AC_Debug)) {
 
-			DIOHigh dio = new DIOHigh();
+			Mob toSpawn = new Avdol();
 
 			ArrayList<Integer> spawnPoints = new ArrayList<>();
 
@@ -75,10 +80,10 @@ public class DebugStick extends Item {
 
 			if (spawnPoints.size() > 0) {
 
-				dio.pos = Random.element(spawnPoints);
+				toSpawn.pos = Random.element(spawnPoints);
 
-				GameScene.add(dio);
-				Actor.addDelayed(new Pushing(dio, Dungeon.hero.pos, dio.pos), 0);
+				GameScene.add(toSpawn);
+				Actor.addDelayed(new Pushing(toSpawn, Dungeon.hero.pos, toSpawn.pos), 0);
 			}
 
 			

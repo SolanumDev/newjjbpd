@@ -31,7 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.standsprites.ChariotSpri
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
-public class SilverChariot extends Mob {
+public class SilverChariot extends Stand {
 	private Polnareff polnareff = new Polnareff();
 
 	private static final String TXT_HERO_KILLED = "Skewered by _Silver Chariot_";

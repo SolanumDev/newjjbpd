@@ -1,4 +1,4 @@
-/*
+	/*
  * Pixel Dungeon
  * Copyright (C) 2012-2015  Oleg Dolya
  *
@@ -488,6 +488,7 @@ public class ItemSpriteSheet {
 
 	}
 
+	//TODO: consider making an artifact container
 	private static final int BAGS       =                                   xy(1, 28);  //16 slots
 	public static final int VIAL        = BAGS+0;
 	public static final int POUCH       = BAGS+1;
@@ -502,8 +503,23 @@ public class ItemSpriteSheet {
 		assignItemRect(HOLSTER,     15, 16);
 	}
 
-	                                                                                    //64 free slots
 
+	private static final int SDC_PROJECTILES = 							xy(1, 29);
+	public static final int MAGICIAN_ANKH = SDC_PROJECTILES+0;
+	public static final int EMERALD = SDC_PROJECTILES+1;
+	public static final int EMERALD_THREE = SDC_PROJECTILES+2;
+	public static final int EMERALD_WAVE = SDC_PROJECTILES+3;
+	public static final int CHARIOT_RAPIER = SDC_PROJECTILES+4;
+	public static final int SAND_BALL = SDC_PROJECTILES+5;
+	public static final int BULLET = SDC_PROJECTILES+6;
+	public static final int MIRROR = SDC_PROJECTILES+7;
+	public static final int ICE_MISSILE_LIGHT = SDC_PROJECTILES+8;
+	public static final int ICE_MISSILE_MEDIUM = SDC_PROJECTILES+9;
+	public static final int LOTION = SDC_PROJECTILES+10;
+	public static final int BLOWDRYER = SDC_PROJECTILES+11;
+	public static final int DIO_KNIVES_ONE = SDC_PROJECTILES+12;
+	public static final int DIO_KNIVES_TWO = SDC_PROJECTILES+13;
+	public static final int DIO_KNIVES_THREE = SDC_PROJECTILES+14;
 
 	private static void assignItemRect( int item, int width, int height){
 		int x = (item % WIDTH) * WIDTH;

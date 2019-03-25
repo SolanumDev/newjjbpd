@@ -39,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextMultiline;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ResumeIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndChallenges;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndClass;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
@@ -119,6 +120,31 @@ public class StartScene extends PixelScene {
 		buttonX = left;
 		buttonY = bottom - BUTTON_HEIGHT;
 
+
+		ResumeIndicator nextPage = new ResumeIndicator(){
+
+			@Override
+			public void onClick()
+			{
+				Dungeon.currentScene = Dungeon.CHARS_SDC;
+				Game.switchScene(CharSelectPT3.class);
+			}
+
+			@Override
+			public void update() {
+
+
+			}
+
+
+		};
+
+		nextPage.setPos(Camera.main.width - nextPage.width(), Camera.main.height / 2 - nextPage.height() / 2);
+		nextPage.visible = true;
+		add( nextPage );
+
+
+
 		btnNewGame = new GameButton( Messages.get(this, "new") ) {
 			@Override
 			protected void onClick() {
@@ -155,7 +181,7 @@ public class StartScene extends PixelScene {
 		float centralHeight = buttonY - title.y - title.height();
 
 		HeroClass[] classes = {
-				HeroClass.WARRIOR, HeroClass.MAGE, HeroClass.ROGUE, HeroClass.HUNTRESS
+				HeroClass.WARRIOR, HeroClass.MAGE, HeroClass.ROGUE	, HeroClass.HUNTRESS
 		};
 		for (HeroClass cl : classes) {
 			ClassShield shield = new ClassShield( cl );
@@ -220,7 +246,7 @@ public class StartScene extends PixelScene {
 
 		GamesInProgress.curSlot = 0;
 		ActionIndicator.action = null;
-		updateClass( HeroClass.values()[SPDSettings.lastClass()] );
+		//updateClass( HeroClass.values()[SPDSettings.lastClass()] );
 
 		fadeIn();
 
@@ -362,7 +388,7 @@ public class StartScene extends PixelScene {
 
 		private static final float MIN_BRIGHTNESS	= 0.6f;
 
-		private static final int BASIC_NORMAL        = 0x444444;
+			private static final int BASIC_NORMAL        = 0x444444;
 		private static final int BASIC_HIGHLIGHTED    = 0xCACFC2;
 
 		private static final int MASTERY_NORMAL        = 0x666644;
@@ -388,7 +414,7 @@ public class StartScene extends PixelScene {
 
 			this.cl = cl;
 
-			avatar.frame( cl.ordinal() * WIDTH, 0, WIDTH, HEIGHT );
+			avatar.frame( cl.ordinal()  * WIDTH, 0, WIDTH, HEIGHT );
 			avatar.scale.set( SCALE );
 
 			if (Badges.isUnlocked( cl.masteryBadge() )) {
