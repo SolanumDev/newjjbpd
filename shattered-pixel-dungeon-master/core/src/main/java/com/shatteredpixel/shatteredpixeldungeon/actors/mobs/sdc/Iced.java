@@ -19,55 +19,91 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
+package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.sdc;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Cream;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Stand;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.HumanSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.standsprites.TheWorldSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.RatSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SDCsprites.VanillaIceSprite;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class AAGenericStandUser extends Mob {
-	Mob stand;
+public class Iced extends Mob {
+	Stand stand;
+
+//TODO: fix Ice crashing the game when being called back from bundle
 
 	boolean inRange()
 	{
 		return Dungeon.level.distance(enemy.pos, pos) <= 4;
 	}
 
+	boolean superStomp = false;
+	String SUPERSTOMP = "superStomp";
+
+
+	@Override
+	public void storeInBundle( Bundle bundle ) {
+
+		super.storeInBundle( bundle );
+		bundle.put(SUPERSTOMP, superStomp);
+
+	}
+
+	@Override
+	public void restoreFromBundle(Bundle bundle)
 	{
-		spriteClass = HumanSprite.class;
+		super.restoreFromBundle(bundle);
+		bundle.getBoolean(SUPERSTOMP);
+
+	}
+
+	{
+		spriteClass = VanillaIceSprite.class;
 
 		HP = HT = 50;
-		defenseSkill = 2;
+		defenseSkill = 8;
 
 		state = WANDERING;
 
 		WANDERING = new Wandering();
 		HUNTING = new Hunting();
 
-
-		maxLvl = 5;
+		EXP = 225;
+		maxLvl = 49;
 	}
 
-	//light
+
 	public void abilityOne()
-	{}
-	//medium
+	{
+
+	}
+
 	public void abilityTwo()
 	{}
-	//heavy
+
 	public void abilityThree()
-	{}
+	{
+		stompToDeath();
+	}
+
+	public void stompToDeath()
+	{
+		superStomp = true;
+	}
+
 
     public void recallStand()
 	    {
@@ -87,6 +123,30 @@ public class AAGenericStandUser extends Mob {
 		super.notice();
 		yell(Messages.get(this, "notice"));
 
+		abilityThree();
+
+	}
+
+
+	@Override
+	protected boolean doAttack( Char enemy ) {
+
+		boolean visible = Dungeon.level.heroFOV[pos];
+
+		if (visible) {
+
+			if(superStomp) {
+				((VanillaIceSprite) sprite).punchIntoStomp(enemy.pos);
+			}
+			else {
+				sprite.attack(enemy.pos);
+			}
+		} else {
+			attack( enemy );
+		}
+		spend( attackDelay() );
+
+		return !visible;
 	}
 
 	protected Char chooseStandsEnemy(){
@@ -116,10 +176,9 @@ public class AAGenericStandUser extends Mob {
 	}
 
 
-
 	public void killStand() {
 
-		yell("Come back to me, " + stand.name + "!");
+		yell("Come back to me, " + stand.name);
 
 		stand.destroy();
 		stand.sprite.die();
@@ -127,42 +186,26 @@ public class AAGenericStandUser extends Mob {
 
 	}
 
-	public void summonStand(){
-		{
-			stand = new TheWorld();
+	public void summonStand() {
+        {
 
-			yell(stand.name);
-			stand.HP = this.HP;
-			stand.enemy = this.enemy;
+            //for (Mob mob : Dungeon.level.mobs)
+            for (Mob mob : (Iterable<Mob>) Dungeon.level.mobs.clone()) {
+                if (mob instanceof Cream) {
+                    stand = (Stand) mob;
+                    stand.setStandUser(this);
+                }
+                else if(stand == null){
+                    stand = new Cream();
+                    yell(Messages.get(this, "summon"));
+                    stand.setStandUser(this);
 
-			standPosition();
+                    stand.standPosition(this);
+                }
+            }
 
-		}
-
-	}
-
-	public void standPosition()
-	{
-
-
-		ArrayList<Integer> spawnPoints = new ArrayList<>();
-
-		for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
-			int p = pos + PathFinder.NEIGHBOURS8[i];
-			if (Actor.findChar(p) == null && (Dungeon.level.passable[p] || Dungeon.level.avoid[p])) {
-				spawnPoints.add(p);
-			}
-		}
-
-		if (spawnPoints.size() > 0) {
-
-			stand.pos = Random.element(spawnPoints);
-
-			GameScene.add(stand);
-			Actor.addDelayed(new Pushing(stand, pos, stand.pos), -1);
-		}
-
-	}
+        }
+    }
 
 	@Override
 	public void die( Object cause ) {
@@ -173,7 +216,11 @@ public class AAGenericStandUser extends Mob {
 			Sample.INSTANCE.play( Assets.SND_DEATH );
 		}
 
-		if(stand.isAlive() && stand!= null)
+		if(stand == null)
+		{
+            //do nothing
+		}
+		else if(stand.isAlive())
 		{
 			stand.destroy();
 			stand.sprite.killAndErase();
@@ -191,9 +238,22 @@ public class AAGenericStandUser extends Mob {
 	public int attackSkill( Char target ) {
 		return 8;
 	}
+
+	@Override
+	protected float attackDelay(){
+		if(superStomp) {
+			superStomp = false;
+			return 0.1f;
+		}
+		return 1;
+	}
 	
 	@Override
 	public int drRoll() {
+		if(superStomp)
+		{
+			Random.NormalIntRange(0, enemy.HP/3);
+		}
 		return Random.NormalIntRange(0, 1);
 	}
 
@@ -218,7 +278,7 @@ public class AAGenericStandUser extends Mob {
 
 				for(Mob mob : Dungeon.level.mobs.toArray(new Mob[0]))
 				{
-					if(mob instanceof TheWorld) {
+					if(mob instanceof Cream) {
 						killStand();
 					}
 				}
@@ -237,11 +297,6 @@ public class AAGenericStandUser extends Mob {
 			return true;
 		}
 
-	}
-
-	public void standDamage(int dmg, Object src)
-	{
-		HP = stand.HP;
 	}
 
 	private class Hunting extends Mob.Hunting {
@@ -313,93 +368,7 @@ public class AAGenericStandUser extends Mob {
 		}
 	}
 
-	public class TheWorld extends com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.TheWorld {
-
-		{
-			spriteClass = TheWorldSprite.class;
-
-			HP = HT = 50;
-			defenseSkill = 2;
-
-			flying = true;
-
-			maxLvl = 5;
-			state = HUNTING;
-			EXP = 0;
-		}
-
-		public void standCrash(Object cause){
-			super.die(cause);
-		}
-
-		@Override
-		protected Char chooseEnemy() {
-			return chooseStandsEnemy();
-		}
 
 
-		@Override
-		public void damage(int dmg, Object src) {
-			super.damage(dmg, src);
 
-			standDamage(dmg, src);
-
-			}
-
-		@Override
-		public int damageRoll() {
-			return Random.NormalIntRange( 1, 4 );
-		}
-
-		@Override
-		public int attackSkill( Char target ) {
-			return 8;
-		}
-
-		@Override
-		public int drRoll() {
-			return Random.NormalIntRange(0, 1);
-		}
-	}
-
-	protected class standWandering extends Mob.Wandering {
-
-		public static final String TAG	= "WANDERING";
-
-		@Override
-		public boolean act( boolean enemyInFOV, boolean justAlerted ) {
-			if (enemyInFOV && (justAlerted || Random.Int( distance( enemy ) / 2 + enemy.stealth() ) == 0)) {
-
-				enemySeen = true;
-
-				notice();
-				alerted = true;
-				state = HUNTING;
-				target = enemy.pos;
-
-			} else {
-
-				enemySeen = false;
-
-				int oldPos = pos;
-
-				for(Mob mob : Dungeon.level.mobs.toArray(new Mob[0]))
-				{
-					if(mob instanceof AAGenericStandUser) {
-
-					}
-				}
-
-				if (target != -1 && getCloser( target )) {
-					spend( 1 / speed() );
-					return moveSprite( oldPos, pos );
-				} else {
-					target = Dungeon.level.randomDestination();
-					spend( TICK );
-				}
-
-			}
-			return true;
-		}
-	}
 }

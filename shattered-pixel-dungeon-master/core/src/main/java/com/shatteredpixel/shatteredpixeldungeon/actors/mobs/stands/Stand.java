@@ -63,7 +63,7 @@ public class Stand extends NPC {
     protected final double defD = 0.75f;
     protected final double defE = 0.5f;
 
-	Char standUser;
+	public Char standUser;
 	{
 		spriteClass = HumanSprite.class;
 
@@ -74,6 +74,8 @@ public class Stand extends NPC {
 		EXP = 0;
 
 		maxLvl = 5;
+
+		//alignment = Alignment.ENEMY;
 
 		properties.add(Property.STAND);
 	}
@@ -92,6 +94,13 @@ public class Stand extends NPC {
 		//being hit by amok
 	}
 
+	public void setStandUser(Char standMaster)
+	{
+		this.standUser = standMaster;
+		HP = standUser.HP;
+		HT = standUser.HT;
+		this.alignment = standUser.alignment;
+	}
 
 	public void abilityOne()
     {}
@@ -102,6 +111,14 @@ public class Stand extends NPC {
     public void abilityThree()
     {}
 
+    @Override
+    public void die( Object src ) {
+        destroy();
+        sprite.die();
+        if(standUser != null) {
+            standUser.die(src);
+        }
+    }
 
     @Override
 	public int damageRoll() {

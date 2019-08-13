@@ -84,7 +84,7 @@ public class DungeonTileSheet {
 			Terrain.BARRICADE, Terrain.HIGH_GRASS, Terrain.SECRET_TRAP,
 			Terrain.TRAP, Terrain.INACTIVE_TRAP, Terrain.EMPTY_DECO,
 			Terrain.SIGN, Terrain.WELL, Terrain.STATUE, Terrain.ALCHEMY,
-			Terrain.DOOR, Terrain.OPEN_DOOR, Terrain.LOCKED_DOOR
+			Terrain.DOOR, Terrain.OPEN_DOOR, Terrain.LOCKED_DOOR, Terrain.VOIDSPACE
 	));
 
 	//+1 for ground above, +2 for ground right, +4 for ground below, +8 for ground left.
@@ -113,6 +113,7 @@ public class DungeonTileSheet {
 	public static final int CHASM_FLOOR_SP          = CHASM+2;
 	public static final int CHASM_WALL              = CHASM+3;
 	public static final int CHASM_WATER             = CHASM+4;
+	public static final int VOIDSPACE             = CHASM;
 
 	//tiles that can stitch with chasms (from above), and which visual represents the stitching
 	public static SparseIntArray chasmStitcheable = new SparseIntArray(32);
@@ -210,7 +211,7 @@ public class DungeonTileSheet {
 	private static int[] wallStitcheable = new int[]{
 			Terrain.WALL, Terrain.WALL_DECO, Terrain.SECRET_DOOR,
 			Terrain.LOCKED_EXIT, Terrain.UNLOCKED_EXIT, Terrain.BOOKSHELF,
-			Terrain.IRON_BARS, Terrain.IRON_BARS_LOCKED, NULL_TILE
+			Terrain.IRON_BARS, Terrain.IRON_BARS_LOCKED,  NULL_TILE //, Terrain.BARRIER
 	};
 
 	public static boolean wallStitcheable(int tile){

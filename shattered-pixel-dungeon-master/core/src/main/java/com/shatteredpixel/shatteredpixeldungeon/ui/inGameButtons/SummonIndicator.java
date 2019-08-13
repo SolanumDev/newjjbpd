@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Stand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.StarPlatinum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.TheWorld;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CharSelectPT3;
@@ -47,7 +48,7 @@ public class SummonIndicator extends Tag {
 	public static final int COLOR	= 0xFF006E;
 
 	private Image icon;
-	public Mob stand = null;
+	public Stand stand = null;
 
 
 	public SummonIndicator() {
@@ -90,8 +91,9 @@ public class SummonIndicator extends Tag {
 
             if(Dungeon.currentScene == Dungeon.CHARS_SDC) {
                 if (CharSelectPT3.selectedClass == HeroClass.JOTARO) {
-                    stand = new StarPlatinum(Dungeon.hero);
-                    Dungeon.hero.summonStand(stand);
+                    stand = new StarPlatinum();
+                    stand.setStandUser(Dungeon.hero);
+                    stand.standPosition(Dungeon.hero);
                     GameScene.flash(0x7B588E);
                 }
             }
@@ -122,23 +124,32 @@ public class SummonIndicator extends Tag {
             else
             {
                 GLog.w("Hey! You shouldn't be able to see this dialogue!!");
+
+                //TODO: find a way to punish cheaters
+
+                stand = new StarPlatinum();
+                stand.setStandUser(Dungeon.hero);
+                Dungeon.hero.summonStand(stand);
+                GameScene.flash(0x7B588E);
             }
+            Dungeon.hero.summonStand(stand);
         }
         else if(Dungeon.level.adjacent(stand.pos,Dungeon.hero.pos ) && stand != null){
 
 	        //prevents an "infinite" time stop (removing these would either crash the game
-            // or cause frozen mob sprites to never return to action, should the ladder occur, a simple reset
+            // or cause frozen mob sprites to n
+            // ever return to action, should the ladder occur, a simple reset
             // of the level will return the mob sprites to normal)
             if(Dungeon.stand instanceof StarPlatinum && GameScene.freezeEmitters == true)
             {
-             Dungeon.hero.sprite.showStatus(0x7F006E, "Time has begun to move again", Dungeon.hero);
-             Dungeon.stand.cancelAbility();
-            }else if( Dungeon.stand instanceof TheWorld  && GameScene.freezeEmitters == true)
+                Dungeon.hero.sprite.showStatus(0x7F006E, "Time has begun to move again", Dungeon.hero);
+                Dungeon.stand.cancelAbility();
+            }
+            else if( Dungeon.stand instanceof TheWorld  && GameScene.freezeEmitters == true)
             {
                 Dungeon.hero.sprite.showStatus(0xEADD33, "And so time moves once more", Dungeon.hero);
                 Dungeon.stand.cancelAbility();
             }
-
 
 	        Dungeon.stand.destroy();
             Dungeon.stand.sprite.die();

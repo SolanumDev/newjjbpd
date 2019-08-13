@@ -56,4 +56,6 @@ public class Crab extends Mob {
 	public int drRoll() {
 		return Random.NormalIntRange(0, 4);
 	}
+
+	//Yog Yog = new Yog();
 }

@@ -55,9 +55,12 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.LastShopLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.SDC_PrisonLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.SDC_SchoolExteriorLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.TestJotaroLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.levels_SDC.SDC_SchoolInfirmaryLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -317,7 +320,7 @@ public class Dungeon {
 		Level level;
 		switch (depth) {
 		case 1:
-            level = new TestJotaroLevel();
+            level = new SDC_SchoolInfirmaryLevel();
             break;
 		case 2:
 		case 3:

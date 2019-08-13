@@ -45,10 +45,6 @@ public class DIO extends Mob {
 	//TheWorld stand;
 	public TheWorld stand = new TheWorld();
 
-
-
-
-
 	//boolean standSummoned = Dungeon.level.mobs.clone() instanceof stand;
 	{
 		spriteClass = DIOSprite.class;
@@ -94,7 +90,7 @@ public class DIO extends Mob {
                     if (mob instanceof TheWorld) {
                         stand = (TheWorld) mob;
 
-                        standPosition();
+                        //standPosition();
 
                         break;
                     }
@@ -111,14 +107,11 @@ public class DIO extends Mob {
 		super.notice();
 		yell(Messages.get(this, "notice"));
 
-		/*
-		if( Dungeon.level.distance(enemy.pos, pos) <= 4 && !standState())
-		{
+
+		//if( Dungeon.level.distance(enemy.pos, pos) <= 4 && !standState());
+		if(!standState()) {
 			summonStand();
 		}
-		else{yell("this doesn't work lol");}
-
-*/
 	}
 
 	public boolean standState()

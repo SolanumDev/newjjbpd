@@ -27,23 +27,18 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.King;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
-import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTileSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
 import com.watabou.noosa.Group;
-import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
-public class TestJotaroLevel extends Level {
+public class JotaroSDCPrisonLevel extends Level {
 	
 	{
 		color1 = 0x4b6636;
@@ -155,48 +150,21 @@ public class TestJotaroLevel extends Level {
 	public void press( int cell, Char hero ) {
 		super.press( cell, hero );
 
-		if(state == null){
-			state = State.DEFAULT;
-		}
-
-		switch(state)
-		{
-			case DEFAULT:
-				if(Dungeon.hero.pos == 1 + WIDTH * 9)
-				{
-					state = State.BF1;
-					//TODO: workout the logic for transitioning between prison floors
-                    Dungeon.hero.pos =  WIDTH * 9 + 2;
-					transition();
-				}
-				break;
-			case BF1:
-				if(Dungeon.hero.pos == 1 + WIDTH * 9)
-				{
-					state = State.DEFAULT;
-					//TODO: workout the logic for transitioning between prison floors
-					transition();
-				}
-				break;
-
-			default:
-				break;
-		}
 		if(state == State.DEFAULT || state == null )
         {
 
-            if(hero == Dungeon.hero && Dungeon.hero.pos == 1 + WIDTH * 9)
+            if(hero == Dungeon.hero && Dungeon.hero.pos == 3 + WIDTH * 9)
             {
                 state = State.BF1;
                 //TODO: workout the logic for transitioning between prison floors
-                transition();
+  //              transition();
             }
 
         }
 
         if(state == State.BF1)
 		{
-			if(hero == Dungeon.hero && Dungeon.hero.pos == 1 + WIDTH * 9)
+			if(hero == Dungeon.hero && Dungeon.hero.pos == 3 + WIDTH * 9)
 			{
 				state = State.DEFAULT;
 				transition();
@@ -271,8 +239,6 @@ public class TestJotaroLevel extends Level {
                 break;
             case SECBOSS:
                 changeMap(SecretBossCell);
-             default:
-                break;
         }
 
     }
@@ -391,42 +357,42 @@ public class TestJotaroLevel extends Level {
 			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
 			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
 			W, I, I, I, I, W, W, W, I, I, I, D, I, I, I, W, W, W, I, I, I, I, W,
+			W, M, M, M, M, W, W, W, M, M, M, M, M, M, M, W, W, W, M, M, M, M, W,
 			W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
+			W, N, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, X, W,
 			W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
-			W, X, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, N, W,
-			W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
-            W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
-            W, I, I, I, I, W, W, W, I, I, I, D, I, I, I, W, W, W, I, I, I, I, W,
-            W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-            W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-            W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-            W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
 			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
 			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
 			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
 			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
 			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
 	};
 
     private static final int[] StandardCell = {
+            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+            W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
+            W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
+            W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
+            W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
+            W, I, I, I, I, W, W, W, I, I, I, D, I, I, I, W, W, W, I, I, I, I, W,
+            W, M, M, M, M, W, W, W, M, M, M, M, M, M, M, W, W, W, M, M, M, M, W,
+            W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
+            W, X, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, N, W,
+            W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
+            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
 			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
 			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, I, I, I, I, W, W, W, I, I, I, D, I, I, I, W, W, W, I, I, I, I, W,
-			W, M, E, E, E, E, E, E, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
-			W, M, E, E, E, E, E, E, E, E, E, E, E, E, M, M, M, M, M, M, M, M, W,
-			W, N, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, M, X, W,
-			W, M, E, E, E, E, E, E, E, E, E, E, E, E, M, M, M, M, M, M, M, M, W,
-			W, M, E, E, E, E, E, E, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
-			W, I, I, I, I, W, W, W, I, I, I, D, I, I, I, W, W, W, I, I, I, I, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
+			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
 			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
 			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
 			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
@@ -488,57 +454,3 @@ public class TestJotaroLevel extends Level {
     };
 
 }
-/*
-Jotaro
-            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, E, E, E, E, W, W, W, B, B, E, E, E, P, P, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, I, I, I, I, W, W, W, I, I, I, D, I, I, I, W, W, W, I, I, I, I, W,
-			W, M, M, M, M, W, W, W, M, M, M, M, M, M, M, W, W, W, M, M, M, M, W,
-			W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
-			W, N, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, X, W,
-			W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
-Others
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, E, E, E, E, W, W, W, B, B, E, E, E, P, P, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, I, I, I, I, W, W, W, I, I, I, D, I, I, I, W, W, W, I, I, I, I, W,
-			W, M, M, M, M, W, W, W, M, M, M, M, M, M, M, W, W, W, M, M, M, M, W,
-			W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
-			W, N, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, X, W,
-			W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
-
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, E, E, E, E, W, W, W, B, B, E, E, E, P, P, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, I, I, I, I, W, W, W, I, I, I, D, I, I, I, W, W, W, I, I, I, I, W,
-			W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
-			W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
-			W, N, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, X, W,
-			W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
-            W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
-            W, I, I, I, I, W, W, W, I, I, I, D, I, I, I, W, W, W, I, I, I, I, W,
-            W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-            W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-            W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-            W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-
-
-
-
- */

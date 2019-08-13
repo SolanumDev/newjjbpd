@@ -69,18 +69,18 @@ public class StarPlatinum extends Stand {
 		EXP = 0;
 		maxLvl = 5;
 	}
-
+/*
 	public StarPlatinum(Char standMaster){
 		this.standUser = standMaster;
 
-		//TODO: should a non-Jotaro have star platinum
+		//TODO: should a non-Jotaro character have star platinum
         //it will become a parasitic stand, calling parasitic();
 
 		this.alignment = standUser.alignment;
 		HP = standUser.HP;
 		HT = standUser.HT;
 	}
-
+*/
     public void updateCell( Integer cell)
     {
         worldCell = cell;
@@ -409,33 +409,6 @@ public class StarPlatinum extends Stand {
         standUser.HP = this.HP;
     }
 
-    @Override
-    public void standPosition(Char standUser)
-    {
-
-
-        ArrayList<Integer> spawnPoints = new ArrayList<>();
-
-        for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
-            int p = standUser.pos + PathFinder.NEIGHBOURS8[i];
-            if (Actor.findChar(p) == null && (Dungeon.level.passable[p] || Dungeon.level.avoid[p])) {
-                spawnPoints.add(p);
-            }
-        }
-
-        if (spawnPoints.size() > 0) {
-
-            this.pos = Random.element(spawnPoints);
-
-            GameScene.add(this);
-            Actor.addDelayed(new Pushing(this, standUser.pos, this.pos), -1);
-        }
-
-    }
-
-    public boolean isAlive() {
-        return HP > 0 && standUser.isAlive();
-    }
 
     public void checkSuperStop()
     {

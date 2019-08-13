@@ -103,4 +103,6 @@ public class MagicianSprite extends MobSprite {
 		*/
 	}
 
+
+
 }

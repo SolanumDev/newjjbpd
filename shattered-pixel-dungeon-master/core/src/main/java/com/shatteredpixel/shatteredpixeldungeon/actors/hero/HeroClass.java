@@ -43,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Glaive;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Knuckles;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
@@ -167,29 +168,37 @@ public enum HeroClass {
 		PotionOfInvisibility ipots = new PotionOfInvisibility();
 
 		WarriorArmor defense = new WarriorArmor();
-		defense.identify().collect();
+		//defense.identify().collect();
 		defense.level(100);
+		defense.affixSeal(new BrokenSeal());
+		hero.belongings.armor = defense;
 
 		ScrollOfMagicMapping mscrolls = new ScrollOfMagicMapping();
-		mscrolls.identify().quantity(4).collect();
+		mscrolls.identify().quantity(30).collect();
 
 		ipots.identify().quantity(20).collect();
 		mpots.identify().quantity(20).collect();
 		hpots.identify().quantity(20).collect();
 
-
 		DebugStick stick = new DebugStick();
-		stick.quantity(20).collect();
+		stick.quantity(1).collect();
 
 		//stones.identify().quantity(3).collect();
 
 		TimekeepersHourglass hourglass = new TimekeepersHourglass();
+		hourglass.level(50);
 		(hero.belongings.misc1 = hourglass).identify();
 		hero.belongings.misc1.activate( hero );
 
 		WandOfBlastWave blaster = new WandOfBlastWave();
 		blaster.identify().collect();
 		blaster.level(100);
+
+		Glaive naginata = new Glaive();
+		naginata.identify();
+		naginata.level(100);
+		hero.belongings.weapon = naginata;
+
 
 		if ( Badges.isUnlocked(Badges.Badge.TUTORIAL_WARRIOR) ){
 			if (!Dungeon.isChallenged(Challenges.NO_ARMOR))

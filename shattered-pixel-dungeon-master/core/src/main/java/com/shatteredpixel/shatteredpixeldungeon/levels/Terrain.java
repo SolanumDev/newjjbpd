@@ -57,8 +57,14 @@ public class Terrain {
 
 	public static final int WATER		    = 29;
 
+
 	public static final int IRON_BARS		= 30;
 	public static final int IRON_BARS_LOCKED= 31;
+
+	public static final int VOIDSPACE       = 32;
+	public static final int BARRIER         = 33;
+	public static final int CURTAIN         = 34;
+
 	
 	public static final int PASSABLE		= 0x01;
 	public static final int LOS_BLOCKING	= 0x02;
@@ -103,8 +109,13 @@ public class Terrain {
 		flags[STATUE_SP]	= flags[STATUE];
 		flags[BOOKSHELF]	= flags[BARRICADE];
 		flags[ALCHEMY]		= SOLID;
+
 		flags[IRON_BARS]	= FLAMABLE | SOLID;
 		flags[IRON_BARS_LOCKED]= flags[IRON_BARS];
+
+		flags[VOIDSPACE]    = SOLID;
+		flags[BARRIER]		= SOLID;
+		flags[CURTAIN]      = LOS_BLOCKING | PASSABLE | FLAMABLE;
 
 	};
 

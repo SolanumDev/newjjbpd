@@ -466,7 +466,7 @@ public class PrisonBossLevel extends Level {
 					W, e, e, e, W, e, W, e, e, e, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
 					W, W, M, W, W, e, W, W, M, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
 					W, W, W, W, W, e, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-					W, W, W, M, W, L, W, M, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+					W, W, W, M, W, D, W, M, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
 					W, W, W, T, T, T, T, T, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
 					W, W, W, T, T, T, T, T, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
 					W, W, W, T, T, T, T, T, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
@@ -598,7 +598,7 @@ public class PrisonBossLevel extends Level {
 		};
 
 		public exitVisual() {
-			super(Assets.PRISON_EXIT);
+			super(Assets.placeholder);
 		}
 
 		@Override
@@ -634,14 +634,14 @@ public class PrisonBossLevel extends Level {
 		};
 
 		public exitVisualWalls() {
-			super(Assets.PRISON_EXIT);
+			super(Assets.placeholder);
 		}
 
 		@Override
 		public CustomTiledVisual create() {
 			tileW = 12;
 			tileH = 14;
-			mapSimpleImage(4, 0);
+			mapSimpleImage(4, 0);//4,0);
 			return super.create();
 		}
 

@@ -89,7 +89,7 @@ public abstract class Mob extends Char {
 	public int EXP = 1;
 	public int maxLvl = Hero.MAX_LEVEL;
 	
-	protected Char enemy;
+	public Char enemy;
 	protected boolean enemySeen;
 	protected boolean alerted = false;
 
@@ -566,7 +566,7 @@ public abstract class Mob extends Char {
 		
 		if (Dungeon.hero.isAlive()) {
 			
-			if (alignment == Alignment.ENEMY) {
+			if (alignment == Alignment.ENEMY && EXP > 0) {
 				Statistics.enemiesSlain++;
 				Badges.validateMonstersSlain();
 				Statistics.qualifiedForNoKilling = false;
