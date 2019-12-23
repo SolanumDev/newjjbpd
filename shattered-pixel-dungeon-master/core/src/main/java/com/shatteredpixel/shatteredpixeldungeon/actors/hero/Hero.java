@@ -205,6 +205,13 @@ public class Hero extends Char {
 			HP += Math.max(HT - curHT, 0);
 		}
 		HP = Math.min(HP, HT);
+
+		if(Dungeon.stand != null)
+		{
+			Dungeon.stand.HT = HT;
+			Dungeon.stand.HP = HP;
+		}
+
 	}
 
 	public int STR() {
@@ -281,7 +288,7 @@ public class Hero extends Char {
 	
 	public void live() {
 		Buff.affect( this, Regeneration.class );
-		if(Dungeon.hero.givenName() == "DIO") {
+		if(Dungeon.hero.givenName().equals("DIO") || Dungeon.hero.givenName().equals("Dio")) {
 			Buff.affect(this, Hunger.class);
 		}
 	}

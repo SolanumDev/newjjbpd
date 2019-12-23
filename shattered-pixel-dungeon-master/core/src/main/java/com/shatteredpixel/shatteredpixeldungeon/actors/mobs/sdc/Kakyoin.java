@@ -19,16 +19,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
+package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.sdc;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Hierophant;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HumanSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SDCsprites.KakyoinSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.standsprites.TheWorldSprite;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
@@ -36,7 +39,7 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class AAGenericStandUser extends Mob {
+public class Kakyoin extends Mob {
 	Mob stand;
 
 	public boolean inRange()
@@ -45,9 +48,9 @@ public class AAGenericStandUser extends Mob {
 	}
 
 	{
-		spriteClass = HumanSprite.class;
+		spriteClass = KakyoinSprite.class;
 
-		HP = HT = 50;
+		HP = HT = 100;
 		defenseSkill = 2;
 
 		state = WANDERING;
@@ -55,6 +58,7 @@ public class AAGenericStandUser extends Mob {
 		WANDERING = new Wandering();
 		HUNTING = new Hunting();
 
+		EXP = 15;
 
 		maxLvl = 5;
 	}
@@ -76,7 +80,9 @@ public class AAGenericStandUser extends Mob {
 
 	public boolean checkRange()
 	{
-		return standIsActive() && inRange();
+		return standIsActive() // &&
+				//(Dungeon.level.distance(stand.enemy.pos, stand.pos) <= 4
+				&& Dungeon.level.distance(pos, stand.pos) >4;
 	}
 
 	@Override
@@ -127,7 +133,7 @@ public class AAGenericStandUser extends Mob {
 
 	public void summonStand(){
 		{
-			stand = new TheWorld();
+			stand = new Hierophant(this);
 
 			yell(stand.name);
 			stand.HP = this.HP;
@@ -383,7 +389,7 @@ public class AAGenericStandUser extends Mob {
 
 				for(Mob mob : Dungeon.level.mobs.toArray(new Mob[0]))
 				{
-					if(mob instanceof AAGenericStandUser) {
+					if(mob instanceof Kakyoin) {
 
 					}
 				}

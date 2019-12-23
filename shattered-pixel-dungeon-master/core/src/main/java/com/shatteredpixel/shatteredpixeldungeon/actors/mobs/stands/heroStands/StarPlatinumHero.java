@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands;
+package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.heroStands;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TimeFreeze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TimeStop;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Stand;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Finger;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -36,7 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.standsprites.StarPlatinumSprite;
 import com.watabou.utils.Callback;
 
-public class StarPlatinum extends Stand {
+public class StarPlatinumHero extends Stand {
 	Char standUser;
 	boolean superPunch = false;
     boolean superFinger = false;
@@ -49,29 +50,27 @@ public class StarPlatinum extends Stand {
             HP = standUser.HP;
             HT = standUser.HT;
         }
-        else
-        {
-            HP = HT = 50;
-        }
-		defenseSkill = 10;
-		flying = true;
 
+		defenseSkill = 10;
+
+		HUNTING = new Hunting();
         WANDERING = new Wandering();
 		state = WANDERING;
 
-		EXP = 0;
-		maxLvl = 5;
 	}
 
-	public StarPlatinum(Char standMaster){
-		this.standUser = standMaster;
+
+	public StarPlatinumHero(Char standMaster){
+		standUser = standMaster;
 
 		//TODO: should a non-Jotaro character have star platinum
         //it will become a parasitic stand, calling parasitic();
 
-		this.alignment = standUser.alignment;
+		alignment = standUser.alignment;
 		HP = standUser.HP;
 		HT = standUser.HT;
+
+
 	}
 
     public void updateCell( Integer cell)
@@ -188,7 +187,7 @@ public class StarPlatinum extends Stand {
                 standUser.actPriority = MOB_PRIO;
 
                 for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                    if(!(mob instanceof StarPlatinum))
+                    if(!(mob instanceof StarPlatinumHero))
                     {
                         mob.sprite.remove(CharSprite.State.PARALYSED);
                         mob.remove(TimeFreeze.class);
@@ -204,7 +203,7 @@ public class StarPlatinum extends Stand {
                 standUser.actPriority = HERO_PRIO;
 
                 for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                    if(!(mob instanceof StarPlatinum))
+                    if(!(mob instanceof StarPlatinumHero))
                     {
                         mob.sprite.remove(CharSprite.State.PARALYSED);
                         mob.remove(TimeFreeze.class);
@@ -225,7 +224,7 @@ public class StarPlatinum extends Stand {
     {
         if (Dungeon.level != null) {
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                if(!(mob instanceof StarPlatinum))
+                if(!(mob instanceof StarPlatinumHero))
                 {
                     mob.sprite.add(CharSprite.State.PARALYSED);
                 }
@@ -291,14 +290,19 @@ public class StarPlatinum extends Stand {
 
 	    if(superPunch == true)
         {
-            punchDMG += standUser.damageRoll() * 2;
+            punchDMG += standUser.damageRoll() * 1.5;
             superPunch = false;
             return punchDMG;
         }
 
         if (superFinger == true)
         {
-            punchDMG += standUser.damageRoll() * 0.33f;
+            //TODO: once the stamina system is in place
+            //punchDMG += standUser.damageRoll() * (curStam/totStam  / 20);
+            //standuser.curStam -= curStam - curStam;
+            //superFinger = false;
+
+            punchDMG += standUser.damageRoll() * 2f;
             superFinger = false;
 
             if(enemy == Dungeon.hero)

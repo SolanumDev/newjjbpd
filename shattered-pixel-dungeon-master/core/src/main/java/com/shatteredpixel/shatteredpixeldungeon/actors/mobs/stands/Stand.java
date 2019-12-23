@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -73,10 +74,10 @@ public class Stand extends NPC {
 		flying = true;
 		EXP = 0;
 
-		maxLvl = 5;
+		WANDERING = new Wandering();
+		HUNTING = new Hunting();
 
-		//alignment = Alignment.ENEMY;
-
+        state = WANDERING;
 		properties.add(Property.STAND);
 	}
 
@@ -91,7 +92,8 @@ public class Stand extends NPC {
 			this.alignment = Alignment.ALLY;
 		}
 		//TODO: create a stand-state that functions similar to
-		//being hit by amok
+		//being hit by amok, attacking all entities
+		//this.alignment = Alignmnet.BELLIGERENT
 	}
 
 	public void setStandUser(Char standMaster)
@@ -180,5 +182,97 @@ public class Stand extends NPC {
 			return false;
 		}
 	}
+
+
+
+    private class Wandering extends Mob.Wandering {
+
+        @Override
+        public boolean act( boolean enemyInFOV, boolean justAlerted ) {
+            if(!standUser.isAlive())
+            {
+                destroy();
+                sprite.die();
+                return false;
+            }
+
+            if ( enemyInFOV ) {
+
+                enemySeen = true;
+
+                notice();
+                alerted = true;
+                state = HUNTING;
+                target = enemy.pos;
+
+            } else {
+
+                enemySeen = false;
+
+                int oldPos = pos;
+                //always move towards the stand user when wandering
+                if (getCloser( target = standUser.pos )) {
+                    //moves 2 tiles at a time when returning to the stand user from a distance
+                    if (!Dungeon.level.adjacent(standUser.pos, pos)){
+                        getCloser( target = standUser.pos );
+                    }
+                    spend( 1 / speed() );
+                    return moveSprite( oldPos, pos );
+                } else {
+                    spend( TICK );
+                }
+
+            }
+            return true;
+        }
+
+    }
+
+    protected class Hunting extends Mob.Hunting {
+
+        public static final String TAG	= "HUNTING";
+
+        @Override
+        public boolean act( boolean enemyInFOV, boolean justAlerted ) {
+            enemySeen = enemyInFOV;
+            if(!standUser.isAlive())
+            {
+                destroy();
+                sprite.die();
+                return false;
+            }
+
+            else if (enemyInFOV && !isCharmedBy( enemy ) && canAttack( enemy )) {
+
+                return doAttack( enemy );
+
+            } else {
+
+                if (enemyInFOV) {
+                    target = enemy.pos;
+                } else if (enemy == null) {
+                    state = WANDERING;
+                    target = Dungeon.level.randomDestination();
+                    return true;
+                }
+
+                int oldPos = pos;
+                if (target != -1 && getCloser( target )) {
+
+                    spend( 1 / speed() );
+                    return moveSprite( oldPos,  pos );
+
+                } else {
+                    spend( TICK );
+                    if (!enemyInFOV) {
+                        sprite.showLost();
+                        state = WANDERING;
+                        target = Dungeon.level.randomDestination();
+                    }
+                    return true;
+                }
+            }
+        }
+    }
 
 }

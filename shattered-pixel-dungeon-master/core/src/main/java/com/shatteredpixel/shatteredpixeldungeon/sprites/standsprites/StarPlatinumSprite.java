@@ -109,4 +109,16 @@ private Animation fingerShot;
         }
     }
 
+    @Override
+    public void onComplete (Animation anim)
+    {
+        super.onComplete(anim);
+
+        if (anim == fingerShot || anim == chargePunch) {
+            ch.onAttackComplete();
+            idle();
+        }
+    }
+
+
 }

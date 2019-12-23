@@ -25,15 +25,16 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Magician;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Stand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.StarPlatinum;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.heroStands.StarPlatinumHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.TheWorld;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.heroStands.StarPlatinumTest;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CharSelectPT3;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.TestScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Tag;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -44,7 +45,7 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 public class SummonIndicator extends Tag {
-	
+
 	public static final int COLOR	= 0xFF006E;
 
 	private Image icon;
@@ -73,27 +74,38 @@ public class SummonIndicator extends Tag {
         icon = Icons.SKULL.get();
         add( icon );
 	}
-	
+
 	@Override
 	protected void layout() {
 		super.layout();
-		
+
 		icon.x = x + (width - icon.width) / 2;
 		icon.y = y + (height - icon.height) / 2;
 
 	}
-	
+
+
 
 	@Override
 	protected void onClick() {
 
 	    if (stand == null) {
 
+            if(Dungeon.currentScene == Dungeon.CHARS_ORIG) {
+                // for testing purposes the original heroes can summon stands too
+                // In future releases they will be used only for testing
+                // or completely removed
+
+                stand = new StarPlatinumHero(Dungeon.hero);
+                Dungeon.hero.summonStand(stand);
+                GameScene.flash(0x7B588E);
+            }
+
+
             if(Dungeon.currentScene == Dungeon.CHARS_SDC) {
                 if (CharSelectPT3.selectedClass == HeroClass.JOTARO) {
-                    stand = new StarPlatinum();
-                    stand.setStandUser(Dungeon.hero);
-                    stand.standPosition(Dungeon.hero);
+                    stand = new StarPlatinumHero(Dungeon.hero);
+                    Dungeon.hero.summonStand(stand);
                     GameScene.flash(0x7B588E);
                 }
             }
@@ -123,24 +135,26 @@ public class SummonIndicator extends Tag {
             }
             else
             {
+                /*
                 GLog.w("Hey! You shouldn't be able to see this dialogue!!");
 
                 //TODO: find a way to punish cheaters
 
-                stand = new StarPlatinum();
+                stand = new StarPlatinumHero(Dungeon.hero);
                 stand.setStandUser(Dungeon.hero);
+                stand.parasitic();
                 Dungeon.hero.summonStand(stand);
                 GameScene.flash(0x7B588E);
+                */
             }
-            Dungeon.hero.summonStand(stand);
         }
         else if(Dungeon.level.adjacent(stand.pos,Dungeon.hero.pos ) && stand != null){
 
 	        //prevents an "infinite" time stop (removing these would either crash the game
-            // or cause frozen mob sprites to n
-            // ever return to action, should the ladder occur, a simple reset
+            // or cause frozen mob sprites to never
+            // return to action, should the latter occur, a simple reset
             // of the level will return the mob sprites to normal)
-            if(Dungeon.stand instanceof StarPlatinum && GameScene.freezeEmitters == true)
+            if(Dungeon.stand instanceof StarPlatinumHero && GameScene.freezeEmitters == true)
             {
                 Dungeon.hero.sprite.showStatus(0x7F006E, "Time has begun to move again", Dungeon.hero);
                 Dungeon.stand.cancelAbility();
@@ -171,6 +185,9 @@ public class SummonIndicator extends Tag {
         {
             visible = true;
         }
+        else if(Dungeon.hero.isAlive() && Dungeon.currentScene == Dungeon.CHARS_ORIG) {
+            visible = true;
+        }
         else
         {
             visible = false;
@@ -193,7 +210,7 @@ public class SummonIndicator extends Tag {
         if (spawnPoints.size() > 0) {
 
             stand.pos = Random.element(spawnPoints);
-            stand.alignment = Char.Alignment.ALLY;
+            //stand.alignment = Char.Alignment.ALLY;
 
             GameScene.add(stand);
             Actor.addDelayed(new Pushing(stand, host.pos, stand.pos), 1);

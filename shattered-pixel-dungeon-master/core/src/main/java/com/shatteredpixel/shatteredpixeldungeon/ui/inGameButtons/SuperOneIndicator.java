@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.StarPlatinum;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.heroStands.StarPlatinumHero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -114,7 +115,7 @@ public class SuperOneIndicator extends Tag {
 	protected void onClick() {
         if(Dungeon.stand != null)
         {
-            if(Dungeon.stand instanceof StarPlatinum) {
+            if(Dungeon.stand instanceof StarPlatinumHero) {
                 if (Dungeon.level.adjacent(Dungeon.stand.pos, Dungeon.hero.pos)) {
                     Dungeon.hero.sprite.showStatus(0xB200FF, "Star Breaker", Dungeon.hero);
                     GameScene.selectCell(ORA);

@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands;
+package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.heroStands;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TimeFreeze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TimeStop;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Stand;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Finger;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -35,13 +36,46 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.standsprites.StarPlatinumSprite;
 import com.watabou.utils.Callback;
+import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 
-public class StarPlatinum extends Stand {
+import java.util.ArrayList;
+
+public class StarPlatinumTest extends Stand {
 	Char standUser;
 	boolean superPunch = false;
     boolean superFinger = false;
     boolean superStop = false;
     public float ACTIONS_IN_FROZEN_TIME = 5;
+
+
+    protected static final float ZAP_TIME	= 1f;
+    protected static final float SUPER_ZAP_TIME	= 2f;
+
+    protected final int rangeA = 15;
+    protected final int rangeB = 8;
+    protected final int rangeC = 4;
+    protected final int rangeD = 3;
+    protected final int rangeE = 2;
+
+    protected final double powerA = 1.50f;
+    protected final double powerB = 1.33f;
+    protected final double powerC = 1f;
+    protected final double powerD = 0.75f;
+    protected final double powerE = 0.5f;
+
+    protected final double speedA = 1.50f;
+    protected final double speedB = 1.33f;
+    protected final double speedC = 1f;
+    protected final double speedD = 0.75f;
+    protected final double speedE = 0.5f;
+
+    protected final double defA = 1.50f;
+    protected final double defB = 1.33f;
+    protected final double defC = 1f;
+    protected final double defD = 0.75f;
+    protected final double defE = 0.5f;
+
 	{
 		spriteClass = StarPlatinumSprite.class;
 
@@ -49,29 +83,27 @@ public class StarPlatinum extends Stand {
             HP = standUser.HP;
             HT = standUser.HT;
         }
-        else
-        {
-            HP = HT = 50;
-        }
-		defenseSkill = 10;
-		flying = true;
 
+		defenseSkill = 10;
+
+		HUNTING = new Hunting();
         WANDERING = new Wandering();
 		state = WANDERING;
 
-		EXP = 0;
-		maxLvl = 5;
 	}
 
-	public StarPlatinum(Char standMaster){
-		this.standUser = standMaster;
+
+	public StarPlatinumTest(Char standMaster){
+		standUser = standMaster;
 
 		//TODO: should a non-Jotaro character have star platinum
         //it will become a parasitic stand, calling parasitic();
 
-		this.alignment = standUser.alignment;
+		alignment = standUser.alignment;
 		HP = standUser.HP;
 		HT = standUser.HT;
+
+
 	}
 
     public void updateCell( Integer cell)
@@ -188,7 +220,7 @@ public class StarPlatinum extends Stand {
                 standUser.actPriority = MOB_PRIO;
 
                 for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                    if(!(mob instanceof StarPlatinum))
+                    if(!(mob instanceof StarPlatinumTest))
                     {
                         mob.sprite.remove(CharSprite.State.PARALYSED);
                         mob.remove(TimeFreeze.class);
@@ -204,7 +236,7 @@ public class StarPlatinum extends Stand {
                 standUser.actPriority = HERO_PRIO;
 
                 for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                    if(!(mob instanceof StarPlatinum))
+                    if(!(mob instanceof StarPlatinumTest))
                     {
                         mob.sprite.remove(CharSprite.State.PARALYSED);
                         mob.remove(TimeFreeze.class);
@@ -225,7 +257,7 @@ public class StarPlatinum extends Stand {
     {
         if (Dungeon.level != null) {
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                if(!(mob instanceof StarPlatinum))
+                if(!(mob instanceof StarPlatinumTest))
                 {
                     mob.sprite.add(CharSprite.State.PARALYSED);
                 }
@@ -390,7 +422,9 @@ public class StarPlatinum extends Stand {
     public void die( Object src ) {
         destroy();
         sprite.die();
-        standUser.die(src);
+        if(standUser != null) {
+            standUser.die(src);
+        }
     }
 
     @Override
@@ -401,7 +435,28 @@ public class StarPlatinum extends Stand {
         standUser.sprite.showStatus(CharSprite.WARNING,String.valueOf(dmg),this);
         standUser.HP = this.HP;
     }
+    public void standPosition(Char standUser)
+    {
 
+
+        ArrayList<Integer> spawnPoints = new ArrayList<>();
+
+        for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
+            int p = standUser.pos + PathFinder.NEIGHBOURS8[i];
+            if (Actor.findChar(p) == null && (Dungeon.level.passable[p] || Dungeon.level.avoid[p])) {
+                spawnPoints.add(p);
+            }
+        }
+
+        if (spawnPoints.size() > 0) {
+
+            this.pos = Random.element(spawnPoints);
+
+            GameScene.add(this);
+            Actor.addDelayed(new Pushing(this, standUser.pos, this.pos), -1);
+        }
+
+    }
 
     public void checkSuperStop()
     {
@@ -418,6 +473,28 @@ public class StarPlatinum extends Stand {
 
         }
 
+    }
+    public boolean interact()
+    {
+        if( (Dungeon.level.passable[pos] || Dungeon.hero.flying) && this.alignment == Alignment.ALLY) {
+            int curPos = pos;
+
+            moveSprite( pos, Dungeon.hero.pos );
+            move( Dungeon.hero.pos );
+
+            Dungeon.hero.sprite.move( Dungeon.hero.pos, curPos );
+            Dungeon.hero.move( curPos );
+
+            Dungeon.hero.spend( 1 / Dungeon.hero.speed() );
+            Dungeon.hero.busy();
+
+
+            return true;
+        } else {
+            //Dungeon.hero.sprite.play(attack(this.pos));
+            this.sprite.showStatus(0xFF00DC,"MISS",this);
+            return false;
+        }
     }
 
     private class Wandering extends Mob.Wandering {

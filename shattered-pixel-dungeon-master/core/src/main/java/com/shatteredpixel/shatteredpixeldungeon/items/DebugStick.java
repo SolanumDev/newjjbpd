@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DIO;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Yog;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.sdc.Iced;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.sdc.Kakyoin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Cream;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -67,7 +68,7 @@ public class DebugStick extends Item {
 
 		if (action.equals(AC_Debug)) {
 
-			Mob toSpawn = new Iced();
+			Mob toSpawn = new Kakyoin();
 
 			ArrayList<Integer> spawnPoints = new ArrayList<>();
 

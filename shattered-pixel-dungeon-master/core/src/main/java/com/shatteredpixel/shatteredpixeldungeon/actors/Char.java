@@ -104,7 +104,8 @@ public abstract class Char extends Actor {
 	public enum Alignment{
 		ENEMY,
 		NEUTRAL,
-		ALLY
+		ALLY//,
+		//BELLIGERENT
 	}
 	public Alignment alignment;
 	
