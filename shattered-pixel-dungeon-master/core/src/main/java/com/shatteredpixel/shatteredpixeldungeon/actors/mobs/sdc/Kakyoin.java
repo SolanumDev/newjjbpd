@@ -21,31 +21,14 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.sdc;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.StandUser;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Hierophant;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.HumanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SDCsprites.KakyoinSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.standsprites.TheWorldSprite;
-import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
-import java.util.ArrayList;
 
-public class Kakyoin extends Mob {
-	Mob stand;
-
-	public boolean inRange()
-	{
-		return Dungeon.level.distance(enemy.pos, pos) <= 4;
-	}
+public class Kakyoin extends StandUser {
 
 	{
 		spriteClass = KakyoinSprite.class;
@@ -55,58 +38,7 @@ public class Kakyoin extends Mob {
 
 		state = WANDERING;
 
-		WANDERING = new Wandering();
-		HUNTING = new Hunting();
 
-		EXP = 15;
-
-		maxLvl = 5;
-	}
-
-	//light
-	public void abilityOne()
-	{}
-	//medium
-	public void abilityTwo()
-	{}
-	//heavy
-	public void abilityThree()
-	{}
-
-    public void recallStand()
-	    {
-		        stand.beckon(pos);
-	    }
-
-	public boolean checkRange()
-	{
-		return standIsActive() // &&
-				//(Dungeon.level.distance(stand.enemy.pos, stand.pos) <= 4
-				&& Dungeon.level.distance(pos, stand.pos) >4;
-	}
-
-	@Override
-	public void notice() {
-
-		super.notice();
-		yell(Messages.get(this, "notice"));
-
-	}
-
-	protected Char chooseStandsEnemy(){
-		Char enemy = super.chooseEnemy();
-
-		//will never attack something far from the stand user
-		if (enemy != null && standIsActive()){
-			return stand.enemy;
-		} else {
-			return null;
-		}
-	}
-
-	public boolean standIsActive()
-	{
-		return stand != null;
 	}
 
 	@Override
@@ -119,69 +51,11 @@ public class Kakyoin extends Mob {
 
 	}
 
-
-
-	public void killStand() {
-
-		yell("Come back to me, " + stand.name + "!");
-
-		stand.destroy();
-		stand.sprite.die();
-		stand = null;
-
-	}
-
+	@Override
 	public void summonStand(){
 		{
 			stand = new Hierophant(this);
-
-			yell(stand.name);
-			stand.HP = this.HP;
-			stand.enemy = this.enemy;
-
-			standPosition();
-
-		}
-
-	}
-
-	public void standPosition()
-	{
-
-
-		ArrayList<Integer> spawnPoints = new ArrayList<>();
-
-		for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
-			int p = pos + PathFinder.NEIGHBOURS8[i];
-			if (Actor.findChar(p) == null && (Dungeon.level.passable[p] || Dungeon.level.avoid[p])) {
-				spawnPoints.add(p);
-			}
-		}
-
-		if (spawnPoints.size() > 0) {
-
-			stand.pos = Random.element(spawnPoints);
-
-			GameScene.add(stand);
-			Actor.addDelayed(new Pushing(stand, pos, stand.pos), -1);
-		}
-
-	}
-
-	@Override
-	public void die( Object cause ) {
-
-		super.die( cause );
-		yell(Messages.get(this, "killed"));
-		if (Dungeon.level.heroFOV[pos]) {
-			Sample.INSTANCE.play( Assets.SND_DEATH );
-		}
-
-		if(stand.isAlive() && stand!= null)
-		{
-			stand.destroy();
-			stand.sprite.killAndErase();
-			//stand.die(cause);
+			super.summonStand();
 		}
 
 	}
@@ -201,209 +75,4 @@ public class Kakyoin extends Mob {
 		return Random.NormalIntRange(0, 1);
 	}
 
-	private class Wandering extends Mob.Wandering {
-
-		@Override
-		public boolean act( boolean enemyInFOV, boolean justAlerted ) {
-			if (enemyInFOV && (justAlerted || Random.Int( distance( enemy ) / 2 + enemy.stealth() ) == 0)) {
-
-				enemySeen = true;
-
-				notice();
-				alerted = true;
-				state = HUNTING;
-				target = enemy.pos;
-
-
-
-			} else {
-
-				enemySeen = false;
-
-				for(Mob mob : Dungeon.level.mobs.toArray(new Mob[0]))
-				{
-					if(mob instanceof TheWorld) {
-						killStand();
-					}
-				}
-
-
-				int oldPos = pos;
-				if (target != -1 && getCloser( target )) {
-					spend( 1 / speed() );
-					return moveSprite( oldPos, pos );
-				} else {
-					target = Dungeon.level.randomDestination();
-					spend( TICK );
-				}
-
-			}
-			return true;
-		}
-
-	}
-
-	public void standDamage(int dmg, Object src)
-	{
-		HP = stand.HP;
-	}
-
-	private class Hunting extends Mob.Hunting {
-
-		public static final String TAG	= "HUNTING";
-
-		@Override
-		public boolean act( boolean enemyInFOV, boolean justAlerted ) {
-			enemySeen = enemyInFOV;
-			if (enemyInFOV && !isCharmedBy( enemy ) && canAttack( enemy )) {
-
-				if(standIsActive() && !inRange())
-				{
-					recallStand();
-				}
-
-				chooseStandsEnemy();
-				if( standIsActive() && !checkRange()) {
-					recallStand();
-				}
-
-				return doAttack( enemy );
-
-			} else {
-
-				if (enemyInFOV) {
-
-					if(!standIsActive() && inRange())
-					{
-						summonStand();
-					}
-
-					chooseStandsEnemy();
-					if( standIsActive() && !checkRange()) {
-                        recallStand();
-                    }
-
-					target = enemy.pos;
-				} else if (enemy == null) {
-					if(standIsActive()) {
-						recallStand();
-					}
-					state = WANDERING;
-					target = Dungeon.level.randomDestination();
-					return true;
-				}
-
-				int oldPos = pos;
-				if (target != -1 && getCloser( target )) {
-
-					chooseStandsEnemy();
-					if( standIsActive() && checkRange()) {
-						//recallStand();
-						killStand();
-					}
-					spend( 1 / speed() );
-					return moveSprite( oldPos,  pos );
-
-				} else {
-					spend( TICK );
-					if (!enemyInFOV) {
-						sprite.showLost();
-						state = WANDERING;
-						target = Dungeon.level.randomDestination();
-					}
-					return true;
-				}
-			}
-		}
-	}
-
-	public class TheWorld extends com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.TheWorld {
-
-		{
-			spriteClass = TheWorldSprite.class;
-
-			HP = HT = 50;
-			defenseSkill = 2;
-
-			flying = true;
-
-			maxLvl = 5;
-			state = HUNTING;
-			EXP = 0;
-		}
-
-		public void standCrash(Object cause){
-			super.die(cause);
-		}
-
-		@Override
-		protected Char chooseEnemy() {
-			return chooseStandsEnemy();
-		}
-
-
-		@Override
-		public void damage(int dmg, Object src) {
-			super.damage(dmg, src);
-
-			standDamage(dmg, src);
-
-			}
-
-		@Override
-		public int damageRoll() {
-			return Random.NormalIntRange( 1, 4 );
-		}
-
-		@Override
-		public int attackSkill( Char target ) {
-			return 8;
-		}
-
-		@Override
-		public int drRoll() {
-			return Random.NormalIntRange(0, 1);
-		}
-	}
-
-	protected class standWandering extends Mob.Wandering {
-
-		public static final String TAG	= "WANDERING";
-
-		@Override
-		public boolean act( boolean enemyInFOV, boolean justAlerted ) {
-			if (enemyInFOV && (justAlerted || Random.Int( distance( enemy ) / 2 + enemy.stealth() ) == 0)) {
-
-				enemySeen = true;
-
-				notice();
-				alerted = true;
-				state = HUNTING;
-				target = enemy.pos;
-
-			} else {
-
-				enemySeen = false;
-
-				int oldPos = pos;
-
-				for(Mob mob : Dungeon.level.mobs.toArray(new Mob[0]))
-				{
-					if(mob instanceof Kakyoin) {
-
-					}
-				}
-
-				if (target != -1 && getCloser( target )) {
-					spend( 1 / speed() );
-					return moveSprite( oldPos, pos );
-				} else {
-					target = Dungeon.level.randomDestination();
-					spend( TICK );
-				}
-
-			}
-			return true;
-		}
-	}
 }

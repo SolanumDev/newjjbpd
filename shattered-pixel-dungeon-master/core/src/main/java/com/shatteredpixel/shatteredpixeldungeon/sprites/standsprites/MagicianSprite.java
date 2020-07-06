@@ -63,8 +63,6 @@ public class MagicianSprite extends MobSprite {
 	public void link( Char ch ) {
 		super.link( ch );
 		add( State.BURNING );
-        add( State.BURNING );
-        add( State.BURNING );
 	}
 
 	@Override

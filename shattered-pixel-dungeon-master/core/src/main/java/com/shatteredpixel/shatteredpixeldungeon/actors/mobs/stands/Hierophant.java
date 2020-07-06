@@ -41,27 +41,22 @@ import java.util.ArrayList;
 public class Hierophant extends Stand {
 
     int TIME_TO_ZAP = 1;
-	{
+
+    {
 		spriteClass = HierophantSprite.class;
 
-		if(standUser != null){
-            HP = standUser.HP;
-            HT = standUser.HT;
-        }
-        else
-        {
-            HP = HT = 50;
-        }
-		defenseSkill = 10;
+        power = powerC;
+        speed = speedB;
+        range = rangeA;
+        def = defB;
 
 		state = WANDERING;
 
-		EXP = 0;
-		maxLvl = 5;
 	}
 
+
 	public Hierophant(Char standMaster){
-		this.standUser = standMaster;
+        this.standUser = standMaster;
 		this.alignment = standUser.alignment;
 		HP = standUser.HP;
 		HT = standUser.HT;
@@ -96,6 +91,10 @@ public class Hierophant extends Stand {
 
     }
 
+    public void onAttackComplete()
+    {
+        next();
+    }
 
 	@Override
     public int defenseProc( Char enemy, int damage ) {
@@ -128,7 +127,7 @@ public class Hierophant extends Stand {
 
 	@Override
 	public int attackSkill( Char target ) {
-		return standUser.attackSkill(target) * (int) powerA;
+		return standUser.attackSkill(target) * (int) power;
 	}
 
 	@Override
@@ -139,7 +138,7 @@ public class Hierophant extends Stand {
 
 	@Override
 	public int drRoll() {
-		return (int) (standUser.drRoll() * powerC);
+		return (int) (standUser.drRoll() * power);
 	}
 
 	@Override
@@ -179,23 +178,20 @@ public class Hierophant extends Stand {
         {
             sprite.zap( enemy.pos );
         }
+        else
+        {
+            zap();
+        }
 
         return !visible;
     }
-
+/*
     @Override
     public void spend(float time)
     {
      super.spend(time);
     }
-
-
-    @Override
-    public void die( Object src ) {
-        destroy();
-        sprite.die();
-        standUser.die(src);
-    }
+*/
 
     @Override
     public void damage(int dmg, Object src)
@@ -205,37 +201,6 @@ public class Hierophant extends Stand {
         standUser.sprite.showStatus(CharSprite.WARNING,String.valueOf(dmg),this);
         standUser.HP = this.HP;
     }
-
-    @Override
-    public void standPosition(Char standUser)
-    {
-
-
-        ArrayList<Integer> spawnPoints = new ArrayList<>();
-
-        for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
-            int p = standUser.pos + PathFinder.NEIGHBOURS8[i];
-            if (Actor.findChar(p) == null && (Dungeon.level.passable[p] || Dungeon.level.avoid[p])) {
-                spawnPoints.add(p);
-            }
-        }
-
-        if (spawnPoints.size() > 0) {
-
-            this.pos = Random.element(spawnPoints);
-
-            GameScene.add(this);
-            Actor.addDelayed(new Pushing(this, standUser.pos, this.pos), -1);
-        }
-
-    }
-
-    public boolean isAlive() {
-        return HP > 0 && standUser.isAlive();
-    }
-
-
-
 
 
 }

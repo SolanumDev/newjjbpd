@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Avdol;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DIO;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.StandUser;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Yog;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.sdc.Iced;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.sdc.Kakyoin;

@@ -22,11 +22,13 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites.standsprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Hierophant;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.DullKnife;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
 import com.watabou.noosa.TextureFilm;
@@ -34,6 +36,8 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Callback;
 
 public class HierophantSprite extends MobSprite {
+
+    private Animation cast;
 
 	public HierophantSprite() {
 		super();
@@ -52,6 +56,7 @@ public class HierophantSprite extends MobSprite {
 		attack.frames( frames, 5, 6, 7, 0);
 
 		zap = attack.clone();
+		cast = attack.clone();
 		
 		die = new Animation( 10, false );
 		die.frames( frames, 0,0,0,0,0,0,0,0);;
@@ -65,6 +70,7 @@ public class HierophantSprite extends MobSprite {
 		add(State.ILLUMINATED);
 	}
 
+	/*
     public void zap( int cell ) {
 
         turnTo( ch.pos , cell );
@@ -83,27 +89,33 @@ public class HierophantSprite extends MobSprite {
         Sample.INSTANCE.play( Assets.SND_ZAP );
     }
 
-
-
+*/
 	@Override
 	public void die() {
 		super.die();
 		remove( State.ILLUMINATED );
 	}
-/*
-	public void zap( int cell ) {
 
-		turnTo( ch.pos , cell );
-		play( zap );
-		((MissileSprite)parent.recycle( MissileSprite.class ))
-				.
-						reset( ch.pos, cell, new DullKnife(), new Callback() {
-							@Override
-							public void call() {
-								//ch.onAttackComplete();
-							}
-						} );
+
+	public void zap( int cell ) {
+		if (!Dungeon.level.adjacent(cell, ch.pos)) {
+
+			((MissileSprite) parent.recycle(MissileSprite.class)).
+					reset(ch.pos, cell, new ThrowingKnife(), new Callback() {
+						@Override
+						public void call() {
+							ch.onAttackComplete();
+						}
+					});
+
+			play(cast);
+			turnTo(ch.pos, cell);
+
+		} else {
+
+			super.attack(cell);
+
+		}
 
 	}
-*/
 }

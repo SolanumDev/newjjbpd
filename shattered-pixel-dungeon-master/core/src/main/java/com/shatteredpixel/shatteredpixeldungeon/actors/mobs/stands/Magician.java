@@ -14,6 +14,7 @@ import com.watabou.utils.Random;
 
 public class Magician extends Stand {
 
+
     boolean superCrossfire = false;
     boolean superDetector = false;
     boolean superCFHS = false;
@@ -22,21 +23,28 @@ public class Magician extends Stand {
         spriteClass = MagicianSprite.class;
         properties.add(Property.FIERY);
 
+        power = powerB;
+        speed = speedB;
+        range = rangeC;
+        def = defB;
+
+        primaryColor = 0xFFA85A;
+
         state = WANDERING;
     }
 
 
     public Magician(Char standMaster){
         this.standUser = standMaster;
+        this.alignment = standUser.alignment;
         HP = standUser.HP;
         HT = standUser.HT;
-        this.alignment = standUser.alignment;
     }
 
     @Override
     public void abilityOne() {
         superCrossfire = true;
-        //crossFireHurricane();
+        crossFireHurricane();
 
         if (state != HUNTING)
         {
@@ -95,17 +103,17 @@ public class Magician extends Stand {
 
     @Override
     public int damageRoll() {
-        return (int) (standUser.damageRoll()  * powerB);
+        return (int) (standUser.damageRoll()  * power);
     }
 
     @Override
     public int attackSkill( Char target ) {
-        return (int) (standUser.damageRoll()  * powerB);
+        return (int) (standUser.damageRoll()  * power);
     }
 
     @Override
     public int drRoll() {
-        return (int) (standUser.drRoll() * powerB);
+        return (int) (standUser.drRoll() * power);
     }
 
     @Override
@@ -137,7 +145,8 @@ public class Magician extends Stand {
 
     protected boolean doAttack( Char enemy ) {
 
-        yell("SCRAAA!");
+        //TODO: do we go into the attack conditionals for supers?
+        //yell("SCRAAA!");
         if((superCrossfire || superCFHS) && Dungeon.level.distance(this.pos, enemy.pos) <= 8)
         {
             boolean visible = fieldOfView[pos] || fieldOfView[enemy.pos];

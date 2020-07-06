@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HumanSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.WraithSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -39,12 +40,6 @@ public class Stand extends NPC {
 
 	protected static final float ZAP_TIME	= 1f;
 	protected static final float SUPER_ZAP_TIME	= 2f;
-
-    protected final int rangeA = 15;
-    protected final int rangeB = 8;
-    protected final int rangeC = 4;
-    protected final int rangeD = 3;
-    protected final int rangeE = 2;
 
     protected final double powerA = 1.50f;
     protected final double powerB = 1.33f;
@@ -58,15 +53,28 @@ public class Stand extends NPC {
     protected final double speedD = 0.75f;
     protected final double speedE = 0.5f;
 
+    protected final int rangeA = 15;
+    protected final int rangeB = 8;
+    protected final int rangeC = 4;
+    protected final int rangeD = 3;
+    protected final int rangeE = 2;
+
     protected final double defA = 1.50f;
     protected final double defB = 1.33f;
     protected final double defC = 1f;
     protected final double defD = 0.75f;
     protected final double defE = 0.5f;
 
+    public double power = powerC;
+    public double speed = speedC;
+    public int range = rangeC;
+    public double def = defC;
+
+    public int primaryColor = 0xFF00DC;
+
 	public Char standUser;
 	{
-		spriteClass = HumanSprite.class;
+		spriteClass = WraithSprite.class;
 
 		HP = HT = 8;
 		defenseSkill = 2;
@@ -117,6 +125,10 @@ public class Stand extends NPC {
     public void die( Object src ) {
         destroy();
         sprite.die();
+
+        //ideally, there should be no instance where a stand would die but not the user
+            //for canonical scenarios where this occurs (eg remote stands like Black Sabbath)
+                //we can simply give the stand the corresponding property or override this function
         if(standUser != null) {
             standUser.die(src);
         }
@@ -183,7 +195,13 @@ public class Stand extends NPC {
 		}
 	}
 
-
+	//using the stand user to check isAlive() is not only redundant, but also works against
+        //certain users with unique stands (eg Vanilla Ice and Cream)
+/*
+    public boolean isAlive() {
+        return HP > 0 && standUser.isAlive();
+    }
+*/
 
     private class Wandering extends Mob.Wandering {
 
