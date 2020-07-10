@@ -338,20 +338,21 @@ public class GameScene extends PixelScene {
 			break;
 		case DESCEND:
 			switch (Dungeon.depth) {
+				//TODO: determine if exposition should exist for the JoJo levels, (ie should newcomers be given no context?)
 			case 1:
-				WndStory.showChapter( WndStory.ID_SEWERS );
+				//WndStory.showChapter( WndStory.ID_SEWERS );
 				break;
 			case 6:
-				WndStory.showChapter( WndStory.ID_PRISON );
+				//WndStory.showChapter( WndStory.ID_PRISON );
 				break;
 			case 11:
-				WndStory.showChapter( WndStory.ID_CAVES );
+				//WndStory.showChapter( WndStory.ID_CAVES );
 				break;
 			case 16:
-				WndStory.showChapter( WndStory.ID_CITY );
+				//WndStory.showChapter( WndStory.ID_CITY );
 				break;
 			case 22:
-				WndStory.showChapter( WndStory.ID_HALLS );
+				//WndStory.showChapter( WndStory.ID_HALLS );
 				break;
 			}
 			if (Dungeon.hero.isAlive() && Dungeon.depth != 22) {

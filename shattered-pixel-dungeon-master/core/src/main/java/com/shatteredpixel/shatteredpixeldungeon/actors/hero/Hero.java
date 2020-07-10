@@ -1302,6 +1302,7 @@ public class Hero extends Char {
 
 	public void summonStand(Mob heroStand)
 	{
+        int occupiedSlots = 0;
 
 		Dungeon.stand = heroStand;
 		Dungeon.stand.alignment = alignment.ALLY;
@@ -1312,7 +1313,16 @@ public class Hero extends Char {
 			if (Actor.findChar(p) == null && (Dungeon.level.passable[p] || Dungeon.level.avoid[p])) {
 				spawnPoints.add(p);
 			}
+            else
+            {
+                occupiedSlots++;
+            }
 		}
+
+		if(occupiedSlots == 8)
+        {
+            GLog.i("No valid spots to summon stand!",this);
+        }
 
 		if (spawnPoints.size() > 0) {
 
@@ -1322,10 +1332,7 @@ public class Hero extends Char {
 			GameScene.add(Dungeon.stand);
 			Actor.addDelayed(new Pushing(Dungeon.stand, this.pos, Dungeon.stand.pos), -1);
 		}
-		else
-		{
-			GLog.i("No valid spots to summon stand!",this);
-		}
+
 
 	}
 	

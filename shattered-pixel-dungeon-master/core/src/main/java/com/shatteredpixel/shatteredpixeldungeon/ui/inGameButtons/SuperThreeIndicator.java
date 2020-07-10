@@ -71,23 +71,28 @@ public class SuperThreeIndicator extends Tag {
 	protected void onClick() {
         if(Dungeon.stand != null)
         {
+
+        	//TODO: switch cases
             if(Dungeon.stand instanceof StarPlatinumHero) {
             	if(GameScene.freezeEmitters == false)
 				{
 					Dungeon.hero.sprite.showStatus(0x6E266E, "Star Platinum:", Dungeon.hero);
 					Dungeon.hero.sprite.showStatus(0xEADD33, "'The World'", Dungeon.hero);
 					Dungeon.stand.abilityThree();
-				}else {
+				}
+				else {
 					Dungeon.hero.sprite.showStatus(0xEADD33, "Time has begun to move again", Dungeon.hero);
 					Dungeon.stand.cancelAbility();
 				}
 
                 }
 
-            } else{
+         }
+
+         else{
             GLog.w("Your stand must be active to use its power!");
-        }
-	    	}
+         }
+	 }
 
     @Override
     public void update() {

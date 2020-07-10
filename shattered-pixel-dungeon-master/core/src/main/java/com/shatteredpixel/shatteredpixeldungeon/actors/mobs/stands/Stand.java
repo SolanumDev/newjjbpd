@@ -25,9 +25,11 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.StandUser;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HumanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WraithSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -127,27 +129,83 @@ public class Stand extends NPC {
         sprite.die();
 
         //ideally, there should be no instance where a stand would die but not the user
-            //for canonical scenarios where this occurs (eg remote stands like Black Sabbath)
-                //we can simply give the stand the corresponding property or override this function
+        //for canonical scenarios where this occurs (eg remote stands like Black Sabbath)
+        //we can simply give the stand the corresponding property or override this function
         if(standUser != null) {
             standUser.die(src);
         }
     }
 
     @Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 1, 4 );
-	}
-	
-	@Override
-	public int attackSkill( Char target ) {
-		return 8;
-	}
-	
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(0, 1);
-	}
+    public int damageRoll() {
+        return (int) (standUser.damageRoll()  * power);
+    }
+
+    @Override
+    public int attackSkill( Char target ) {
+        return (int) (standUser.damageRoll()  * power);
+    }
+
+    @Override
+    public int drRoll() {
+        return (int) (standUser.drRoll() * power);
+    }
+
+    @Override
+    public void damage(int dmg, Object src)
+    {
+        super.damage(dmg, src);
+
+        standUser.sprite.showStatus(CharSprite.WARNING,String.valueOf(dmg),this);
+        standUser.HP = this.HP; }
+
+    @Override
+    protected Char chooseEnemy() {
+        Char enemy = super.chooseEnemy();
+
+        //TODO:
+        //first check if we're a parasitic stand
+        //if we are? return standUser
+
+
+        //otherwise we will never attack something outside of the stand range
+        if (enemy != null &&  Dungeon.level.distance(enemy.pos, standUser.pos) <= range){
+
+            //now check if the enemy is a stand user
+            if(enemy instanceof StandUser || enemy == Dungeon.hero)
+            {
+                //and their stand is both summoned and in range
+                if(enemy == Dungeon.hero && Dungeon.stand != null &&
+                        Dungeon.level.distance(Dungeon.stand.pos, standUser.pos) <= range)
+                {
+                    //prioritize the stand
+                    return Dungeon.stand;
+                }
+                else if(enemy == Dungeon.hero)
+                {
+                    return enemy;
+                }
+
+
+             StandUser enemyStandUser = (StandUser) enemy;
+
+                //and their stand is both summoned and in range
+                if(enemyStandUser.stand != null &&
+                        Dungeon.level.distance(enemyStandUser.stand.pos, standUser.pos) <= range)
+                {
+                    //prioritize the stand
+                    return enemyStandUser.stand;
+                }
+
+            }
+
+            //otherwise, the original enemy is the enemy (regardless of stand usage or not)
+
+            return enemy;
+        } else {
+            return null;
+        }
+    }
 
 	public void standPosition(Char standUser)
 	{
@@ -171,6 +229,19 @@ public class Stand extends NPC {
 		}
 
 	}
+
+	//TODO: test if this interferes with nonplayer stands
+    @Override
+    public int defenseProc( Char enemy, int damage ) {
+
+        if(enemy == standUser)
+        {
+            interact();
+            return 0;
+        }
+
+        return super.defenseProc(enemy, damage);
+    }
 
 	public boolean interact()
 	{
@@ -196,7 +267,7 @@ public class Stand extends NPC {
 	}
 
 	//using the stand user to check isAlive() is not only redundant, but also works against
-        //certain users with unique stands (eg Vanilla Ice and Cream)
+    //certain users with unique stands (eg Vanilla Ice and Cream)
 /*
     public boolean isAlive() {
         return HP > 0 && standUser.isAlive();
@@ -246,6 +317,8 @@ public class Stand extends NPC {
 
     }
 
+
+    //TODO: stands should prioritize each other when fighting
     protected class Hunting extends Mob.Hunting {
 
         public static final String TAG	= "HUNTING";

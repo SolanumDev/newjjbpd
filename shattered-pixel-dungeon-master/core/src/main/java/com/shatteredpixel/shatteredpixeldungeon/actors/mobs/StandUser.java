@@ -40,23 +40,33 @@ import java.util.ArrayList;
 public class StandUser extends Mob {
 	public Stand stand = null;
 
+	public int currentRange = 8;
+
+	protected void updateRange(int rangeToUpdate)
+    {
+        currentRange = rangeToUpdate;
+    }
+
+
 	public boolean inRange() {
-		return Dungeon.level.distance(enemy.pos, pos) <= stand.range;
+		return Dungeon.level.distance(enemy.pos, pos) <= currentRange;
 	}
+
+
+    public boolean checkRange() {
+        return standIsActive() // &&
+                //(Dungeon.level.distance(stand.enemy.pos, stand.pos) <= 4
+                && Dungeon.level.distance(pos, stand.pos) >= currentRange;
+    }
 
 	{
 		spriteClass = HumanSprite.class;
-
-		HP = HT = 50;
-		defenseSkill = 2;
 
 		state = WANDERING;
 
 		WANDERING = new Wandering();
 		HUNTING = new Hunting();
 
-
-		maxLvl = 5;
 	}
 
 	//light
@@ -73,12 +83,6 @@ public class StandUser extends Mob {
 
 	public void recallStand() {
 		stand.beckon(pos);
-	}
-
-	public boolean checkRange() {
-		return standIsActive() // &&
-				//(Dungeon.level.distance(stand.enemy.pos, stand.pos) <= 4
-				&& Dungeon.level.distance(pos, stand.pos) >= stand.range;
 	}
 
 	@Override
@@ -124,10 +128,7 @@ public class StandUser extends Mob {
 	public void summonStand() {
 		{
 			yell(stand.name + "!");
-
-			//stand.HP = this.HP;
-			//stand.enemy = this.enemy;
-
+			updateRange(stand.range);
 			stand.standPosition(this);
 
 		}
@@ -197,12 +198,16 @@ public class StandUser extends Mob {
 		@Override
 		public boolean act( boolean enemyInFOV, boolean justAlerted ) {
 			enemySeen = enemyInFOV;
+			//if (I've seen the enemy, and am not charmed by the enemy, and) I can attack the enemy...
 			if (enemyInFOV && !isCharmedBy( enemy ) && canAttack( enemy )) {
 
+                //if my stand is active and the enemy is out of my stand's range...
 				if(standIsActive() && !inRange())
 				{
+                    //recall my stand
 					recallStand();
 				}
+
 
 				chooseStandsEnemy();
 				if( standIsActive() && !checkRange()) {

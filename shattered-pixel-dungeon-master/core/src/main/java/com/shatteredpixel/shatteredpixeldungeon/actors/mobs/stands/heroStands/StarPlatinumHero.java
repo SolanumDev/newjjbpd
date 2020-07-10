@@ -38,7 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.standsprites.StarPlatinu
 import com.watabou.utils.Callback;
 
 public class StarPlatinumHero extends Stand {
-	Char standUser;
+
 	boolean superPunch = false;
     boolean superFinger = false;
     boolean superStop = false;
@@ -46,36 +46,23 @@ public class StarPlatinumHero extends Stand {
 	{
 		spriteClass = StarPlatinumSprite.class;
 
-		if(standUser != null){
-            HP = standUser.HP;
-            HT = standUser.HT;
-        }
+        power = powerA;
+        speed = speedA;
+        range = rangeC;
+        def = defA;
 
-		defenseSkill = 10;
-
-		HUNTING = new Hunting();
-        WANDERING = new Wandering();
-		state = WANDERING;
-
+		//HUNTING = new Hunting();
+        //WANDERING = new Wandering();
 	}
 
 
 	public StarPlatinumHero(Char standMaster){
-		standUser = standMaster;
-
 		//TODO: should a non-Jotaro character have star platinum
         //it will become a parasitic stand, calling parasitic();
-
-		alignment = standUser.alignment;
-		HP = standUser.HP;
-		HT = standUser.HT;
-
-
-	}
-
-    public void updateCell( Integer cell)
-    {
-        worldCell = cell;
+        this.standUser = standMaster;
+        this.alignment = standUser.alignment;
+        HP = standUser.HP;
+        HT = standUser.HT;
     }
 
 	@Override
@@ -272,18 +259,7 @@ public class StarPlatinumHero extends Stand {
         GameScene.freezeEmitters = true;
     }
 
-	@Override
-    public int defenseProc( Char enemy, int damage ) {
 
-	    if(enemy == standUser)
-        {
-            interact();
-            return 0;
-        }
-
-	    return super.defenseProc(enemy, damage);
-    }
-	
 	@Override
 	public int damageRoll() {
 	    int punchDMG = 0;
@@ -305,54 +281,21 @@ public class StarPlatinumHero extends Stand {
             punchDMG += standUser.damageRoll() * 2f;
             superFinger = false;
 
-            if(enemy == Dungeon.hero)
-            {
-                punchDMG = 0;
-            }
-
             return punchDMG;
         }
 		return (int) (standUser.damageRoll()  * powerA);
 	}
 
-    @Override
-    protected Char chooseEnemy() {
-        Char enemy = super.chooseEnemy();
-
-        //will never attack something outside of the stand range
-        if (enemy != null &&  Dungeon.level.distance(enemy.pos, standUser.pos) <= rangeC){
-            return enemy;
-        } else {
-            return null;
-        }
-    }
-
-	@Override
-	public int attackSkill( Char target ) {
-		return standUser.attackSkill(target) * (int) powerA;
-	}
-
 	@Override
     protected boolean canAttack( Char enemy ) {
 	    if(superFinger == true) {
-            return Dungeon.level.distance( pos, enemy.pos) <= 8;
+            return Dungeon.level.distance( pos, enemy.pos) <= rangeA;
         }
         if(superPunch == true)
         {
-            return Dungeon.level.distance(pos, enemy.pos) <= rangeC;
+            return Dungeon.level.distance(pos, enemy.pos) <= range;
         }
         return Dungeon.level.adjacent(pos, enemy.pos);
-    }
-
-	@Override
-	public int drRoll() {
-		return (int) (standUser.drRoll() * powerA);
-	}
-
-	@Override
-    public void notice()
-    {
-        //TODO: find a way to hide the (!) icon
     }
 
     protected boolean doAttack( Char enemy ) {
@@ -390,22 +333,6 @@ public class StarPlatinumHero extends Stand {
     }
 
 
-    @Override
-    public void die( Object src ) {
-        destroy();
-        sprite.die();
-        standUser.die(src);
-    }
-
-    @Override
-    public void damage(int dmg, Object src)
-    {
-        super.damage(dmg, src);
-
-        standUser.sprite.showStatus(CharSprite.WARNING,String.valueOf(dmg),this);
-        standUser.HP = this.HP;
-    }
-
 
     public void checkSuperStop()
     {
@@ -424,6 +351,8 @@ public class StarPlatinumHero extends Stand {
 
     }
 
+
+    /*
     private class Wandering extends Mob.Wandering {
 
         @Override
@@ -523,5 +452,5 @@ public class StarPlatinumHero extends Stand {
             }
         }
     }
-
+*/
 }

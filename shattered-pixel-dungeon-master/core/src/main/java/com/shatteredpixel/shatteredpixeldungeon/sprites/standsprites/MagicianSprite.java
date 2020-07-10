@@ -79,14 +79,14 @@ public class MagicianSprite extends MobSprite {
 
 		((MissileSprite)parent.recycle( MissileSprite.class ))
 		.
-				reset( ch.pos, cell, new DullKnife(), new Callback() {
+				reset( ch.pos, cell, new ThrowingKnife(), new Callback() {
 					@Override
 					public void call() {
-						//ch.onAttackComplete();
+						ch.onAttackComplete();
 					}
 				} );
 
-		/*
+
 		MagicMissile.boltFromChar( parent,
 				MagicMissile.FIRE,
 				this,
@@ -98,7 +98,7 @@ public class MagicianSprite extends MobSprite {
 					}
 				} );
 		Sample.INSTANCE.play( Assets.SND_BURNING );
-		*/
+
 	}
 
 

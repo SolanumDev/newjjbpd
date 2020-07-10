@@ -106,7 +106,7 @@ public class Debug_Room extends Level {
 		addVisuals();
 
 
-		entrance = WIDTH * 2 + 3;
+		entrance = WIDTH * 6 + 7;
 		exit  = WIDTH + 3;
 
 		return true;
@@ -227,12 +227,12 @@ public class Debug_Room extends Level {
 			{
 					V, V, V, V, V, V, V, V, V, V, V, V, V, V,
 					V, W, W, D, W, W, W, W, W, W, W, W, W, V,
-					V, W, e, E, e, e, e, e, e, e, e, e, W, V,
 					V, W, e, e, e, e, e, e, e, e, e, e, W, V,
 					V, W, e, e, e, e, e, e, e, e, e, e, W, V,
 					V, W, e, e, e, e, e, e, e, e, e, e, W, V,
 					V, W, e, e, e, e, e, e, e, e, e, e, W, V,
 					V, W, e, e, e, e, e, e, e, e, e, e, W, V,
+					V, W, e, e, e, e, e, E, e, e, e, e, W, V,
 					V, W, e, e, e, e, e, e, e, e, e, e, W, V,
 					V, W, e, e, e, e, e, e, e, e, e, e, W, V,
 					V, W, e, e, e, e, e, e, e, e, e, e, W, V,

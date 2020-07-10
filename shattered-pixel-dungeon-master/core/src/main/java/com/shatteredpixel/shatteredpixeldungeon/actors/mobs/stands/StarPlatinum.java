@@ -33,11 +33,12 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.standsprites.MagicianSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.standsprites.StarPlatinumSprite;
 import com.watabou.utils.Callback;
 
 public class StarPlatinum extends Stand {
-	Char standUser;
+
 	boolean superPunch = false;
     boolean superFinger = false;
     boolean superStop = false;
@@ -45,22 +46,12 @@ public class StarPlatinum extends Stand {
 	{
 		spriteClass = StarPlatinumSprite.class;
 
-		if(standUser != null){
-            HP = standUser.HP;
-            HT = standUser.HT;
-        }
-        else
-        {
-            HP = HT = 50;
-        }
-		defenseSkill = 10;
-		flying = true;
+        power = powerA;
+        speed = speedA;
+        range = rangeC;
+        def = defA;
 
-        WANDERING = new Wandering();
-		state = WANDERING;
-
-		EXP = 0;
-		maxLvl = 5;
+        state = HUNTING;
 	}
 
 	public StarPlatinum(Char standMaster){
@@ -74,10 +65,6 @@ public class StarPlatinum extends Stand {
 		HT = standUser.HT;
 	}
 
-    public void updateCell( Integer cell)
-    {
-        worldCell = cell;
-    }
 
 	@Override
     public void abilityOne()
@@ -324,11 +311,6 @@ public class StarPlatinum extends Stand {
     }
 
 	@Override
-	public int attackSkill( Char target ) {
-		return standUser.attackSkill(target) * (int) powerA;
-	}
-
-	@Override
     protected boolean canAttack( Char enemy ) {
 	    if(superFinger == true) {
             return Dungeon.level.distance( pos, enemy.pos) <= 8;
@@ -339,11 +321,6 @@ public class StarPlatinum extends Stand {
         }
         return Dungeon.level.adjacent(pos, enemy.pos);
     }
-
-	@Override
-	public int drRoll() {
-		return (int) (standUser.drRoll() * powerA);
-	}
 
 	@Override
     public void notice()
@@ -386,23 +363,6 @@ public class StarPlatinum extends Stand {
     }
 
 
-    @Override
-    public void die( Object src ) {
-        destroy();
-        sprite.die();
-        standUser.die(src);
-    }
-
-    @Override
-    public void damage(int dmg, Object src)
-    {
-        super.damage(dmg, src);
-
-        standUser.sprite.showStatus(CharSprite.WARNING,String.valueOf(dmg),this);
-        standUser.HP = this.HP;
-    }
-
-
     public void checkSuperStop()
     {
         if(superStop == true)
@@ -420,6 +380,7 @@ public class StarPlatinum extends Stand {
 
     }
 
+    /*
     private class Wandering extends Mob.Wandering {
 
         @Override
@@ -519,5 +480,5 @@ public class StarPlatinum extends Stand {
             }
         }
     }
-
+*/
 }

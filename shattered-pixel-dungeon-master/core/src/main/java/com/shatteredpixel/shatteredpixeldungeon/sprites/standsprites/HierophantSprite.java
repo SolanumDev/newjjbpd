@@ -59,7 +59,7 @@ public class HierophantSprite extends MobSprite {
 		cast = attack.clone();
 		
 		die = new Animation( 10, false );
-		die.frames( frames, 0,0,0,0,0,0,0,0);;
+		die.frames( frames, 0,0,0,0,0,0,0,0);
 		
 		play( idle );
 	}
@@ -70,9 +70,9 @@ public class HierophantSprite extends MobSprite {
 		add(State.ILLUMINATED);
 	}
 
-	/*
-    public void zap( int cell ) {
 
+    public void zap( int cell ) {
+/*
         turnTo( ch.pos , cell );
         play( zap );
 
@@ -87,16 +87,43 @@ public class HierophantSprite extends MobSprite {
                     }
                 } );
         Sample.INSTANCE.play( Assets.SND_ZAP );
+  */
+
+
+		turnTo( ch.pos , cell );
+		play( zap );
+
+
+		((MissileSprite)parent.recycle( MissileSprite.class ))
+				.
+						reset( ch.pos, cell, new ThrowingKnife(), new Callback() {
+							@Override
+							public void call() {
+								ch.onAttackComplete();
+							}
+						} );
+
+
+		MagicMissile.boltFromChar( parent,
+				MagicMissile.BEACON,
+				this,
+				cell,
+				new Callback() {
+					@Override
+					public void call() {
+						((Hierophant)ch).onZapComplete();
+					}
+				} );
+		Sample.INSTANCE.play( Assets.SND_ZAP );
     }
 
-*/
 	@Override
 	public void die() {
 		super.die();
 		remove( State.ILLUMINATED );
 	}
 
-
+/*
 	public void zap( int cell ) {
 		if (!Dungeon.level.adjacent(cell, ch.pos)) {
 
@@ -117,5 +144,5 @@ public class HierophantSprite extends MobSprite {
 
 		}
 
-	}
+	}*/
 }

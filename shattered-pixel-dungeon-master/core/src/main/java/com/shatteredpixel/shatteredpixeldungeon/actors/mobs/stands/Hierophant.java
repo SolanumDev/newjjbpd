@@ -22,129 +22,45 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.HumanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.standsprites.HierophantSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.utils.PathFinder;
+import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
-import java.util.ArrayList;
 
-public class Hierophant extends Stand {
+public class Hierophant extends Stand implements Callback {
 
     int TIME_TO_ZAP = 1;
 
     {
-		spriteClass = HierophantSprite.class;
+        spriteClass = HierophantSprite.class;
 
         power = powerC;
         speed = speedB;
         range = rangeA;
         def = defB;
 
-		state = WANDERING;
+        primaryColor = 0x5C8844;
 
-	}
+    }
 
 
-	public Hierophant(Char standMaster){
+    public Hierophant(Char standMaster) {
         this.standUser = standMaster;
-		this.alignment = standUser.alignment;
-		HP = standUser.HP;
-		HT = standUser.HT;
-	}
-
-    public void updateCell( Integer cell)
-    {
-        worldCell = cell;
+        this.alignment = standUser.alignment;
+        HP = standUser.HP;
+        HT = standUser.HT;
     }
-
-	@Override
-    public void abilityOne()
-    {
-
-    }
-
-    @Override
-    public void abilityTwo()
-    {
-
-    }
-
-
-    @Override
-    public void abilityThree()
-    {
-    }
-
-    @Override
-    public void cancelAbility()
-    {
-
-    }
-
-    public void onAttackComplete()
-    {
-        next();
-    }
-
-	@Override
-    public int defenseProc( Char enemy, int damage ) {
-
-	    if(enemy == standUser)
-        {
-            interact();
-            return 0;
-        }
-
-	    return super.defenseProc(enemy, damage);
-    }
-
-    @Override
-    public int damageRoll() {
-        return Random.NormalIntRange( 1, 4 );
-    }
-
-    @Override
-    protected Char chooseEnemy() {
-        Char enemy = super.chooseEnemy();
-
-        //will never attack something outside of the stand range
-        if (enemy != null &&  Dungeon.level.distance(enemy.pos, standUser.pos) <= rangeA){
-            return enemy;
-        } else {
-            return null;
-        }
-    }
-
-	@Override
-	public int attackSkill( Char target ) {
-		return standUser.attackSkill(target) * (int) power;
-	}
 
 	@Override
     protected boolean canAttack( Char enemy ) {
 
-        return Dungeon.level.adjacent(pos, enemy.pos);
-    }
-
-	@Override
-	public int drRoll() {
-		return (int) (standUser.drRoll() * power);
-	}
-
-	@Override
-    public void notice()
-    {
-        //TODO: find a way to hide the (!) icon
+        return new Ballistica(pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos == enemy.pos;
+        //return Dungeon.level.adjacent(pos, enemy.pos);
     }
 
     public void onZapComplete()
@@ -172,19 +88,28 @@ public class Hierophant extends Stand {
 
     protected boolean doAttack( Char enemy ) {
 
-        boolean visible = Dungeon.level.heroFOV[pos];
+        if (Dungeon.level.adjacent(pos, enemy.pos)) {
 
-        if(visible)
-        {
-            sprite.zap( enemy.pos );
-        }
-        else
-        {
-            zap();
-        }
+            return super.doAttack(enemy);
 
-        return !visible;
+        } else {
+
+            boolean visible = fieldOfView[pos] || fieldOfView[enemy.pos];
+            if (visible) {
+                sprite.zap(enemy.pos);
+            } else {
+                zap();
+            }
+
+            return !visible;
+        }
     }
+
+    @Override
+    public void call() {
+        next();
+    }
+
 /*
     @Override
     public void spend(float time)
@@ -192,15 +117,5 @@ public class Hierophant extends Stand {
      super.spend(time);
     }
 */
-
-    @Override
-    public void damage(int dmg, Object src)
-    {
-        super.damage(dmg, src);
-
-        standUser.sprite.showStatus(CharSprite.WARNING,String.valueOf(dmg),this);
-        standUser.HP = this.HP;
-    }
-
 
 }

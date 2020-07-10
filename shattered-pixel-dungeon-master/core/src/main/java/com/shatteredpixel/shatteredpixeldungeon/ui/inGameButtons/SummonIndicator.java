@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Hierophant;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Magician;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Stand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.StarPlatinum;
@@ -96,7 +97,7 @@ public class SummonIndicator extends Tag {
                 // In future releases they will be used only for testing
                 // or completely removed
 
-                stand = new StarPlatinumHero(Dungeon.hero);
+                stand = new StarPlatinum(Dungeon.hero);
                 Dungeon.hero.summonStand(stand);
                 GameScene.flash(0x7B588E);
             }
