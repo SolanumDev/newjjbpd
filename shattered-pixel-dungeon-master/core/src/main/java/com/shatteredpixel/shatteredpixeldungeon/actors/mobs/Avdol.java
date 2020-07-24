@@ -50,13 +50,8 @@ public class Avdol extends StandUser {
 	}
 
 	@Override
-	public void summonStand(){
-		{
-			stand = new Magician(this);
-			super.summonStand();
-
-		}
-
+	public void declareStand() {
+		stand = new Magician(this);
 	}
 
 	@Override

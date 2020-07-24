@@ -393,7 +393,9 @@ public class Hero extends Char {
 		}
 		return buff( Fury.class ) != null ? (int)(dmg * 1.5f) : dmg;
 	}
-	
+
+
+	//TODO: if you have made in heaven your speed and attack delay will automatically be locked to your stand's speed
 	@Override
 	public float speed() {
 
@@ -420,7 +422,7 @@ public class Hero extends Char {
 			((HeroSprite)sprite).sprint( 1f + 0.05f*momentum.stacks());
 			speed *= momentum.speedMultiplier();
 		}
-		
+
 		return speed;
 		
 	}
@@ -506,7 +508,8 @@ public class Hero extends Char {
 		
 		//calls to dungeon.observe will also update hero's local FOV.
 		fieldOfView = Dungeon.level.heroFOV;
-		
+
+
 		
 		if (!ready) {
 			//do a full observe (including fog update) if not resting.
@@ -1504,7 +1507,8 @@ public class Hero extends Char {
 	@Override
 	public void move( int step ) {
 		super.move( step );
-		
+
+		//TODO: Valentine makes no sounds when moving
 		if (!flying) {
 			if (Dungeon.level.water[pos]) {
 				Sample.INSTANCE.play( Assets.SND_WATER, 1, 1, Random.Float( 0.8f, 1.25f ) );
@@ -1682,6 +1686,8 @@ public class Hero extends Char {
 		exp = 0;
 		
 		belongings.resurrect( resetLevel );
+
+		//TODO: fake out death with Okuyasu, Giorno
 
 		live();
 	}

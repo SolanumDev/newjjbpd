@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.StandUser;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Hierophant;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Magician;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SDCsprites.KakyoinSprite;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 
 
@@ -42,6 +43,23 @@ public class Kakyoin extends StandUser {
 
 	}
 
+	protected static final String STAND	        = "stand";
+/*
+
+	@Override
+	public void storeInBundle( Bundle bundle ) {
+		super.storeInBundle(bundle);
+		bundle.put( STAND, stand );
+	}
+
+	@Override
+	public void restoreFromBundle( Bundle bundle ) {
+		super.restoreFromBundle(bundle);
+		stand = (Hierophant)bundle.get(STAND);
+
+	}
+*/
+
 	@Override
 	public void damage(int dmg, Object src) {
 		super.damage(dmg, src);
@@ -53,17 +71,14 @@ public class Kakyoin extends StandUser {
 	}
 
 	@Override
-	public void summonStand(){
-		{
-			stand = new Hierophant(this);
-			super.summonStand();
-		}
-
+	public void declareStand() {
+		stand = new Hierophant(this);
 	}
 
 	@Override
 	public int damageRoll() {
 		return Random.NormalIntRange( 1, 4 );
+
 	}
 	
 	@Override

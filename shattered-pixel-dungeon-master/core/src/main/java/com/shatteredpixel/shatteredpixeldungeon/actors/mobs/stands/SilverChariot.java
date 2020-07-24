@@ -31,7 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.standsprites.ChariotSpri
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
 
-public class SilverChariot extends Stand {
+public class SilverChariot extends Mob {
 	private Polnareff polnareff = new Polnareff();
 
 	private static final String TXT_HERO_KILLED = "Skewered by _Silver Chariot_";
@@ -41,7 +41,7 @@ public class SilverChariot extends Stand {
 		
 		HP = 5;
 		HT = 5;
-		defenseSkill = (int)(polnareff.defenseSkill( enemy )*defB);
+		defenseSkill = (int)(polnareff.defenseSkill( enemy )*2);
 
 		
 		EXP = 0;
@@ -57,12 +57,12 @@ public class SilverChariot extends Stand {
 	
 	@Override
 	public int damageRoll() {
-		return (int)(polnareff.damageRoll()*powerA);
+		return (int)(polnareff.damageRoll()*2);
 	}
 	
 	@Override
 	public int attackSkill( Char target ) {
-		return (int)(polnareff.attackSkill(target)*powerA);
+		return (int)(polnareff.attackSkill(target)*2);
 
 	}
 	

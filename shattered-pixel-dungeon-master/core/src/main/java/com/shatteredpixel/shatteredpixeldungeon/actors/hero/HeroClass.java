@@ -187,7 +187,7 @@ public enum HeroClass {
 		//stones.identify().quantity(3).collect();
 
 		TimekeepersHourglass hourglass = new TimekeepersHourglass();
-		hourglass.level(50);
+		hourglass.level(10);
 		(hero.belongings.misc1 = hourglass).identify();
 		hero.belongings.misc1.activate( hero );
 

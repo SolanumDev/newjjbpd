@@ -33,12 +33,13 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HumanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WraithSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class Stand extends NPC {
+public abstract class Stand extends NPC {
 
 	protected static final float ZAP_TIME	= 1f;
 	protected static final float SUPER_ZAP_TIME	= 2f;
@@ -72,7 +73,11 @@ public class Stand extends NPC {
     public int range = rangeC;
     public double def = defC;
 
-    public int primaryColor = 0xFF00DC;
+    public boolean isActive = false;
+
+    protected int primaryColor = 0xFF00DC;
+
+    private static final String STANDUSER = "standUser";
 
 	public Char standUser;
 	{
@@ -91,7 +96,21 @@ public class Stand extends NPC {
 		properties.add(Property.STAND);
 	}
 
-	public void parasitic()
+    @Override
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
+
+        bundle.put(STANDUSER, standUser);
+    }
+
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+
+        standUser = (Mob)bundle.get(STANDUSER);
+    }
+
+    public void parasitic()
 	{
 		if(standUser.alignment == Alignment.ALLY)
 		{
@@ -109,19 +128,10 @@ public class Stand extends NPC {
 	public void setStandUser(Char standMaster)
 	{
 		this.standUser = standMaster;
+        this.alignment = standUser.alignment;
 		HP = standUser.HP;
 		HT = standUser.HT;
-		this.alignment = standUser.alignment;
 	}
-
-	public void abilityOne()
-    {}
-
-    public void abilityTwo()
-    {}
-
-    public void abilityThree()
-    {}
 
     @Override
     public void die( Object src ) {
@@ -158,6 +168,21 @@ public class Stand extends NPC {
 
         standUser.sprite.showStatus(CharSprite.WARNING,String.valueOf(dmg),this);
         standUser.HP = this.HP; }
+
+     @Override
+     public float speed()
+     {
+         return standUser.speed() * (float) speed;
+     }
+
+
+    //TODO: attack delay should be determined by speed or attack
+    //skill without making lightning bruiser stands (eg star platinum) overpowered
+
+    @Override
+    protected float attackDelay() {
+       return super.attackDelay();
+    }
 
     @Override
     protected Char chooseEnemy() {
@@ -230,6 +255,12 @@ public class Stand extends NPC {
 
 	}
 
+    public void standPosition(int location)
+    {
+            this.pos = location;
+            GameScene.add(this);
+    }
+
 	//TODO: test if this interferes with nonplayer stands
     @Override
     public int defenseProc( Char enemy, int damage ) {
@@ -268,11 +299,11 @@ public class Stand extends NPC {
 
 	//using the stand user to check isAlive() is not only redundant, but also works against
     //certain users with unique stands (eg Vanilla Ice and Cream)
-/*
+
     public boolean isAlive() {
-        return HP > 0 && standUser.isAlive();
+        isActive = true;
+	    return super.isAlive();
     }
-*/
 
     private class Wandering extends Mob.Wandering {
 

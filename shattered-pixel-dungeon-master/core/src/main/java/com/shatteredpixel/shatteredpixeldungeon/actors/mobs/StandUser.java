@@ -32,15 +32,48 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HumanSprite;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class StandUser extends Mob {
+public abstract class StandUser extends Mob {
 	public Stand stand = null;
 
-	public int currentRange = 8;
+	protected int standLastPos = -1000;
+	protected boolean standIsActive = false;
+
+	protected int currentRange = 8;
+
+	protected static final String STAND_LAST_POS	        = "stand";
+
+	{
+		spriteClass = HumanSprite.class;
+
+		state = WANDERING;
+
+		WANDERING = new Wandering();
+		HUNTING = new Hunting();
+
+	}
+
+
+	@Override
+	public void storeInBundle( Bundle bundle ) {
+		super.storeInBundle(bundle);
+		if(stand!= null)
+		{
+            standLastPos = stand.pos;
+            bundle.put( STAND_LAST_POS, standLastPos );
+        }
+	}
+	@Override
+	public void restoreFromBundle( Bundle bundle ) {
+		super.restoreFromBundle(bundle);
+		standLastPos = bundle.getInt(STAND_LAST_POS);
+	}
+
 
 	protected void updateRange(int rangeToUpdate)
     {
@@ -58,16 +91,6 @@ public class StandUser extends Mob {
                 //(Dungeon.level.distance(stand.enemy.pos, stand.pos) <= 4
                 && Dungeon.level.distance(pos, stand.pos) >= currentRange;
     }
-
-	{
-		spriteClass = HumanSprite.class;
-
-		state = WANDERING;
-
-		WANDERING = new Wandering();
-		HUNTING = new Hunting();
-
-	}
 
 	//light
 	public void abilityOne() {
@@ -126,14 +149,40 @@ public class StandUser extends Mob {
 	}
 
 	public void summonStand() {
+
+		if (standLastPos != -1000)
 		{
+			declareStand();
+			silentSummon(standLastPos);
+		}
+
+		else if(!standIsActive()) {
+
+			declareStand();
 			yell(stand.name + "!");
 			updateRange(stand.range);
 			stand.standPosition(this);
 
 		}
 
+		stand.setStandUser(this);
 	}
+
+	//Useful for forcefully summoning a stand outside of its normal range or allowing the AI
+	//to create a pseudo-tandem setup
+	public void silentSummon(int position)
+	{
+		stand.standPosition(position);
+	}
+
+
+	public void declareStand()
+	{
+		//pretend this is abstract
+	}
+
+
+
 
 	@Override
 	public void die(Object cause) {

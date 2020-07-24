@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.potions;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -46,6 +47,12 @@ public class PotionOfHealing extends Potion {
 		//starts out healing 30 hp, equalizes with hero health total at level 11
 		Buff.affect( hero, Healing.class ).setHeal((int)(0.8f*hero.HT + 14), 0.333f, 0);
 		cure( hero );
+
+		if(Dungeon.stand != null)
+		{
+			Buff.affect( Dungeon.stand, Healing.class ).setHeal((int)(0.8f*hero.HT + 14), 0.333f, 0);
+		}
+
 		GLog.p( Messages.get(this, "heal") );
 	}
 	

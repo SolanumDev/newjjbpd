@@ -140,7 +140,7 @@ public abstract class Level implements Bundlable {
 	public boolean locked = false;
 	
 	public HashSet<Mob> mobs;
-	public HashSet<Stand> stands;
+	//public HashSet<Stand> stands;
 	public SparseArray<Heap> heaps;
 	public HashMap<Class<? extends Blob>,Blob> blobs;
 	public SparseArray<Plant> plants;
@@ -234,7 +234,7 @@ public abstract class Level implements Bundlable {
 			width = height = length = 0;
 
 			mobs = new HashSet<>();
-			stands = new HashSet<>();
+			//stands = new HashSet<>();
 			heaps = new SparseArray<>();
 			blobs = new HashMap<>();
 			plants = new SparseArray<>();
@@ -302,7 +302,7 @@ public abstract class Level implements Bundlable {
 		setSize( bundle.getInt(WIDTH), bundle.getInt(HEIGHT));
 		
 		mobs = new HashSet<>();
-		stands = new HashSet<>();
+		//stands = new HashSet<>();
 		heaps = new SparseArray<>();
 		blobs = new HashMap<>();
 		plants = new SparseArray<>();
@@ -402,7 +402,19 @@ public abstract class Level implements Bundlable {
 		buildFlagMaps();
 		cleanWalls();
 	}
-	
+
+
+	//FIXME: for some reason stands aren't saved into the level when you back out of the game,
+	//this can potentially lead to memory leaks and should be resolved ASAP, as of now no exploits
+	//or detrimental effects are found in game besides some minor inconveniences
+
+	//FIXME: it seems as though using a constructor to create a stand class (eg Hierophant(Kakyoin))
+	//is the cause behind stands not showing up when bundled. After some deliberation it seems as
+	//though memory leaks are not caused by this. However, potential exploits are still possible so while no
+	//longer extremely urgent correcting this issue is paramount for game balance.
+
+	//TODO: create getters and setters for standUser stats that stands can manipulate after they've been spawned
+
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		bundle.put( VERSION, Game.versionCode );
@@ -420,7 +432,7 @@ public abstract class Level implements Bundlable {
 		bundle.put( CUSTOM_TILES, customTiles );
 		bundle.put( CUSTOM_WALLS, customWalls );
 		bundle.put( MOBS, mobs );
-		bundle.put( STANDS, stands);
+		//bundle.put( STANDS, stands);
 		bundle.put( BLOBS, blobs.values() );
 		bundle.put( FEELING, feeling );
 	}

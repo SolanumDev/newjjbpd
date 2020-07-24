@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TimeFreeze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TimeStop;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -45,6 +46,8 @@ public class StarPlatinum extends Stand {
     public float ACTIONS_IN_FROZEN_TIME = 5;
 	{
 		spriteClass = StarPlatinumSprite.class;
+
+        actPriority = MOB_PRIO -5;
 
         power = powerA;
         speed = speedA;

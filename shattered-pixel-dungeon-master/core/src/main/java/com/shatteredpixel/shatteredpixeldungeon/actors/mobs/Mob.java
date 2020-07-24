@@ -101,6 +101,7 @@ public abstract class Mob extends Char {
 
 	protected Integer worldCell = null;
 
+
 	public void abilityOne()
 	{}
 
