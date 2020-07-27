@@ -85,12 +85,19 @@ public class SummonIndicator extends Tag {
 
 	}
 
+//FIXME: this function will handle the logic behind pairing a character to a stand
+//hopefully it'll make the onClick() less confusing
+
+	public Stand standChecker()
+    {
+     return stand;
+    }
 
 
 	@Override
 	protected void onClick() {
 
-	    if (stand == null) {
+        if (stand == null) {
 
             if(Dungeon.currentScene == Dungeon.CHARS_ORIG) {
                 // for testing purposes the original heroes can summon stands too
@@ -111,9 +118,9 @@ public class SummonIndicator extends Tag {
                 }
             }
             else if (Dungeon.currentScene == Dungeon.CHARS_DIU)
-                {
+            {
 
-                }
+            }
             else if (Dungeon.currentScene == Dungeon.CHARS_GW)
             {
 
@@ -151,7 +158,7 @@ public class SummonIndicator extends Tag {
         }
         else if(Dungeon.level.adjacent(stand.pos,Dungeon.hero.pos ) && stand != null){
 
-	        //prevents an "infinite" time stop (removing these would either crash the game
+            //prevents an "infinite" time stop (removing these would either crash the game
             // or cause frozen mob sprites to never
             // return to action, should the latter occur, a simple reset
             // of the level will return the mob sprites to normal)
@@ -160,13 +167,14 @@ public class SummonIndicator extends Tag {
                 Dungeon.hero.sprite.showStatus(0x7F006E, "Time has begun to move again", Dungeon.hero);
                 Dungeon.stand.cancelAbility();
             }
-            else if( Dungeon.stand instanceof TheWorld  && GameScene.freezeEmitters == true)
+            //TODO: make the world inherit stand logic
+          /*  else if( Dungeon.stand instanceof TheWorld  && GameScene.freezeEmitters == true)
             {
                 Dungeon.hero.sprite.showStatus(0xEADD33, "And so time moves once more", Dungeon.hero);
                 Dungeon.stand.cancelAbility();
             }
-
-	        Dungeon.stand.destroy();
+*/
+            Dungeon.stand.destroy();
             Dungeon.stand.sprite.die();
             Dungeon.stand = null;
             stand = null;
@@ -180,6 +188,14 @@ public class SummonIndicator extends Tag {
         }
 	}
 
+/*
+	//FIXME: preferably, the stand should only consider onClick or onLongClick independently
+    @Override
+    protected boolean onLongClick() {
+        Dungeon.hero.sprite.showStatus(0xFF00DC, "I'll rush you down!");
+        return false;
+    }
+*/
     @Override
     public void update() {
 	    if(Dungeon.hero.isAlive() && Dungeon.currentScene > Dungeon.CHARS_BT)

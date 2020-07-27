@@ -87,6 +87,8 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	protected Animation operate;
 	protected Animation zap;
 	protected Animation die;
+
+	public Animation rushAttack;
 	
 	protected Callback animCallback;
 	
@@ -207,6 +209,11 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	public void attack( int cell ) {
 		turnTo( ch.pos, cell );
 		play( attack );
+	}
+
+	public void rushAttack(int cell) {
+		turnTo(ch.pos, cell);
+		play(rushAttack);
 	}
 	
 	public void attack( int cell, Callback callback ) {

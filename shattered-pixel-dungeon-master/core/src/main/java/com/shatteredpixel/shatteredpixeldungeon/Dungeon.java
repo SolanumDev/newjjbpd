@@ -178,7 +178,7 @@ public class Dungeon {
 
 	public static Level level;
 
-	public static Mob stand;
+	public static Stand stand;
 
 	public static String curScene;
 	public static  int currentScene;

@@ -45,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RushingFlurry;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Slow;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Speed;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
@@ -454,7 +455,16 @@ public abstract class Char extends Actor {
 			buff.fx( true );
 		}
 	}
-	
+
+	public synchronized boolean isRushing( Char ch ) {
+		for (Buff b : buffs) {
+			if (b instanceof RushingFlurry ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public int stealth() {
 		return 0;
 	}

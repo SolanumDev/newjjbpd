@@ -75,6 +75,8 @@ public class StarPlatinum extends Stand {
         starBreaker(worldCell);
     }
 
+    //TODO: starbreaker should be changed from a full punch that launches star platinum to
+    // a penetrating punch that fires a small projectile
     public void starBreaker(Integer cell)
     {
         superPunch = true;
@@ -333,6 +335,7 @@ public class StarPlatinum extends Stand {
 
     protected boolean doAttack( Char enemy ) {
 
+        super.doAttack(enemy);
         boolean visible = Dungeon.level.heroFOV[pos];
 
         if(!superFinger) {

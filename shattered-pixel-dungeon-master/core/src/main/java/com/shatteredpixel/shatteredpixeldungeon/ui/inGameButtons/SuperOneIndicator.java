@@ -24,6 +24,10 @@ package com.shatteredpixel.shatteredpixeldungeon.ui.inGameButtons;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RushingFlurry;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.StarPlatinum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.heroStands.StarPlatinumHero;
@@ -59,6 +63,8 @@ public class SuperOneIndicator extends Tag {
 	@Override
 	protected void createChildren() {
 		super.createChildren();
+	//TODO: if we're DIO, display his supers (and corresponding icons
+    //if Dungeon.stand is active display its current supers via switch cases
 
         icon = Icons.TARGET.get();
         add( icon );
@@ -113,8 +119,10 @@ public class SuperOneIndicator extends Tag {
        };
 	@Override
 	protected void onClick() {
+	    //TODO:
+
         if(Dungeon.stand != null)
-        {
+        {/*
             if(Dungeon.stand instanceof StarPlatinumHero) {
                 if (Dungeon.level.adjacent(Dungeon.stand.pos, Dungeon.hero.pos)) {
                     Dungeon.hero.sprite.showStatus(0xB200FF, "Star Breaker", Dungeon.hero);
@@ -124,11 +132,14 @@ public class SuperOneIndicator extends Tag {
                     GLog.w("Your stand must be next to you to use that!");
                 }
             }
+            */
+            Buff.affect(Dungeon.stand, RushingFlurry.class).extend(5f);
         }
         else{
             GLog.w("Your stand must be active to use its power!");
         }
 	    	}
+
 
     @Override
     public void update() {

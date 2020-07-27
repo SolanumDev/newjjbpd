@@ -26,12 +26,22 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DIOHigh;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Guard;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Kenshiro;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Polnareff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Spinner;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Yog;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.sdc.Kakyoin;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
@@ -42,6 +52,10 @@ public class DebugStick extends Item {
 	private static final float TIME_TO_DEBUG = 1;
 	
 	private static final String AC_Debug = "Debug";
+	private static final String AC_Warp = "Warp";
+	private static final String AC_Descend = "Fast Descend";
+
+	private Mob toSpawn;
 	
 	{
 		image = ItemSpriteSheet.STYLUS;
@@ -49,12 +63,15 @@ public class DebugStick extends Item {
 		stackable = true;
 
 		bones = true;
+
+		defaultAction = AC_Debug;
 	}
-	
+
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
 		actions.add( AC_Debug );
+		actions.add( AC_Warp);
 		return actions;
 	}
 	
@@ -63,29 +80,54 @@ public class DebugStick extends Item {
 
 		super.execute( hero, action );
 
-		if (action.equals(AC_Debug)) {
+		switch(action)
+		{
+			case AC_Debug:
+				toSpawn = new Kenshiro();
 
-			Mob toSpawn = new Kakyoin();
+				ArrayList<Integer> spawnPoints = new ArrayList<>();
 
-			ArrayList<Integer> spawnPoints = new ArrayList<>();
-
-			for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
-				int p = Dungeon.hero.pos + PathFinder.NEIGHBOURS8[i];
-				if (Actor.findChar(p) == null && (Dungeon.level.passable[p] || Dungeon.level.avoid[p])) {
-					spawnPoints.add(p);
+				for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
+					int p = Dungeon.hero.pos + PathFinder.NEIGHBOURS8[i];
+					if (Actor.findChar(p) == null && (Dungeon.level.passable[p] || Dungeon.level.avoid[p])) {
+						spawnPoints.add(p);
+					}
 				}
-			}
 
-			if (spawnPoints.size() > 0) {
+				if (spawnPoints.size() > 0) {
 
-				toSpawn.pos = Random.element(spawnPoints);
+					toSpawn.pos = Random.element(spawnPoints);
+
+					GameScene.add(toSpawn);
+					Actor.addDelayed(new Pushing(toSpawn, Dungeon.hero.pos, toSpawn.pos), 0);
+				}
+				else
+				{
+					//we're going to spawn the character on top of ourselves
+					toSpawn.pos = Dungeon.hero.pos;
+
+					GameScene.add(toSpawn);
+					Actor.addDelayed(new Pushing(toSpawn, Dungeon.hero.pos, toSpawn.pos), 0);
+				}
+                break;
+			case AC_Warp:
+				doWarp();
+				break;
+
+			default:
+				toSpawn = new Spinner();
+				toSpawn.pos = Dungeon.hero.pos;
 
 				GameScene.add(toSpawn);
 				Actor.addDelayed(new Pushing(toSpawn, Dungeon.hero.pos, toSpawn.pos), 0);
-			}
+                break;
+
+		}
+		//if (action.equals(AC_Debug)) {
+
 
 			
-		}
+		//}
 	}
 	
 	@Override
@@ -97,6 +139,35 @@ public class DebugStick extends Item {
 	public boolean isIdentified() {
 		return true;
 	}
+
+	protected void doWarp()
+	{GameScene.selectCell( warper); }
+
+    protected static CellSelector.Listener warper = new CellSelector.Listener() {
+        @Override
+        public void onSelect( Integer target ) {
+            if (target != null && Dungeon.level.passable[target]) {
+
+            	//FIXME: the dev (and source code viewers) be able to bring their stand along
+
+                Dungeon.hero.pos = target;
+				Dungeon.observe();
+				GameScene.updateFog();
+
+				ScrollOfTeleportation.appear(curUser, target);
+				Dungeon.level.press( target, curUser );
+				curUser.spendAndNext(Actor.TICK);
+            }
+            else
+			{
+				GLog.w("You can't warp there!");
+			}
+        }
+        @Override
+        public String prompt() {
+            return Messages.get(this, "prompt");
+        }
+    };
 
 	@Override
 	public int price() {

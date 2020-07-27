@@ -26,11 +26,18 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 public class DebugWeapon extends MeleeWeapon {
 
 	{
+		name = "Developer Weapon";
+
 		image = ItemSpriteSheet.GLAIVE;
 
 		tier = 1;
 		DLY = 1;
 		RCH = 8;
+	}
+
+	@Override
+	public String desc() {
+		return "For one shotting the most resilient of foes";
 	}
 
 	@Override

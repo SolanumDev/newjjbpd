@@ -53,7 +53,7 @@ public class MonkSprite extends MobSprite {
 		
 		play( idle );
 	}
-	
+	/*
 	@Override
 	public void attack( int cell ) {
 		super.attack( cell );
@@ -61,9 +61,9 @@ public class MonkSprite extends MobSprite {
 			play( kick );
 		}
 	}
-	
+
 	@Override
 	public void onComplete( Animation anim ) {
 		super.onComplete( anim == kick ? attack : anim );
-	}
+	}*/
 }

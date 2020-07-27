@@ -1303,7 +1303,7 @@ public class Hero extends Char {
 		return buff(Hunger.class) != null && ((Hunger)buff( Hunger.class )).isStarving();
 	}
 
-	public void summonStand(Mob heroStand)
+	public void summonStand(Stand heroStand)
 	{
         int occupiedSlots = 0;
 

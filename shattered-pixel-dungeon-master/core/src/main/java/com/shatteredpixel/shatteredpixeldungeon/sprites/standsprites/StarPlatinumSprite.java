@@ -34,7 +34,6 @@ import com.watabou.utils.PointF;
 public class StarPlatinumSprite extends MobSprite {
 
 private Animation chargePunch;
-private Animation rushAttack;
 private Animation fingerShot;
 
 	public StarPlatinumSprite() {
@@ -56,6 +55,9 @@ private Animation fingerShot;
 		
 		attack = new Animation( 12, false );
 		attack.frames( film, 1, 4, 1, 4, 1, 4 );
+
+		rushAttack = new Animation(12, false);
+		rushAttack.frames( film, 1, 4, 2, 5, 3, 6);
 
 		chargePunch = new Animation( 4, false );
 		chargePunch.frames( film, 0, 7, 4, 4, 7, 0);
@@ -81,6 +83,12 @@ private Animation fingerShot;
 
 	public void punchStarFinger(){
         play(fingerShot);
+        play(idle);
+    }
+
+    @Override
+    public void rushAttack(int cell) {
+        play(this.rushAttack);
         play(idle);
     }
 
@@ -114,7 +122,7 @@ private Animation fingerShot;
     {
         super.onComplete(anim);
 
-        if (anim == fingerShot || anim == chargePunch) {
+        if(anim == fingerShot || anim == chargePunch || anim == rushAttack) {
             ch.onAttackComplete();
             idle();
         }

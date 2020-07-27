@@ -41,7 +41,7 @@ import java.util.ArrayList;
 public abstract class StandUser extends Mob {
 	public Stand stand = null;
 
-	protected int standLastPos = -1000;
+	protected int standLastPos = -1;
 	protected boolean standIsActive = false;
 
 	protected int currentRange = 8;
@@ -150,7 +150,7 @@ public abstract class StandUser extends Mob {
 
 	public void summonStand() {
 
-		if (standLastPos != -1000)
+		if (standLastPos != -1)
 		{
 			declareStand();
 			silentSummon(standLastPos);

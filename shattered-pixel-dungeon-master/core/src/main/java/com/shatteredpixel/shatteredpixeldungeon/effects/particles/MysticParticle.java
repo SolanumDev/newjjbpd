@@ -32,7 +32,7 @@ public class MysticParticle extends PixelParticle {
 		@Override
 		public void emit( Emitter emitter, int index, float x, float y ) {
 			for (int i=0; i < 3; i++) {
-				((MysticParticle)emitter.recycle( MysticParticle.class )).reset( x, y );
+				((WebParticle)emitter.recycle( WebParticle.class )).reset( x, y );
 			}
 		}
 	};

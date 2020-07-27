@@ -62,6 +62,7 @@ public class Kenshiro extends Mob {
 
 	public void crackedFist()
 	{
+
 		fisted = true;
 		if(state != HUNTING)
 		{
@@ -76,23 +77,25 @@ public class Kenshiro extends Mob {
 
 
 
-	@Override
+	/*@Override
 	protected float attackDelay(){
 		if(fisted) {
 			//fisted = false;
-			return 0.2f;
+			return 0.02f;
 		}
 		return 1;
 	}
-
+*/
 	@Override
 	public int damageRoll() {
 		if(fisted)
 		{
 		        int maxDam = enemy.HP/2;
+		        int minDam = enemy.HP/10;
+
 		        sprite.showStatus(255,"atatatata",this);
 		        fisted = false;
-				return Random.NormalIntRange(0, maxDam);
+				return Random.NormalIntRange(minDam, maxDam);
 		}
 		return Random.NormalIntRange( 1, 4 );
 	}
@@ -106,7 +109,7 @@ public class Kenshiro extends Mob {
 	
 	@Override
 	public int attackSkill( Char target ) {
-		return 8;
+		return 360;
 	}
 
 	@Override
@@ -118,6 +121,7 @@ public class Kenshiro extends Mob {
 
 			if(fisted) {
 				((KenshiroSprite) sprite).fistRush(enemy.pos);
+				spend(attackDelay()* (float) 0.02);
 			}
 			else {
 				sprite.attack(enemy.pos);
@@ -133,7 +137,7 @@ public class Kenshiro extends Mob {
 
     @Override
 	public int drRoll() {
-		return Random.NormalIntRange(0, 1);
+		return 0;
 	}
 
 	protected class Hunting extends Mob.Hunting {

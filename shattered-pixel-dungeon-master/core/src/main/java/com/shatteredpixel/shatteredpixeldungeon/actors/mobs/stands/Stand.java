@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.StandUser;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
@@ -74,6 +75,8 @@ public abstract class Stand extends NPC {
     public double def = defC;
 
     public boolean isActive = false;
+
+    private boolean isRushing = false;
 
     protected int primaryColor = 0xFF00DC;
 
@@ -181,7 +184,49 @@ public abstract class Stand extends NPC {
 
     @Override
     protected float attackDelay() {
+
+	    //TODO: since we Rushing Flurry should have links (eg Star Breaker Rush)
+        //more checks need to be will need to be implemented this is simply the default case
+	    if(isRushing(this))
+        {
+            return rushDelay();
+        }
+
        return super.attackDelay();
+    }
+
+    @Override
+    public void onAttackComplete() {
+        super.onAttackComplete();
+        //stop rushing?
+    }
+
+    public float rushDelay()
+    {
+        return super.attackDelay() / ((float) (power + speed) * 4);
+    }
+
+    @Override
+    protected boolean doAttack( Char enemy ) {
+
+        boolean visible = Dungeon.level.heroFOV[pos];
+
+        if (visible) {
+
+            if(isRushing(this)) {
+                sprite.showStatus(primaryColor,"ora");
+                sprite.rushAttack(enemy.pos);
+
+            }
+            else {
+                sprite.attack(enemy.pos);
+            }
+        } else {
+            attack( enemy );
+        }
+        spend( attackDelay() );
+
+        return !visible;
     }
 
     @Override
@@ -297,6 +342,8 @@ public abstract class Stand extends NPC {
 		}
 	}
 
+
+	//TODO: this needs to be verified
 	//using the stand user to check isAlive() is not only redundant, but also works against
     //certain users with unique stands (eg Vanilla Ice and Cream)
 
@@ -304,6 +351,8 @@ public abstract class Stand extends NPC {
         isActive = true;
 	    return super.isAlive();
     }
+
+
 
     private class Wandering extends Mob.Wandering {
 
@@ -348,8 +397,6 @@ public abstract class Stand extends NPC {
 
     }
 
-
-    //TODO: stands should prioritize each other when fighting
     protected class Hunting extends Mob.Hunting {
 
         public static final String TAG	= "HUNTING";
