@@ -23,6 +23,8 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RushingFlurry;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.KenshiroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RatSprite;
 import com.watabou.utils.Bundle;
@@ -62,8 +64,8 @@ public class Kenshiro extends Mob {
 
 	public void crackedFist()
 	{
+        Buff.affect(this, RushingFlurry.class).extend(10f);
 
-		fisted = true;
 		if(state != HUNTING)
 		{
 			state = HUNTING;
@@ -88,12 +90,12 @@ public class Kenshiro extends Mob {
 */
 	@Override
 	public int damageRoll() {
-		if(fisted)
+		if(isRushing())
 		{
 		        int maxDam = enemy.HP/2;
 		        int minDam = enemy.HP/10;
 
-		        sprite.showStatus(255,"atatatata",this);
+		        sprite.showStatus(255,"atatatat",this);
 		        fisted = false;
 				return Random.NormalIntRange(minDam, maxDam);
 		}
@@ -119,9 +121,8 @@ public class Kenshiro extends Mob {
 
 		if (visible) {
 
-			if(fisted) {
+			if(isRushing()) {
 				((KenshiroSprite) sprite).fistRush(enemy.pos);
-				spend(attackDelay()* (float) 0.02);
 			}
 			else {
 				sprite.attack(enemy.pos);
@@ -134,7 +135,16 @@ public class Kenshiro extends Mob {
         return !visible;
     }
 
+	@Override
+	protected float attackDelay() {
 
+		if(isRushing())
+		{
+			return ((float) 0.1);
+		}
+
+		return super.attackDelay();
+	}
     @Override
 	public int drRoll() {
 		return 0;

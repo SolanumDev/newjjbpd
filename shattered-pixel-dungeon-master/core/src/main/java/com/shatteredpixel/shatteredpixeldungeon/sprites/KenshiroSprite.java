@@ -48,18 +48,8 @@ public class KenshiroSprite extends MobSprite {
         die = new Animation(10, false);
         die.frames(frames, 8, 9, 10);
 
-        hundredCrackFist = new Animation(200, false);
-        hundredCrackFist.frames(frames,
-        14, 17, 15, 18, 16, 19, 14, 17, 15, 18, 16, 19,
-                14, 17, 15, 18, 16, 19, 14, 17, 15, 18, 16, 19,
-                14, 17, 15, 18, 16, 19, 14, 17, 15, 18, 16, 19,
-                14, 17, 15, 18, 16, 19, 14, 17, 15, 18, 16, 19,
-                14, 17, 15, 18, 16, 19, 14, 17, 15, 18, 16, 19,
-                14, 17, 15, 18, 16, 19, 14, 17, 15, 18, 16, 19,
-                14, 17, 15, 18, 16, 19, 14, 17, 15, 18, 16, 19,
-                14, 17, 15, 18, 16, 19, 14, 17, 15, 18, 16, 19,
-                14, 17, 15, 18, 16, 19, 14, 17, 15, 18, 16, 19,
-                14, 17, 14, 17, 0);
+        hundredCrackFist = new Animation(60, false);
+        hundredCrackFist.frames(frames,14, 17, 15, 18, 16, 19);
 
 
         play(idle);

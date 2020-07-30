@@ -23,7 +23,9 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites.standsprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.StarPlatinum;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.Visual;
 import com.watabou.noosa.tweeners.Tweener;
@@ -56,13 +58,13 @@ private Animation fingerShot;
 		attack = new Animation( 12, false );
 		attack.frames( film, 1, 4, 1, 4, 1, 4 );
 
-		rushAttack = new Animation(12, false);
+		rushAttack = new Animation(60, false);
 		rushAttack.frames( film, 1, 4, 2, 5, 3, 6);
 
 		chargePunch = new Animation( 4, false );
 		chargePunch.frames( film, 0, 7, 4, 4, 7, 0);
 
-        fingerShot = new Animation( 4, false );
+        fingerShot = new Animation( 1, false );
         fingerShot.frames( film, 0, 7, 8, 4, 4, 4, 0);
 
         idle();
@@ -77,19 +79,25 @@ private Animation fingerShot;
         turnTo( from, to );
 		play(chargePunch);
 
+        ch.move( to );
+        place( to );
+
 		//Slide slide = new Slide( this, enemyPos ,0,0.5f);
 
 	}
+
+
 
 	public void punchStarFinger(){
         play(fingerShot);
         play(idle);
     }
 
-    @Override
-    public void rushAttack(int cell) {
-        play(this.rushAttack);
-        play(idle);
+    public void rushAttack(int cell)
+    {
+        turnTo(ch.pos, cell );
+        play(rushAttack);
+        ((StarPlatinum)ch).doRush();
     }
 
     protected static class Slide extends Tweener {
@@ -109,6 +117,7 @@ private Animation fingerShot;
             start = visual.point();
             end = pos;
             this.height = height;
+
         }
 
         @Override
@@ -122,7 +131,17 @@ private Animation fingerShot;
     {
         super.onComplete(anim);
 
-        if(anim == fingerShot || anim == chargePunch || anim == rushAttack) {
+        if(anim == fingerShot) {
+            ch.onAttackComplete();
+            idle();
+        }
+        else if( anim == chargePunch)
+        {
+            ch.onAttackComplete();
+            idle();
+        }
+        else if( anim == rushAttack)
+        {
             ch.onAttackComplete();
             idle();
         }

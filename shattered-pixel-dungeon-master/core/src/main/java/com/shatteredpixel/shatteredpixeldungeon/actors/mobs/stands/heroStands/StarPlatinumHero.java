@@ -25,39 +25,54 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TimeFreeze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TimeStop;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Stand;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Chains;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Finger;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.standsprites.StarPlatinumSprite;
+import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
+
+import java.util.ArrayList;
 
 public class StarPlatinumHero extends Stand {
 
-	boolean superPunch = false;
+    boolean superPunch = false;
     boolean superFinger = false;
     boolean superStop = false;
+    Ballistica finger;
+
     public float ACTIONS_IN_FROZEN_TIME = 5;
-	{
-		spriteClass = StarPlatinumSprite.class;
+    {
+        spriteClass = StarPlatinumSprite.class;
 
         power = powerA;
         speed = speedA;
         range = rangeC;
         def = defA;
 
-		//HUNTING = new Hunting();
+        //HUNTING = new Hunting();
         //WANDERING = new Wandering();
-	}
+    }
 
 
-	public StarPlatinumHero(Char standMaster){
-		//TODO: should a non-Jotaro character have star platinum
+    public StarPlatinumHero(Char standMaster){
+        //TODO: should a non-Jotaro character have star platinum
         //it will become a parasitic stand, calling parasitic();
         this.standUser = standMaster;
         this.alignment = standUser.alignment;
@@ -65,11 +80,23 @@ public class StarPlatinumHero extends Stand {
         HT = standUser.HT;
     }
 
-	@Override
+    @Override
     public void abilityOne()
     {
         starBreaker(worldCell);
     }
+
+    //FIXME:
+    //starbreaker's animations have been improved, however if star platinum doesn't connect its attack
+    //it will temporarily have a range of 3 (from itself) and a 2x damage modifier, it can still only attack
+    //if it's in the range of its own stand user but this is effectively still doubling its range
+
+    //preferred solutions are reworking starbreaker to being a single punch with a penetrating projectile
+    //instead of the current slide into a punch
+    //alternatively we could try simply telling the game that once the motion is executed cancel the super
+    //no idea how to do that though
+    //if the ladder method is implemented one more fix needs to be put in place
+    //TODO: starbreaker's slide/projectile should not exceed the stand's range
 
     public void starBreaker(Integer cell)
     {
@@ -78,8 +105,8 @@ public class StarPlatinumHero extends Stand {
         Callback callback = new Callback() {
             @Override
             public void call() {
-              //  Dungeon.observe();
-              //  GameScene.updateFog();
+                //  Dungeon.observe();
+                //  GameScene.updateFog();
             }
         };
 
@@ -96,57 +123,49 @@ public class StarPlatinumHero extends Stand {
         {
             state = HUNTING;
         }
-        starFinger();
+
+        starFinger(worldCell);
     }
 
     //FIXME:
     //this function is only boolean because I'm too lazy to not shamelessly steal 00-Evan's Guard code
     //it's also very convenient for exiting the function because of returns
-    public boolean starFinger()
+    public boolean starFinger(Integer cell)
     {
-        //superFinger = true;
+        superFinger = true;
 
-        Ballistica finger = new Ballistica(pos, worldCell, Ballistica.PROJECTILE);
+        Ballistica digits = new Ballistica(pos, cell, Ballistica.STOP_TERRAIN);
 
-        {
-            int newPos = -1;
-            for (int i : finger.subPath(1, finger.dist)){
-                if (!Dungeon.level.solid[i] && Actor.findChar(i) == null){
-                    newPos = i;
-                    break;
-                }
+
+        ((StarPlatinumSprite) sprite).punchStarFinger();
+        //FIXME: while this works fine, using the tiles and not the sprites for referencing looks a bit
+        //jarring, it would be preferabble to have a way to go from the center of star platinum to the targeted cell
+
+        sprite.parent.add(new Finger(pos, cell, new Callback() {
+            @Override
+            public void call() {
+
             }
+        }));
 
-            if (newPos == -1){
-                return false;
+        for (int pos : digits.subPath(1, digits.dist)) {
+
+            //Attack everything caught in star finger's path
+            Char ch = Actor.findChar(pos);
+            if (ch == null) {
+                continue;
             } else {
-                final int newPosFinal = newPos;
-                //this.target = newPos;
-                ((StarPlatinumSprite) sprite).punchStarFinger();
-
-                sprite.parent.add(new Finger(sprite.center(), enemy.sprite.center(), new Callback() {
-                    public void call() {
-                        Actor.addDelayed(new Pushing(enemy, enemy.pos, newPosFinal, new Callback(){
-                            public void call() {
-                                enemy.pos = newPosFinal;
-                                Dungeon.level.press(newPosFinal, enemy, true);
-                                attack(enemy);
-                                if (enemy == Dungeon.hero) {
-                                    Dungeon.hero.interrupt();
-                                    Dungeon.observe();
-                                    GameScene.updateFog();
-                                }
-                            }
-                        }), -1);
-
-
-                        superFinger = false;
-                    }
-                }));
+                attack(ch);
             }
         }
 
 
+        if(Actor.findChar(cell) != null )
+        {
+            attack(Actor.findChar(cell));
+        }
+
+        superFinger = false;
         return true;
     }
 
@@ -166,43 +185,43 @@ public class StarPlatinumHero extends Stand {
     public void cancelTimeStop()
     {
 
-            //TODO: find a way to prevent the hero from abusing time stop
-            ACTIONS_IN_FROZEN_TIME = 5;
+        //TODO: find a way to prevent the hero from abusing time stop
+        ACTIONS_IN_FROZEN_TIME = 5;
 
-            if(standUser != Dungeon.hero) {
-                actPriority = MOB_PRIO;
-                standUser.actPriority = MOB_PRIO;
+        if(standUser != Dungeon.hero) {
+            actPriority = MOB_PRIO;
+            standUser.actPriority = MOB_PRIO;
 
-                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                    if(!(mob instanceof StarPlatinumHero))
-                    {
-                        mob.sprite.remove(CharSprite.State.PARALYSED);
-                        mob.remove(TimeFreeze.class);
-                    }
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                if(!(mob instanceof StarPlatinumHero))
+                {
+                    mob.sprite.remove(CharSprite.State.PARALYSED);
+                    mob.remove(TimeFreeze.class);
+                }
+
+            }
+            Dungeon.hero.remove(TimeFreeze.class);
+            Dungeon.hero.sprite.remove(CharSprite.State.PARALYSED);
+        }
+        else
+        {
+            actPriority = MOB_PRIO;
+            standUser.actPriority = HERO_PRIO;
+
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
+                if(!(mob instanceof StarPlatinumHero))
+                {
+                    mob.sprite.remove(CharSprite.State.PARALYSED);
+                    mob.remove(TimeFreeze.class);
 
                 }
-                Dungeon.hero.remove(TimeFreeze.class);
-                Dungeon.hero.sprite.remove(CharSprite.State.PARALYSED);
+
             }
-            else
-            {
-                actPriority = MOB_PRIO;
-                standUser.actPriority = HERO_PRIO;
+        }
 
-                for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
-                    if(!(mob instanceof StarPlatinumHero))
-                    {
-                        mob.sprite.remove(CharSprite.State.PARALYSED);
-                        mob.remove(TimeFreeze.class);
-
-                    }
-
-                }
-            }
-
-            GameScene.freezeEmitters = false;
-            superStop = false;
-            Dungeon.observe();
+        GameScene.freezeEmitters = false;
+        superStop = false;
+        Dungeon.observe();
 
     }
 
@@ -260,11 +279,11 @@ public class StarPlatinumHero extends Stand {
     }
 
 
-	@Override
-	public int damageRoll() {
-	    int punchDMG = 0;
+    @Override
+    public int damageRoll() {
+        int punchDMG = 0;
 
-	    if(superPunch == true)
+        if(superPunch == true)
         {
             punchDMG += standUser.damageRoll() * 1.5;
             superPunch = false;
@@ -283,19 +302,22 @@ public class StarPlatinumHero extends Stand {
 
             return punchDMG;
         }
-		return (int) (standUser.damageRoll()  * powerA);
-	}
+        return (int) (standUser.damageRoll()  * powerA);
+    }
 
-	@Override
+    @Override
     protected boolean canAttack( Char enemy ) {
-	    if(superFinger == true) {
-            return Dungeon.level.distance( pos, enemy.pos) <= rangeA;
+        if(superFinger == true && fieldOfView[enemy.pos]) {
+            Ballistica aim = new Ballistica(pos, worldCell, Ballistica.STOP_TERRAIN);
+
+            if (enemy.invisible == 0 && !isCharmedBy(enemy) && fieldOfView[enemy.pos] && aim.subPath(1, aim.dist).contains(enemy.pos)){
+                finger = aim;
+                worldCell = aim.collisionPos;
+                return true;
+            }
         }
-        if(superPunch == true)
-        {
-            return Dungeon.level.distance(pos, enemy.pos) <= range;
-        }
-        return Dungeon.level.adjacent(pos, enemy.pos);
+
+        return super.canAttack(enemy);
     }
 
     protected boolean doAttack( Char enemy ) {
@@ -313,7 +335,13 @@ public class StarPlatinumHero extends Stand {
         }
         else
         {
-            starFinger();
+            spend( attackDelay() );
+
+            finger = new Ballistica(pos, worldCell, Ballistica.STOP_TERRAIN);
+            if (Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[finger.collisionPos] ) {
+                sprite.zap( finger.collisionPos );
+                return false;
+            }
         }
         return !visible;
     }

@@ -180,30 +180,29 @@ public abstract class Stand extends NPC {
 
 
     //TODO: attack delay should be determined by speed or attack
+
     //skill without making lightning bruiser stands (eg star platinum) overpowered
-
-    @Override
-    protected float attackDelay() {
-
-	    //TODO: since we Rushing Flurry should have links (eg Star Breaker Rush)
-        //more checks need to be will need to be implemented this is simply the default case
-	    if(isRushing(this))
-        {
-            return rushDelay();
-        }
-
-       return super.attackDelay();
-    }
-
     @Override
     public void onAttackComplete() {
         super.onAttackComplete();
-        //stop rushing?
     }
 
     public float rushDelay()
     {
         return super.attackDelay() / ((float) (power + speed) * 4);
+    }
+
+    @Override
+    protected float attackDelay() {
+
+        //TODO: Rushing Flurry should have links (eg Star Breaker Rush) as such
+        //more checks need to be will need to be implemented, this is simply the default case
+        if(isRushing())
+        {
+            return rushDelay();
+        }
+
+        return super.attackDelay();
     }
 
     @Override
@@ -213,10 +212,8 @@ public abstract class Stand extends NPC {
 
         if (visible) {
 
-            if(isRushing(this)) {
-                sprite.showStatus(primaryColor,"ora");
+            if(isRushing()) {
                 sprite.rushAttack(enemy.pos);
-
             }
             else {
                 sprite.attack(enemy.pos);

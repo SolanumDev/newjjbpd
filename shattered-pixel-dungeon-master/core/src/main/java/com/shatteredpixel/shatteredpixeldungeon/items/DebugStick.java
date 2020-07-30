@@ -33,6 +33,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Polnareff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Spinner;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.TrainingDummy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Yog;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.sdc.Kakyoin;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
@@ -64,7 +66,7 @@ public class DebugStick extends Item {
 
 		bones = true;
 
-		defaultAction = AC_Debug;
+		defaultAction = AC_Warp;
 	}
 
 	@Override
@@ -83,7 +85,7 @@ public class DebugStick extends Item {
 		switch(action)
 		{
 			case AC_Debug:
-				toSpawn = new Kenshiro();
+				toSpawn = new TrainingDummy();
 
 				ArrayList<Integer> spawnPoints = new ArrayList<>();
 
@@ -141,7 +143,7 @@ public class DebugStick extends Item {
 	}
 
 	protected void doWarp()
-	{GameScene.selectCell( warper); }
+	{GameScene.selectCell(warper); }
 
     protected static CellSelector.Listener warper = new CellSelector.Listener() {
         @Override
@@ -165,7 +167,8 @@ public class DebugStick extends Item {
         }
         @Override
         public String prompt() {
-            return Messages.get(this, "prompt");
+            //return Messages.get(this, "prompt");
+			return "Select a tile to warp to";
         }
     };
 

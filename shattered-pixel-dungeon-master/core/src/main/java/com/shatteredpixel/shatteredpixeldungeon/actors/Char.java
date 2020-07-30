@@ -456,7 +456,7 @@ public abstract class Char extends Actor {
 		}
 	}
 
-	public synchronized boolean isRushing( Char ch ) {
+	public synchronized boolean isRushing() {
 		for (Buff b : buffs) {
 			if (b instanceof RushingFlurry ) {
 				return true;

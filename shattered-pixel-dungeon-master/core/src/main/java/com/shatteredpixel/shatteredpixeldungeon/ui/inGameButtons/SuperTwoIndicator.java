@@ -24,8 +24,11 @@ package com.shatteredpixel.shatteredpixeldungeon.ui.inGameButtons;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.heroStands.StarPlatinumHero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.heroStands.StarPlatinumTest;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -79,25 +82,34 @@ public class SuperTwoIndicator extends Tag {
         @Override
         public void onSelect(Integer cell) {
 
-            Ballistica route = new Ballistica(Dungeon.stand.pos, cell, Ballistica.PROJECTILE);
-            cell = route.collisionPos;
-            Char myEnemy;
+            if(cell != null) {
+                Ballistica route = new Ballistica(Dungeon.stand.pos, cell, Ballistica.PROJECTILE);
+                Char myEnemy;
 
-            //if we find a character at the selected cell, engage that enemy
-            if (Actor.findChar(cell) != null && cell != Dungeon.stand.pos) {
-                myEnemy = Actor.findChar(cell);
-                Dungeon.stand.engageEnemy(myEnemy);
 
-            Dungeon.stand.sprite.turnTo(Dungeon.stand.pos, cell);
-            Dungeon.stand.updateCell(cell);
+                //if we find a character at the selected cell, engage that enemy
 
-            Dungeon.stand.sprite.showStatus( 0xB200FF,"ORA!",Dungeon.stand);
-            Dungeon.stand.abilityTwo();
-            Dungeon.stand.next();
-            }
-            else
-            {
-                GLog.w("Select a valid target");
+                 //if (Actor.findChar(cell) != null &&
+                         if ( cell != Dungeon.stand.pos && Dungeon.level.distance(cell, Dungeon.stand.pos) <= 8) {
+                    myEnemy = Actor.findChar(cell);
+                    Dungeon.stand.engageEnemy(myEnemy);
+
+                    Dungeon.stand.sprite.turnTo(Dungeon.stand.pos, cell);
+                    Dungeon.stand.updateCell(cell);
+
+                    Dungeon.hero.spendAndNext(1f);
+                    Dungeon.stand.spend(1f);
+
+                    Dungeon.stand.sprite.showStatus(0xB200FF, "ORA!", Dungeon.stand);
+                    Dungeon.stand.abilityTwo();
+
+                    //
+                    route = null;
+                 }
+
+                else {
+                    GLog.w("Select a valid target");
+                }
             }
         }
 
@@ -111,12 +123,21 @@ public class SuperTwoIndicator extends Tag {
 	protected void onClick() {
         if(Dungeon.stand != null)
         {
-            if(Dungeon.stand instanceof StarPlatinumHero) {
+            if(Dungeon.stand instanceof StarPlatinumHero || Dungeon.stand instanceof StarPlatinumTest) {
                 Dungeon.hero.sprite.showStatus(0xB200FF,
                         "Star Finger", Dungeon.hero);
+
+                for (Buff b : Dungeon.hero.buffs())
+                {
+                    if (b instanceof MindVision) {
+                        b.detach();
+                    }
+                }
                 GameScene.selectCell(FINGER);
                 //Dungeon.stand.abilityTwo();
 
+                //Dungeon.hero.spend(1);
+                //Dungeon.stand.spend(1);
             }
         }
         else{

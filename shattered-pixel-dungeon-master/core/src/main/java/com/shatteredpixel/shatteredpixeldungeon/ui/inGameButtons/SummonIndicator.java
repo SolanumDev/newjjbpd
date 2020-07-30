@@ -104,7 +104,7 @@ public class SummonIndicator extends Tag {
                 // In future releases they will be used only for testing
                 // or completely removed
 
-                stand = new StarPlatinum(Dungeon.hero);
+                stand = new StarPlatinumTest(Dungeon.hero);
                 Dungeon.hero.summonStand(stand);
                 GameScene.flash(0x7B588E);
             }

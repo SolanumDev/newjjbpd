@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RushingFlurry;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.StarPlatinum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.heroStands.StarPlatinumHero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.heroStands.StarPlatinumTest;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -85,10 +86,19 @@ public class SuperOneIndicator extends Tag {
            @Override
            public void onSelect(Integer cell) {
 
+            if(cell!= null) {
+                Ballistica route = new Ballistica(Dungeon.stand.pos, cell, Ballistica.PROJECTILE);
+                cell = route.collisionPos;
+                Char myEnemy;
 
-                    Ballistica route = new Ballistica(Dungeon.stand.pos, cell, Ballistica.PROJECTILE);
-                    cell = route.collisionPos;
-                    Char myEnemy;
+                //we can't launch ourselves out of the stand user's range
+                if ((route.dist) > Dungeon.stand.range -1)
+                {
+                    //cell = Dungeon.stand.pos;
+                    cell = route.path.get( route.dist - (route.dist - Dungeon.stand.range)) -1;
+                }
+                //else {
+
 
                     //can't occupy the same cell as another char, so move back one.
                     if (Actor.findChar(cell) != null && cell != Dungeon.stand.pos) {
@@ -97,19 +107,21 @@ public class SuperOneIndicator extends Tag {
                         cell = route.path.get(route.dist - 1);
                     }
 
+
                     Dungeon.hero.spendAndNext(1);
                     Dungeon.stand.spend(1);
 
                     Dungeon.stand.sprite.turnTo(Dungeon.stand.pos, cell);
                     Dungeon.stand.updateCell(cell);
 
-                    Dungeon.stand.sprite.showStatus( 0xB200FF,"ORA!",Dungeon.stand);
+                    Dungeon.stand.sprite.showStatus(0xB200FF, "ORA!", Dungeon.stand);
                     Dungeon.stand.abilityOne();
 
                     Dungeon.hero.spendAndNext(1);
                     Dungeon.stand.spend(1);
-                    Dungeon.stand.next();
-
+                    //Dungeon.stand.next();
+                //}
+            }
            }
 
            @Override
@@ -117,28 +129,34 @@ public class SuperOneIndicator extends Tag {
                return "Select an enemy to smash!";
            }
        };
+
 	@Override
 	protected void onClick() {
 	    //TODO:
 
         if(Dungeon.stand != null)
-        {/*
-            if(Dungeon.stand instanceof StarPlatinumHero) {
-                if (Dungeon.level.adjacent(Dungeon.stand.pos, Dungeon.hero.pos)) {
+        {
+            if(Dungeon.stand instanceof StarPlatinumHero || Dungeon.stand instanceof StarPlatinumTest)
+            {
+                if (Dungeon.level.adjacent(Dungeon.stand.pos, Dungeon.hero.pos))
+                {
                     Dungeon.hero.sprite.showStatus(0xB200FF, "Star Breaker", Dungeon.hero);
                     GameScene.selectCell(ORA);
                 }
-                if (!Dungeon.level.adjacent(Dungeon.stand.pos, Dungeon.hero.pos)) {
+
+                if (!Dungeon.level.adjacent(Dungeon.stand.pos, Dungeon.hero.pos))
+                {
                     GLog.w("Your stand must be next to you to use that!");
                 }
             }
-            */
-            Buff.affect(Dungeon.stand, RushingFlurry.class).extend(5f);
+
+            Buff.affect(Dungeon.stand, RushingFlurry.class).extend(3f);
         }
-        else{
+        else
+        {
             GLog.w("Your stand must be active to use its power!");
         }
-	    	}
+    }
 
 
     @Override

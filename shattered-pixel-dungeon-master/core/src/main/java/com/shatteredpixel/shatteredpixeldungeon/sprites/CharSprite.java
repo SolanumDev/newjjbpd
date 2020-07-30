@@ -215,7 +215,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		turnTo(ch.pos, cell);
 		play(rushAttack);
 	}
-	
+
 	public void attack( int cell, Callback callback ) {
 		animCallback = callback;
 		turnTo( ch.pos, cell );
@@ -241,6 +241,18 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 			flipHorizontal = true;
 		}
 	}
+
+	public void turnAway( int from, int to)
+	{
+		int fx = from % Dungeon.level.width();
+		int tx = to % Dungeon.level.width();
+		if (tx < fx) {
+			flipHorizontal = false;
+		} else if (tx > fx) {
+			flipHorizontal = true;
+		}
+	}
+
 
 	public void jump( int from, int to, Callback callback ) {
 		jumpCallback = callback;

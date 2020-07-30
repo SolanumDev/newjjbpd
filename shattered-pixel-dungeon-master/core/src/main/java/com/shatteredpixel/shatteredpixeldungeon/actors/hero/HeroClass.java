@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfDisintegration;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DebugWeapon;
@@ -187,9 +188,9 @@ public enum HeroClass {
 		//stones.identify().quantity(3).collect();
 
 		TimekeepersHourglass hourglass = new TimekeepersHourglass();
-		hourglass.level(10);
 		(hero.belongings.misc1 = hourglass).identify();
 		hero.belongings.misc1.activate( hero );
+		hourglass.level(10);
 
 		WandOfBlastWave blaster = new WandOfBlastWave();
 		blaster.identify().collect();
@@ -200,6 +201,7 @@ public enum HeroClass {
 		naginata.level(100);
 		hero.belongings.weapon = naginata;
 
+		Dungeon.quickslot.setSlot(0, stick);
 
 		if ( Badges.isUnlocked(Badges.Badge.TUTORIAL_WARRIOR) ){
 			if (!Dungeon.isChallenged(Challenges.NO_ARMOR))

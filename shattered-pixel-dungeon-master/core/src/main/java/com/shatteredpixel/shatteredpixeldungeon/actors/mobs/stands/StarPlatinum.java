@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Healing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TimeFreeze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TimeStop;
@@ -37,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.standsprites.MagicianSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.standsprites.StarPlatinumSprite;
 import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 
 public class StarPlatinum extends Stand {
 
@@ -128,7 +130,7 @@ public class StarPlatinum extends Stand {
             } else {
                 final int newPosFinal = newPos;
                 //this.target = newPos;
-                ((StarPlatinumSprite) sprite).punchStarFinger();
+                //((StarPlatinumSprite) sprite).punchStarFinger();
 
                 sprite.parent.add(new Finger(sprite.center(), enemy.sprite.center(), new Callback() {
                     public void call() {
@@ -300,7 +302,8 @@ public class StarPlatinum extends Stand {
 
             return punchDMG;
         }
-		return (int) (standUser.damageRoll()  * powerA);
+
+		return super.damageRoll();
 	}
 
     @Override
@@ -322,7 +325,7 @@ public class StarPlatinum extends Stand {
         }
         if(superPunch == true)
         {
-            return Dungeon.level.distance(pos, enemy.pos) <= rangeC;
+            return Dungeon.level.distance(pos, enemy.pos) <= range;
         }
         return Dungeon.level.adjacent(pos, enemy.pos);
     }
@@ -333,10 +336,29 @@ public class StarPlatinum extends Stand {
         //TODO: find a way to hide the (!) icon
     }
 
-    protected boolean doAttack( Char enemy ) {
 
-        super.doAttack(enemy);
+
+/*
+    protected boolean doAttack( Char enemy ) {
+        if(!isRushing())
+        {
+            super.doAttack(enemy);
+
+        }
+
         boolean visible = Dungeon.level.heroFOV[pos];
+        if(isRushing()) {
+            if(visible)
+            {
+                sprite.showStatus(primaryColor,"ora");
+                //((StarPlatinumSprite) sprite).rushAttack(enemy.pos);
+                ((StarPlatinumSprite) sprite).fistRush(enemy.pos);
+            }
+            else
+            {
+                attack(enemy);
+            }
+        }
 
         if(!superFinger) {
             if (visible) {
@@ -353,6 +375,22 @@ public class StarPlatinum extends Stand {
         }
         return !visible;
     }
+*/
+    public void doRush()
+    {
+        if(hit(this, enemy, false))
+        {
+            Cripple.add(enemy);
+            int dmg = Random.Int( 12, 18 );
+            enemy.damage( dmg, this );
+        }
+        else {
+            //enemy.sprite.showStatus( CharSprite.NEUTRAL,  enemy.defenseVerb() );
+        }
+        next();
+
+    }
+
 
     @Override
     public void spend(float time)

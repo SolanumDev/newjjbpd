@@ -99,7 +99,7 @@ public abstract class Mob extends Char {
 	private static final String SEEN	= "seen";
 	private static final String TARGET	= "target";
 
-	protected Integer worldCell = null;
+	protected Integer worldCell = -1;
 
 
 	public void abilityOne()
