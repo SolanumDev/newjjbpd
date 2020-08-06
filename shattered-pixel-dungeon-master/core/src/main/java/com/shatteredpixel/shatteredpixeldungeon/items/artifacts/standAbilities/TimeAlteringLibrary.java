@@ -21,43 +21,157 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.artifacts.standAbilities;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class TimeAlteringLibrary extends Buff {
+public class TimeAlteringLibrary{
+
+	//The human limit to stop time is 5 seconds
+	private int charge = 5;
+
+	//When timestop is activated by a stand we want it to perform identical to how
+	// the hourglass freezes time with some caveats to freeze all actors in place.
+	// (This means blobs such as gases need to actually freeze and not harm actors, traps should activate after
+	// time stop has ended etc)
+	// Because mobs need to be able to come into the world of stopped time we must first test if they can behave in
+	//
+
+	public void updateCharge(int newCharge)
+	{
+		charge = newCharge;
+	}
 
 
-	public static final String AC_ACTIVATE = "ACTIVATE";
+	public class timeStasisArtifact extends Buff {
 
-	//keeps track of generated sandbags.
-	public int sandBags = 0;
+		@Override
+		public boolean attachTo(Char target) {
 
+			if (super.attachTo(target)) {
 
+				int usedCharge = Math.min(charge, 5);
+				//buffs always act last, so the stasis buff should end a turn early.
+				spend(usedCharge - 1);
+				((Hero) target).spendAndNext(usedCharge);
 
+				//shouldn't punish the player for going into stasis frequently
+				Hunger hunger = target.buff(Hunger.class);
+				if (hunger != null && !hunger.isStarving())
+					hunger.satisfy(usedCharge);
 
-	private static final String SANDBAGS =  "sandbags";
-	private static final String BUFF =      "buff";
+				target.invisible++;
 
+				Dungeon.observe();
 
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		@Override
+		public boolean act() {
+			detach();
+			return true;
+		}
+
+		@Override
+		public void detach() {
+			if (target.invisible > 0)
+				target.invisible --;
+			super.detach();
+			Dungeon.observe();
+		}
+	}
+
+	public class timeFreezeArtifact extends Buff{
+
+		float partialTime = 1f;
+
+		ArrayList<Integer> presses = new ArrayList<Integer>();
+
+		public void processTime(float time){
+			partialTime += time;
+
+			while (partialTime >= 1f){
+				partialTime --;
+				charge --;
+			}
+
+			if (charge < 0){
+				charge = 0;
+				detach();
+			}
+
+		}
+
+		public void setDelayedPress(int cell){
+			if (!presses.contains(cell))
+				presses.add(cell);
+		}
+
+		private void triggerPresses(){
+			for (int cell : presses)
+				Dungeon.level.press(cell, null, true);
+
+			presses = new ArrayList<>();
+		}
+
+		@Override
+		public boolean attachTo(Char target) {
+			if (Dungeon.level != null)
+				for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0]))
+					mob.sprite.add(CharSprite.State.PARALYSED);
+			GameScene.freezeEmitters = true;
+			return super.attachTo(target);
+		}
+
+		@Override
+		public void detach(){
+			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0]))
+				mob.sprite.remove(CharSprite.State.PARALYSED);
+			GameScene.freezeEmitters = false;
+
+			super.detach();
+			triggerPresses();
+		}
+
+		private static final String PRESSES = "presses";
+		private static final String PARTIALTIME = "partialtime";
+
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+
+			int[] values = new int[presses.size()];
+			for (int i = 0; i < values.length; i ++)
+				values[i] = presses.get(i);
+			bundle.put( PRESSES , values );
+
+			bundle.put( PARTIALTIME , partialTime );
+		}
+
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+
+			int[] values = bundle.getIntArray( PRESSES );
+			for (int value : values)
+				presses.add(value);
+
+			partialTime = bundle.getFloat( PARTIALTIME );
+		}
+	}
 
 
 	public class timeStasis extends Buff {

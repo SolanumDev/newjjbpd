@@ -45,12 +45,13 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
+import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.stand;
+
 public class SummonIndicator extends Tag {
 
 	public static final int COLOR	= 0xFF006E;
 
 	private Image icon;
-	public Stand stand = null;
 
 
 	public SummonIndicator() {
@@ -90,7 +91,7 @@ public class SummonIndicator extends Tag {
 
 	public Stand standChecker()
     {
-     return stand;
+     return Dungeon.stand;
     }
 
 
@@ -104,7 +105,10 @@ public class SummonIndicator extends Tag {
                 // In future releases they will be used only for testing
                 // or completely removed
 
-                stand = new StarPlatinumTest(Dungeon.hero);
+                //stand = new StarPlatinumTest(Dungeon.hero);
+                stand = new StarPlatinumTest();
+                stand.setStandUser(Dungeon.hero);
+
                 Dungeon.hero.summonStand(stand);
                 GameScene.flash(0x7B588E);
             }
@@ -112,7 +116,7 @@ public class SummonIndicator extends Tag {
 
             if(Dungeon.currentScene == Dungeon.CHARS_SDC) {
                 if (CharSelectPT3.selectedClass == HeroClass.JOTARO) {
-                    stand = new StarPlatinumHero(Dungeon.hero);
+                    Dungeon.stand = new StarPlatinumHero(Dungeon.hero);
                     Dungeon.hero.summonStand(stand);
                     GameScene.flash(0x7B588E);
                 }
@@ -162,10 +166,10 @@ public class SummonIndicator extends Tag {
             // or cause frozen mob sprites to never
             // return to action, should the latter occur, a simple reset
             // of the level will return the mob sprites to normal)
-            if(Dungeon.stand instanceof StarPlatinumHero && GameScene.freezeEmitters == true)
+            if(stand instanceof StarPlatinumHero && GameScene.freezeEmitters == true)
             {
                 Dungeon.hero.sprite.showStatus(0x7F006E, "Time has begun to move again", Dungeon.hero);
-                Dungeon.stand.cancelAbility();
+                stand.cancelAbility();
             }
             //TODO: make the world inherit stand logic
           /*  else if( Dungeon.stand instanceof TheWorld  && GameScene.freezeEmitters == true)
@@ -174,9 +178,9 @@ public class SummonIndicator extends Tag {
                 Dungeon.stand.cancelAbility();
             }
 */
-            Dungeon.stand.destroy();
-            Dungeon.stand.sprite.die();
-            Dungeon.stand = null;
+            stand.destroy();
+            stand.sprite.die();
+            stand = null;
             stand = null;
 
 

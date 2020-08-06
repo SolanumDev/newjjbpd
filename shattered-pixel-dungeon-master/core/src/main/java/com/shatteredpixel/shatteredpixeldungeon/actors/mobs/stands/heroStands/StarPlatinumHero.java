@@ -254,6 +254,7 @@ public class StarPlatinumHero extends Stand {
             this.standUser.actPriority = this.actPriority = TIME_STOP_PRIO;
 
         }
+
         else if(standUser == Dungeon.hero)
         {
             //the hero must act before their stand
@@ -264,7 +265,6 @@ public class StarPlatinumHero extends Stand {
         for (Mob mobs : Dungeon.level.mobs.toArray(new Mob[0])) {
             if(mobs != this)
             {
-                mobs.sprite.add(CharSprite.State.PARALYSED);
                 Buff.prolong( mobs, TimeFreeze.class, ACTIONS_IN_FROZEN_TIME );
 
             }

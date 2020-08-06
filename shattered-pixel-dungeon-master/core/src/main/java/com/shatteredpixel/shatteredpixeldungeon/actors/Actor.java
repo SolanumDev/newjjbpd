@@ -268,6 +268,7 @@ public abstract class Actor implements Bundlable {
 	
 	public static void add( Actor actor ) {
 		add( actor, now );
+		//TIMESTOPTODO: now + turns of timestop left?
 	}
 	
 	public static void addDelayed( Actor actor, float delay ) {

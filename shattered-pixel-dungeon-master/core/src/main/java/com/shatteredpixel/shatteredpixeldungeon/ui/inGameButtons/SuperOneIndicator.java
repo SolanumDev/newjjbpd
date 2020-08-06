@@ -67,7 +67,7 @@ public class SuperOneIndicator extends Tag {
 	//TODO: if we're DIO, display his supers (and corresponding icons
     //if Dungeon.stand is active display its current supers via switch cases
 
-        icon = Icons.TARGET.get();
+        icon = Icons.JOTARO.get();
         add( icon );
 	}
 	

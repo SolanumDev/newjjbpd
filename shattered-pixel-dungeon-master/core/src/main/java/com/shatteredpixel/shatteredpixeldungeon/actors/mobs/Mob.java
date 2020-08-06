@@ -184,6 +184,19 @@ public abstract class Mob extends Char {
 		
 		super.act();
 
+		//when time is stopped you don't get to move
+		if(Dungeon.timeFreeze)
+		{
+			sprite.add(CharSprite.State.PARALYSED);
+			spend( TICK );
+			enemySeen = false;
+			return true;
+		}
+		else if (!Dungeon.timeFreeze && paralysed < 1)
+		{
+			sprite.remove(CharSprite.State.PARALYSED);
+		}
+
 		//setSP(Math.min( ST, setSP(2)));
 
 		boolean justAlerted = alerted;

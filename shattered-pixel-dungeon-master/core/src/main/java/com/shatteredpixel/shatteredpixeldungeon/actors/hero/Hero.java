@@ -96,6 +96,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicalInfusion;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
@@ -473,6 +474,34 @@ public class Hero extends Char {
 		}
 	}
 
+
+	public boolean timeStopper = false;
+	float timeToAct = 5;
+
+	public void processTime(float time){
+		/*float partialTime = 1f;
+		partialTime += time;
+
+		while (partialTime >= 1f){
+			partialTime --;
+			timeToAct --;
+		}
+*/
+
+		timeToAct -= time;
+		if (timeToAct <= 0){
+			sprite.showStatus(0xEADD33, "Time has begun to move again", this);
+			timeStopper = false;
+			GameScene.freezeEmitters = false;
+			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0]))
+			{
+				mob.sprite.remove(CharSprite.State.PARALYSED);
+			}
+			timeToAct = 5;
+		}
+
+	}
+
 	@Override
 	public void spend( float time ) {
 		justMoved = false;
@@ -480,9 +509,15 @@ public class Hero extends Char {
 		TimeStop otherBuff = buff(TimeStop.class);
 		//TODO: rework the hourglass to give the wearer immunity to frozen time
 
-		if (buff != null){
+		if(timeStopper)
+		{
+            processTime(time);
+		}
+		else if (buff != null)
+		{
 			buff.processTime(time);
-		} else if(Dungeon.stand != null)
+		}
+		else if(Dungeon.stand != null)
 		{
 			if(Dungeon.stand.buffs().contains(otherBuff)) {
 				otherBuff.processTime(time, 5f);
@@ -492,7 +527,8 @@ public class Hero extends Char {
 				super.spend(time);
 			}
 		}
-		else {
+		else
+		{
 			super.spend(time);
 		}
 	}
@@ -1331,9 +1367,9 @@ public class Hero extends Char {
 
 			Dungeon.stand.pos = Random.element(spawnPoints);
 
-
 			GameScene.add(Dungeon.stand);
-			Actor.addDelayed(new Pushing(Dungeon.stand, this.pos, Dungeon.stand.pos), -1);
+			ScrollOfTeleportation.appear(Dungeon.stand, Dungeon.stand.pos);
+			//Actor.addDelayed(new Pushing(Dungeon.stand, this.pos, Dungeon.stand.pos), -1);
 		}
 
 
@@ -1508,8 +1544,8 @@ public class Hero extends Char {
 	public void move( int step ) {
 		super.move( step );
 
-		//TODO: Valentine makes no sounds when moving
-		if (!flying) {
+		//Funny Valentine makes no sounds when moving
+		if (!flying || Dungeon.hero.givenName().equals("Valentine")) {
 			if (Dungeon.level.water[pos]) {
 				Sample.INSTANCE.play( Assets.SND_WATER, 1, 1, Random.Float( 0.8f, 1.25f ) );
 			} else {

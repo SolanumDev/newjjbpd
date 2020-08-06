@@ -231,7 +231,14 @@ public class Bomb extends Item {
 		@Override
 		protected boolean act() {
 
-			//something caused our bomb to explode early, or be defused. Do nothing.
+		    //TIMESTOPTODO: if time is stopped prevent our fuse from blowing early
+		    if(Dungeon.timeFreeze)
+            {
+                spend(TICK);
+                return true;
+            }
+
+		    //something caused our bomb to explode early, or be defused. Do nothing.
 			if (bomb.fuse != this){
 				Actor.remove( this );
 				return true;

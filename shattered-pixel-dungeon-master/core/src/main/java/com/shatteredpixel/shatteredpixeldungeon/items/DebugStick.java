@@ -25,21 +25,13 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DIOHigh;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Guard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Kenshiro;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Polnareff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Spinner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.TrainingDummy;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Yog;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.sdc.Kakyoin;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -66,7 +58,7 @@ public class DebugStick extends Item {
 
 		bones = true;
 
-		defaultAction = AC_Warp;
+		defaultAction = AC_Debug;
 	}
 
 	@Override
@@ -85,7 +77,7 @@ public class DebugStick extends Item {
 		switch(action)
 		{
 			case AC_Debug:
-				toSpawn = new TrainingDummy();
+				toSpawn = new Kakyoin();
 
 				ArrayList<Integer> spawnPoints = new ArrayList<>();
 
@@ -101,7 +93,7 @@ public class DebugStick extends Item {
 					toSpawn.pos = Random.element(spawnPoints);
 
 					GameScene.add(toSpawn);
-					Actor.addDelayed(new Pushing(toSpawn, Dungeon.hero.pos, toSpawn.pos), 0);
+					ScrollOfTeleportation.appear(toSpawn, toSpawn.pos);
 				}
 				else
 				{
@@ -109,7 +101,9 @@ public class DebugStick extends Item {
 					toSpawn.pos = Dungeon.hero.pos;
 
 					GameScene.add(toSpawn);
-					Actor.addDelayed(new Pushing(toSpawn, Dungeon.hero.pos, toSpawn.pos), 0);
+					ScrollOfTeleportation.appear(toSpawn, toSpawn.pos);
+
+					//Actor.addDelayed(new Pushing(toSpawn, Dungeon.hero.pos, toSpawn.pos), 0);
 				}
                 break;
 			case AC_Warp:
@@ -142,10 +136,10 @@ public class DebugStick extends Item {
 		return true;
 	}
 
-	protected void doWarp()
+	private void doWarp()
 	{GameScene.selectCell(warper); }
 
-    protected static CellSelector.Listener warper = new CellSelector.Listener() {
+    private static CellSelector.Listener warper = new CellSelector.Listener() {
         @Override
         public void onSelect( Integer target ) {
             if (target != null && Dungeon.level.passable[target]) {

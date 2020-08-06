@@ -38,6 +38,8 @@ public class TimeFreeze extends FlavourBuff {
 	public boolean attachTo( Char target ) {
 		if (super.attachTo( target )) {
 			target.paralysed++;
+			target.sprite.add(CharSprite.State.PARALYSED);
+
 			return true;
 		} else {
 			return false;
@@ -49,12 +51,13 @@ public class TimeFreeze extends FlavourBuff {
 		super.detach();
 		if (target.paralysed > 0)
 			target.paralysed--;
+			target.sprite.remove(CharSprite.State.PARALYSED);
 	}
 
-	//TODO: this is a placeholder until I import the TIMESTOP indicator (although that will make the buffType no longer SILENT)
+	//TODO: this is a placeholder until I import the TIMESTOP indicator
 	@Override
 	public int icon() {
-		return BuffIndicator.PARALYSIS;
+		return BuffIndicator.DEFERRED;
 	}
 
 	@Override

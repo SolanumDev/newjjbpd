@@ -29,18 +29,18 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.StandUser;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.HumanSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WraithSprite;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public abstract class Stand extends NPC {
+public abstract class Stand extends NPC{
 
 	protected static final float ZAP_TIME	= 1f;
 	protected static final float SUPER_ZAP_TIME	= 2f;
@@ -76,11 +76,12 @@ public abstract class Stand extends NPC {
 
     public boolean isActive = false;
 
-    private boolean isRushing = false;
-
     protected int primaryColor = 0xFF00DC;
 
+    //TODO: Stands and users should have internal IDs so that things don't get wonky when translating the game
     private static final String STANDUSER = "standUser";
+
+    private String standMaster;
 
 	public Char standUser;
 	{
@@ -88,6 +89,9 @@ public abstract class Stand extends NPC {
 
 		HP = HT = 8;
 		defenseSkill = 2;
+
+		//stands act after users
+		actPriority = MOB_PRIO -1;
 
 		flying = true;
 		EXP = 0;
@@ -99,19 +103,31 @@ public abstract class Stand extends NPC {
 		properties.add(Property.STAND);
 	}
 
+
     @Override
     public void storeInBundle(Bundle bundle) {
         super.storeInBundle(bundle);
 
-        bundle.put(STANDUSER, standUser);
+        bundle.put(STANDUSER, standMaster);
     }
 
     @Override
     public void restoreFromBundle(Bundle bundle) {
         super.restoreFromBundle(bundle);
 
-        standUser = (Mob)bundle.get(STANDUSER);
+        standMaster = bundle.getString(STANDUSER);
+
+        //TODO: if this ends up working we need to change how Dungeon.hero.givenName() operates
+        if(standMaster.equals("you") )
+        {
+            setStandUser(Dungeon.hero);
+            Dungeon.stand = this;
+            Dungeon.stand.alignment = alignment.ALLY;
+
+        }
+
     }
+
 
     public void parasitic()
 	{
@@ -130,11 +146,18 @@ public abstract class Stand extends NPC {
 
 	public void setStandUser(Char standMaster)
 	{
+	    this.standMaster = standMaster.name;
+	    yell(this.standMaster);
 		this.standUser = standMaster;
-        this.alignment = standUser.alignment;
-		HP = standUser.HP;
-		HT = standUser.HT;
+		HP = standMaster.HP;
+		HT = standMaster.HT;
 	}
+
+	public void setAlignment(Alignment newAlignment)
+    {
+        this.alignment = newAlignment;
+    }
+
 
     @Override
     public void die( Object src ) {
@@ -292,7 +315,8 @@ public abstract class Stand extends NPC {
 			this.pos = Random.element(spawnPoints);
 
 			GameScene.add(this);
-			Actor.addDelayed(new Pushing(this, standUser.pos, this.pos), -1);
+            ScrollOfTeleportation.appear(this, pos);
+
 		}
 
 	}
@@ -350,11 +374,35 @@ public abstract class Stand extends NPC {
     }
 
 
+    @Override
+    protected boolean act() {
+
+	    if(standUser == null)
+        {
+            for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0]))
+            {
+
+                if(mob.name.equals( standMaster))
+                {
+                    standUser = mob;
+                    setStandUser(mob);
+                    ((StandUser) mob).stand = this;
+                    ((StandUser) mob).chooseStandsEnemy();
+
+                    break;
+                }
+            }
+        }
+
+        return super.act();
+    }
+
 
     private class Wandering extends Mob.Wandering {
 
         @Override
         public boolean act( boolean enemyInFOV, boolean justAlerted ) {
+
             if(!standUser.isAlive())
             {
                 destroy();
@@ -400,6 +448,9 @@ public abstract class Stand extends NPC {
 
         @Override
         public boolean act( boolean enemyInFOV, boolean justAlerted ) {
+
+
+
             enemySeen = enemyInFOV;
             if(!standUser.isAlive())
             {

@@ -91,7 +91,6 @@ public abstract class Char extends Actor {
 
 	public int SP = 100;
     public int ST = 100;
-	public int standsActive = 0;
 	
 	protected float baseSpeed	= 1;
 	protected PathFinder.Path path;
@@ -118,6 +117,7 @@ public abstract class Char extends Actor {
 	
 	@Override
 	protected boolean act() {
+
 		if (fieldOfView == null || fieldOfView.length != Dungeon.level.length()){
 			fieldOfView = new boolean[Dungeon.level.length()];
 		}

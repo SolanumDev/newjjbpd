@@ -21,10 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.sdc;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.StandUser;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Hierophant;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Magician;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SDCsprites.KakyoinSprite;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
@@ -39,7 +41,7 @@ public class Kakyoin extends StandUser {
 		defenseSkill = 2;
 
 		state = WANDERING;
-
+        standName = "Hierophant Green";
 
 	}
 
@@ -60,6 +62,7 @@ public class Kakyoin extends StandUser {
 	}
 */
 
+
 	@Override
 	public void damage(int dmg, Object src) {
 		super.damage(dmg, src);
@@ -70,9 +73,12 @@ public class Kakyoin extends StandUser {
 
 	}
 
+
+
 	@Override
 	public void declareStand() {
-		stand = new Hierophant(this);
+		stand = new Hierophant();
+		stand.setStandUser(this);
 	}
 
 	@Override

@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LockedFloor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Shadows;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TimeFreeze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -788,7 +789,9 @@ public abstract class Level implements Bundlable {
 				|| heaps.get(result) != null);
 		return result;
 	}
-	
+
+	//TIMESTOPTODO: implement a way suspend presses like in the hourglass
+
 	//characters which are not the hero 'soft' press cells by default
 	public void press( int cell, Char ch){
 		press( cell, ch, ch == Dungeon.hero);
@@ -840,8 +843,10 @@ public abstract class Level implements Bundlable {
 			
 			TimekeepersHourglass.timeFreeze timeFreeze =
 					ch != null ? ch.buff(TimekeepersHourglass.timeFreeze.class) : null;
-			
-			if (timeFreeze == null) {
+			TimeFreeze timeStop = ch != null ? ch.buff(TimeFreeze.class) : null;
+
+			//if time isn't stopped always activate a trap
+			if (timeFreeze == null || timeStop == null) {
 
 				if (ch == Dungeon.hero) {
 					Dungeon.hero.interrupt();
@@ -849,7 +854,10 @@ public abstract class Level implements Bundlable {
 
 				trap.trigger();
 
-			} else {
+			}
+
+			//otherwise put the trampled traps into an arrayList and activate them once time stop is over
+			else {
 
 				Sample.INSTANCE.play(Assets.SND_TRAP);
 
@@ -858,6 +866,7 @@ public abstract class Level implements Bundlable {
 				timeFreeze.setDelayedPress(cell);
 
 			}
+
 		}
 		
 		Plant plant = plants.get( cell );

@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -81,7 +82,16 @@ public class Buff extends Actor {
 		diactivate();
 		return true;
 	}
-	
+
+	//TIMESTOPTODO: a clumsy way of implementing timestop is simply having each buff act()
+	//and check if the dungeon is frozen in that function, can this be done in the base class?
+
+	protected boolean isDungeonFrozen()
+	{
+		return Dungeon.timeFreeze;
+	}
+
+
 	public int icon() {
 		return BuffIndicator.NONE;
 	}

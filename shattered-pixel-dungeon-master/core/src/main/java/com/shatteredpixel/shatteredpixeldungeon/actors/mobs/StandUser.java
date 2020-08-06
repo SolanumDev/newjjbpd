@@ -46,7 +46,13 @@ public abstract class StandUser extends Mob {
 
 	protected int currentRange = 8;
 
-	protected static final String STAND_LAST_POS	        = "stand";
+	protected static final String STAND	        = "stand";
+	protected static final String STAND_LAST_POS	        = "last surprise";
+	protected static final String STANDS_ACTIVE	        = "active";
+
+	protected String standName = " ";
+	protected int standsActive = 0;
+	protected int standCap = 1;
 
 	{
 		spriteClass = HumanSprite.class;
@@ -58,24 +64,34 @@ public abstract class StandUser extends Mob {
 
 	}
 
+	//FIXME: before timestop can be implemented stands need to be able to be remembered upon loading the game
 
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle(bundle);
-		if(stand!= null)
-		{
-            standLastPos = stand.pos;
-            bundle.put( STAND_LAST_POS, standLastPos );
-        }
+		bundle.put( STANDS_ACTIVE, standsActive);
+        bundle.put( STAND, standName);
+
 	}
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle(bundle);
-		standLastPos = bundle.getInt(STAND_LAST_POS);
+		standsActive = bundle.getInt(STANDS_ACTIVE);
+		standName = bundle.getString(STAND);
 	}
 
 
-	protected void updateRange(int rangeToUpdate)
+	public void resetStand(Stand soul)
+	{
+        yell(stand.name + " come to me!");
+		stand = soul;
+		stand.standUser = this;
+		stand.alignment = this.alignment;
+		stand.HP = this.HP;
+		stand.HT = this.HP;
+	}
+
+	public void updateRange(int rangeToUpdate)
     {
         currentRange = rangeToUpdate;
     }
@@ -114,7 +130,7 @@ public abstract class StandUser extends Mob {
 		super.notice();
 	}
 
-	protected Char chooseStandsEnemy() {
+	public Char chooseStandsEnemy() {
 		Char enemy = super.chooseEnemy();
 
 		//will never attack something far from the stand user
@@ -140,34 +156,60 @@ public abstract class StandUser extends Mob {
 	}
 
 
+	//or more accurately desummonStand() - remove the stand without killing the user
 	public void killStand() {
 
 		stand.destroy();
 		stand.sprite.die();
 		stand = null;
+		standsActive--;
 
 	}
+
+	public boolean findStand(Mob stand)
+	{
+		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0]))
+		{
+			if(mob == stand)
+			{
+				yell("I found you!!!");
+				this.stand = (Stand) mob;
+				this.stand.setStandUser(this);
+				return true;
+			}
+		}
+
+		if(this.stand == null)
+		{
+			return false;
+		}
+
+		return false;
+	}
+
 
 	public void summonStand() {
 
 		if (standLastPos != -1)
 		{
-			declareStand();
-			silentSummon(standLastPos);
+			yell("You'll see the lasting effects of my" + stand.name + "!");
+			//declareStand();
+			//silentSummon(standLastPos);
 		}
 
 		else if(!standIsActive()) {
-
+			standsActive++;
 			declareStand();
+			stand.setAlignment(this.alignment);
 			yell(stand.name + "!");
 			updateRange(stand.range);
 			stand.standPosition(this);
 
 		}
 
-		stand.setStandUser(this);
 	}
 
+	//This function will summon a stand to a desired cell rather than just next to a stand user
 	//Useful for forcefully summoning a stand outside of its normal range or allowing the AI
 	//to create a pseudo-tandem setup
 	public void silentSummon(int position)
@@ -180,6 +222,13 @@ public abstract class StandUser extends Mob {
 	{
 		//pretend this is abstract
 	}
+
+
+    @Override
+    protected boolean act() {
+
+	    return super.act();
+    }
 
 
 
@@ -247,37 +296,48 @@ public abstract class StandUser extends Mob {
 		@Override
 		public boolean act( boolean enemyInFOV, boolean justAlerted ) {
 			enemySeen = enemyInFOV;
-			//if (I've seen the enemy, and am not charmed by the enemy, and) I can attack the enemy...
+			//if I've seen the enemy ( and I'm not charmed by the enemy) I can attack the enemy...
 			if (enemyInFOV && !isCharmedBy( enemy ) && canAttack( enemy )) {
 
                 //if my stand is active and the enemy is out of my stand's range...
 				if(standIsActive() && !inRange())
 				{
-                    //recall my stand
+                    //call my stand to me but don't despawn it
 					recallStand();
 				}
 
-
+                //unless my enemy has an active stand, my stand should attack my enemy
 				chooseStandsEnemy();
+
+				//if my stand is active but it's out of my range
 				if( standIsActive() && !checkRange()) {
+				    //call my stand to me but don't despawn it
 					recallStand();
 				}
 
+				//finally we're going to attack the enemy
 				return doAttack( enemy );
 
 			} else {
 
+			    // if I've seen the enemy
 				if (enemyInFOV) {
 
-					if(!standIsActive() && inRange())
+				    //if my stand isn't active and my enemy is in my current range (line of sight or stand range)
+					if(!standIsActive() && inRange() && standsActive < standCap)
 					{
+					    //summon my stand
 						summonStand();
 					}
 
+                    //unless my enemy has an active stand my stand should attack my enemy
 					chooseStandsEnemy();
-					if( standIsActive() && !checkRange()) {
-						recallStand();
-					}
+
+                    //if my stand is active but it's out of my range
+                    if( standIsActive() && !checkRange()) {
+                        //call my stand to me but don't despawn it
+                        recallStand();
+                    }
 
 					target = enemy.pos;
 				} else if (enemy == null) {

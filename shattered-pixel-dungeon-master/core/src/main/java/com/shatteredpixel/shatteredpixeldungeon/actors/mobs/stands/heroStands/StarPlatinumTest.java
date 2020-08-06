@@ -80,6 +80,11 @@ public class StarPlatinumTest extends Stand {
         HT = standUser.HT;
     }
 
+    public StarPlatinumTest()
+    {
+    }
+
+
     @Override
     public void abilityOne()
     {
@@ -248,7 +253,7 @@ public class StarPlatinumTest extends Stand {
         //on the preceding turn
 
         superStop = true;
-
+/*
         if(standUser != null && standUser != Dungeon.hero)
         {
             this.standUser.actPriority = this.actPriority = TIME_STOP_PRIO;
@@ -260,19 +265,20 @@ public class StarPlatinumTest extends Stand {
             standUser.actPriority = TIME_STOP_PRIO;
             this.actPriority = TIME_STOP_PRIO -1;
         }
-
+*/
+        //cycle through the entire dungeon and freeze everyone besides yourself
         for (Mob mobs : Dungeon.level.mobs.toArray(new Mob[0])) {
             if(mobs != this)
             {
-                mobs.sprite.add(CharSprite.State.PARALYSED);
                 Buff.prolong( mobs, TimeFreeze.class, ACTIONS_IN_FROZEN_TIME );
-
             }
         }
+
+        //always make sure the stand user can move
         if(standUser != Dungeon.hero)
         {
-            standUser.sprite.remove(CharSprite.State.PARALYSED);
-            Dungeon.hero.sprite.add(CharSprite.State.PARALYSED);
+            Buff.detach(standUser, TimeFreeze.class);
+
             Buff.prolong( Dungeon.hero, TimeFreeze.class, ACTIONS_IN_FROZEN_TIME );
         }
         GameScene.freezeEmitters = true;

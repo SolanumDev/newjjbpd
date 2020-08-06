@@ -83,14 +83,14 @@ public class SuperTwoIndicator extends Tag {
         public void onSelect(Integer cell) {
 
             if(cell != null) {
-                Ballistica route = new Ballistica(Dungeon.stand.pos, cell, Ballistica.PROJECTILE);
+                //Ballistica route = new Ballistica(Dungeon.stand.pos, cell, Ballistica.PROJECTILE);
                 Char myEnemy;
 
 
                 //if we find a character at the selected cell, engage that enemy
 
-                 //if (Actor.findChar(cell) != null &&
-                         if ( cell != Dungeon.stand.pos && Dungeon.level.distance(cell, Dungeon.stand.pos) <= 8) {
+                 //
+                    if ( cell != Dungeon.stand.pos && Dungeon.level.distance(cell, Dungeon.stand.pos) <= 8) {
                     myEnemy = Actor.findChar(cell);
                     Dungeon.stand.engageEnemy(myEnemy);
 
@@ -104,7 +104,7 @@ public class SuperTwoIndicator extends Tag {
                     Dungeon.stand.abilityTwo();
 
                     //
-                    route = null;
+                    //route = null;
                  }
 
                 else {
@@ -121,14 +121,12 @@ public class SuperTwoIndicator extends Tag {
 
 	@Override
 	protected void onClick() {
-        if(Dungeon.stand != null)
-        {
-            if(Dungeon.stand instanceof StarPlatinumHero || Dungeon.stand instanceof StarPlatinumTest) {
+        if (Dungeon.stand != null) {
+            if (Dungeon.stand instanceof StarPlatinumHero || Dungeon.stand instanceof StarPlatinumTest) {
                 Dungeon.hero.sprite.showStatus(0xB200FF,
                         "Star Finger", Dungeon.hero);
 
-                for (Buff b : Dungeon.hero.buffs())
-                {
+                for (Buff b : Dungeon.hero.buffs()) {
                     if (b instanceof MindVision) {
                         b.detach();
                     }
@@ -139,11 +137,10 @@ public class SuperTwoIndicator extends Tag {
                 //Dungeon.hero.spend(1);
                 //Dungeon.stand.spend(1);
             }
-        }
-        else{
+        } else {
             GLog.w("Your stand must be active to use its power!");
         }
-	    	}
+    }
 
     @Override
     public void update() {

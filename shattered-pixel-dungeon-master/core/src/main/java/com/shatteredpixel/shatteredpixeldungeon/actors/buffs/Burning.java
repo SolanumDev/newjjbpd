@@ -80,6 +80,12 @@ public class Burning extends Buff implements Hero.Doom {
 
 	@Override
 	public boolean act() {
+
+		if(Dungeon.timeFreeze == true)
+		{
+		    spend(TICK);
+			return true;
+		}
 		
 		if (target.isAlive()) {
 			

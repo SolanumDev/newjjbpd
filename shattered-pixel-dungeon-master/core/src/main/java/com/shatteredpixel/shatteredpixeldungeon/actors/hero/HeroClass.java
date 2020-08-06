@@ -26,17 +26,20 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.items.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.DebugStick;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.WarriorArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimeTestersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibility;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
@@ -168,6 +171,10 @@ public enum HeroClass {
 		PotionOfHealing hpots = new PotionOfHealing();
 		PotionOfMindVision mpots = new PotionOfMindVision();
 		PotionOfInvisibility ipots = new PotionOfInvisibility();
+		PotionOfLiquidFlame lpots = new PotionOfLiquidFlame();
+
+		Bomb bakudan = new Bomb();
+		bakudan.quantity(20).collect();
 
 		WarriorArmor defense = new WarriorArmor();
 		//defense.identify().collect();
@@ -181,12 +188,14 @@ public enum HeroClass {
 		ipots.identify().quantity(20).collect();
 		mpots.identify().quantity(20).collect();
 		hpots.identify().quantity(20).collect();
+		lpots.identify().quantity(20).collect();
 
 		DebugStick stick = new DebugStick();
 		stick.quantity(1).collect();
 
 		//stones.identify().quantity(3).collect();
 
+		//TimeTestersHourglass hourglass = new TimeTestersHourglass();
 		TimekeepersHourglass hourglass = new TimekeepersHourglass();
 		(hero.belongings.misc1 = hourglass).identify();
 		hero.belongings.misc1.activate( hero );

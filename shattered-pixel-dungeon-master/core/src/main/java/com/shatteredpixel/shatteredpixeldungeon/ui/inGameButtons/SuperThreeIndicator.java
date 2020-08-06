@@ -26,9 +26,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.heroStands.StarPlatinumHero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.heroStands.StarPlatinumTest;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Tag;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -52,7 +55,7 @@ public class SuperThreeIndicator extends Tag {
 	protected void createChildren() {
 		super.createChildren();
 
-        icon = Icons.BUSY.get();
+        icon = Icons.PREFS.get();
         add( icon );
 	}
 	
@@ -69,11 +72,49 @@ public class SuperThreeIndicator extends Tag {
 
 	@Override
 	protected void onClick() {
-        if(Dungeon.stand != null)
+
+	    //FIXME implementation 3: turn skipper
+        if(Dungeon.timeFreeze != true)
+        {
+            Dungeon.hero.sprite.showStatus(0x6E266E, "Star Platinum:", Dungeon.hero);
+            Dungeon.hero.sprite.showStatus(0xEADD33, "'The World'", Dungeon.hero);
+            GameScene.freezeEmitters = true;
+            Dungeon.timeFreeze = true;
+
+        }
+
+        else {
+            Dungeon.hero.sprite.showStatus(0xEADD33, "Time has begun to move again", Dungeon.hero);
+            Dungeon.timeFreeze = false;
+            GameScene.freezeEmitters = false;
+        }
+
+	    //FIXME implementation 2: near perfect duplication of hourglass (only works on hero though)
+	    /*
+		if(GameScene.freezeEmitters == false)
+		{
+			Dungeon.hero.sprite.showStatus(0x6E266E, "Star Platinum:", Dungeon.hero);
+			Dungeon.hero.sprite.showStatus(0xEADD33, "'The World'", Dungeon.hero);
+			Dungeon.hero.timeStopper = true;
+			GameScene.freezeEmitters = true;
+			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0]))
+				mob.sprite.add(CharSprite.State.PARALYSED);
+		}
+		else {
+			Dungeon.hero.sprite.showStatus(0xEADD33, "Time has begun to move again", Dungeon.hero);
+			Dungeon.hero.timeStopper = false;
+            GameScene.freezeEmitters = false;
+			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0]))
+				mob.sprite.remove(CharSprite.State.PARALYSED);
+		}
+*/
+		//FIXME implementation 1: level wide paralysis
+/*
+		if(Dungeon.stand != null)
         {
 
         	//TODO: switch cases
-            if(Dungeon.stand instanceof StarPlatinumHero) {
+            if(Dungeon.stand instanceof StarPlatinumHero || Dungeon.stand instanceof StarPlatinumTest) {
             	if(GameScene.freezeEmitters == false)
 				{
 					Dungeon.hero.sprite.showStatus(0x6E266E, "Star Platinum:", Dungeon.hero);
@@ -89,9 +130,11 @@ public class SuperThreeIndicator extends Tag {
 
          }
 
+
          else{
             GLog.w("Your stand must be active to use its power!");
          }
+*/
 	 }
 
     @Override

@@ -205,6 +205,8 @@ public class Dungeon {
 	public static int version;
 
 	public static long seed;
+
+	public static boolean timeFreeze = false;
 	
 	public static void init() {
 

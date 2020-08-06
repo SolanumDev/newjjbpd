@@ -56,6 +56,9 @@ public class Hierophant extends Stand implements Callback {
         HT = standUser.HT;
     }
 
+    public Hierophant() {
+    }
+
 
 	@Override
     protected boolean canAttack( Char enemy ) {
