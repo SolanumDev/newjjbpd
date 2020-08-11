@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.TimeFreeze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
@@ -187,10 +188,16 @@ public abstract class Mob extends Char {
 		//when time is stopped you don't get to move
 		if(Dungeon.timeFreeze)
 		{
-			sprite.add(CharSprite.State.PARALYSED);
-			spend( TICK );
-			enemySeen = false;
-			return true;
+			for(Buff buffs: buffs)
+			{
+				if(buffs instanceof TimeFreeze)
+				{
+					//sprite.add(CharSprite.State.PARALYSED);
+					spend( TICK );
+					enemySeen = false;
+					return true;
+				}
+			}
 		}
 		else if (!Dungeon.timeFreeze && paralysed < 1)
 		{
@@ -198,6 +205,9 @@ public abstract class Mob extends Char {
 		}
 
 		//setSP(Math.min( ST, setSP(2)));
+
+		//by default characters regain one stamina per turn
+		SP = Math.min( ST, HP+1 );
 
 		boolean justAlerted = alerted;
 		alerted = false;

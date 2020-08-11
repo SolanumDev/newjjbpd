@@ -37,7 +37,7 @@ public class TimeFreeze extends FlavourBuff {
 	@Override
 	public boolean attachTo( Char target ) {
 		if (super.attachTo( target )) {
-			target.paralysed++;
+			//target.paralysed++;
 			target.sprite.add(CharSprite.State.PARALYSED);
 
 			return true;
@@ -49,9 +49,7 @@ public class TimeFreeze extends FlavourBuff {
 	@Override
 	public void detach() {
 		super.detach();
-		if (target.paralysed > 0)
-			target.paralysed--;
-			target.sprite.remove(CharSprite.State.PARALYSED);
+		target.sprite.remove(CharSprite.State.PARALYSED);
 	}
 
 	//TODO: this is a placeholder until I import the TIMESTOP indicator

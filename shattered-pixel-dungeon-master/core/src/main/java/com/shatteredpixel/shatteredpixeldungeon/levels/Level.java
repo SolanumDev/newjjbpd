@@ -141,7 +141,7 @@ public abstract class Level implements Bundlable {
 	public boolean locked = false;
 	
 	public HashSet<Mob> mobs;
-	//public HashSet<Stand> stands;
+	public HashSet<Char> chars;
 	public SparseArray<Heap> heaps;
 	public HashMap<Class<? extends Blob>,Blob> blobs;
 	public SparseArray<Plant> plants;
@@ -171,9 +171,14 @@ public abstract class Level implements Bundlable {
 	private static final String CUSTOM_TILES= "customTiles";
 	private static final String CUSTOM_WALLS= "customWalls";
 	private static final String MOBS		= "mobs";
-	private static final String STANDS		= "stands";
 	private static final String BLOBS		= "blobs";
 	private static final String FEELING		= "feeling";
+	//private static final String CHARS		= "chars";
+
+	//TODO: freeze traps during stopped time
+	ArrayList<Integer> presses = new ArrayList<Integer>();
+
+	private static final String PRESSES = "presses";
 
 	public void create() {
 
@@ -402,6 +407,19 @@ public abstract class Level implements Bundlable {
 
 		buildFlagMaps();
 		cleanWalls();
+
+		int[] values = bundle.getIntArray( PRESSES );
+		for (int value : values)
+			presses.add(value);
+/*
+		collection = bundle.getCollection( CHARS );
+		for (Bundlable m : collection) {
+			Char chara = (Char) m;
+			if (chara != null) {
+				chars.add( chara );
+			}
+		}
+		*/
 	}
 
 
@@ -433,9 +451,14 @@ public abstract class Level implements Bundlable {
 		bundle.put( CUSTOM_TILES, customTiles );
 		bundle.put( CUSTOM_WALLS, customWalls );
 		bundle.put( MOBS, mobs );
-		//bundle.put( STANDS, stands);
 		bundle.put( BLOBS, blobs.values() );
 		bundle.put( FEELING, feeling );
+		//bundle.put( CHARS, chars );
+
+		int[] values = new int[presses.size()];
+		for (int i = 0; i < values.length; i ++)
+			values[i] = presses.get(i);
+		bundle.put( PRESSES , values );
 	}
 	
 	public int tunnelTile() {
@@ -846,7 +869,7 @@ public abstract class Level implements Bundlable {
 			TimeFreeze timeStop = ch != null ? ch.buff(TimeFreeze.class) : null;
 
 			//if time isn't stopped always activate a trap
-			if (timeFreeze == null || timeStop == null) {
+			if (timeFreeze == null || !Dungeon.hero.timeStopper) {
 
 				if (ch == Dungeon.hero) {
 					Dungeon.hero.interrupt();
@@ -863,7 +886,15 @@ public abstract class Level implements Bundlable {
 
 				discover(cell);
 
-				timeFreeze.setDelayedPress(cell);
+				//stand abilities take priority over artifacts
+				if(Dungeon.hero.timeStopper)
+				{
+					setDelayedPress(cell);
+				}
+				else
+				{
+					timeFreeze.setDelayedPress(cell);
+				}
 
 			}
 
@@ -873,6 +904,20 @@ public abstract class Level implements Bundlable {
 		if (plant != null) {
 			plant.trigger();
 		}
+	}
+
+	//these next two functions are taken directly from the TimekeepersHourglass, they're meant to
+	//suspend pressed cells until time is no longer frozen
+	public void setDelayedPress(int cell){
+		if (!presses.contains(cell))
+			presses.add(cell);
+	}
+
+	public void triggerPresses(){
+		for (int cell : presses)
+			Dungeon.level.press(cell, null, true);
+
+		presses = new ArrayList<>();
 	}
 	
 	public void updateFieldOfView( Char c, boolean[] fieldOfView ) {

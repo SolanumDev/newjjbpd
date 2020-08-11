@@ -83,6 +83,8 @@ public class Buff extends Actor {
 		return true;
 	}
 
+
+
 	//TIMESTOPTODO: a clumsy way of implementing timestop is simply having each buff act()
 	//and check if the dungeon is frozen in that function, can this be done in the base class?
 

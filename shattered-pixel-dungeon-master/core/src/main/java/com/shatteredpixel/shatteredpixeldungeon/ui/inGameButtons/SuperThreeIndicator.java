@@ -73,11 +73,24 @@ public class SuperThreeIndicator extends Tag {
 	@Override
 	protected void onClick() {
 
+		//FIXME implementation 4: Time Stop Beta
+		if(Dungeon.timeFreeze != true)
+		{
+			Dungeon.stand.abilityThree();
+		}
+		else
+		{
+			Dungeon.stand.cancelAbility();
+		}
+
 	    //FIXME implementation 3: turn skipper
+/*
+
         if(Dungeon.timeFreeze != true)
         {
             Dungeon.hero.sprite.showStatus(0x6E266E, "Star Platinum:", Dungeon.hero);
             Dungeon.hero.sprite.showStatus(0xEADD33, "'The World'", Dungeon.hero);
+			Dungeon.hero.actPriority = Dungeon.hero.TIME_STOP_PRIO;
             GameScene.freezeEmitters = true;
             Dungeon.timeFreeze = true;
 
@@ -87,15 +100,18 @@ public class SuperThreeIndicator extends Tag {
             Dungeon.hero.sprite.showStatus(0xEADD33, "Time has begun to move again", Dungeon.hero);
             Dungeon.timeFreeze = false;
             GameScene.freezeEmitters = false;
+			Dungeon.hero.actPriority = Dungeon.hero.HERO_PRIO;
         }
+/*
+	    //FIXME implementation 2: functionally perfect duplication of hourglass (only works on hero though)
 
-	    //FIXME implementation 2: near perfect duplication of hourglass (only works on hero though)
-	    /*
 		if(GameScene.freezeEmitters == false)
 		{
 			Dungeon.hero.sprite.showStatus(0x6E266E, "Star Platinum:", Dungeon.hero);
 			Dungeon.hero.sprite.showStatus(0xEADD33, "'The World'", Dungeon.hero);
 			Dungeon.hero.timeStopper = true;
+            Dungeon.hero.actPriority = Dungeon.hero.TIME_STOP_PRIO;
+			Dungeon.stand.actPriority = Dungeon.hero.TIME_STOP_PRIO -1;
 			GameScene.freezeEmitters = true;
 			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0]))
 				mob.sprite.add(CharSprite.State.PARALYSED);
@@ -106,8 +122,10 @@ public class SuperThreeIndicator extends Tag {
             GameScene.freezeEmitters = false;
 			for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0]))
 				mob.sprite.remove(CharSprite.State.PARALYSED);
+            Dungeon.hero.actPriority = Dungeon.hero.HERO_PRIO;
+			Dungeon.stand.actPriority = Dungeon.stand.MOB_PRIO -1;
 		}
-*/
+
 		//FIXME implementation 1: level wide paralysis
 /*
 		if(Dungeon.stand != null)

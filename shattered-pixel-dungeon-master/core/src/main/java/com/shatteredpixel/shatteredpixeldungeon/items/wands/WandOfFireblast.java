@@ -27,11 +27,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.WebParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -81,7 +83,8 @@ public class WandOfFireblast extends DamageWand {
 			//only ignite cells directly near caster if they are flammable
 			if (!Dungeon.level.adjacent(bolt.sourcePos, cell)
 					|| Dungeon.level.flamable[cell]){
-				GameScene.add( Blob.seed( cell, 1+chargesPerCast(), Fire.class ) );
+				//GameScene.add( Blob.seed( cell, 1+chargesPerCast(), Fire.class ) );
+				GameScene.add( Blob.seed( cell, 1+chargesPerCast(), ToxicGas.class ) );
 			}
 			
 			Char ch = Actor.findChar( cell );
@@ -165,6 +168,7 @@ public class WandOfFireblast extends DamageWand {
 		//going to call this one manually
 		visualCells.remove(bolt.path.get(dist));
 
+		//shoots bolts toward cone's base
 		for (int cell : visualCells){
 			//this way we only get the cells at the tip, much better performance.
 			((MagicMissile)curUser.sprite.parent.recycle( MagicMissile.class )).reset(
@@ -174,6 +178,8 @@ public class WandOfFireblast extends DamageWand {
 					null
 			);
 		}
+
+		//shoots bolt in cast direction
 		MagicMissile.boltFromChar( curUser.sprite.parent,
 				MagicMissile.FIRE_CONE,
 				curUser.sprite,

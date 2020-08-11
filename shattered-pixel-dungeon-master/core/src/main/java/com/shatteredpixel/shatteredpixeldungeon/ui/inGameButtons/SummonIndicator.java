@@ -166,7 +166,7 @@ public class SummonIndicator extends Tag {
             // or cause frozen mob sprites to never
             // return to action, should the latter occur, a simple reset
             // of the level will return the mob sprites to normal)
-            if(stand instanceof StarPlatinumHero && GameScene.freezeEmitters == true)
+            if(stand instanceof StarPlatinumHero || stand instanceof  StarPlatinumTest && GameScene.freezeEmitters == true)
             {
                 Dungeon.hero.sprite.showStatus(0x7F006E, "Time has begun to move again", Dungeon.hero);
                 stand.cancelAbility();
@@ -214,30 +214,6 @@ public class SummonIndicator extends Tag {
             visible = false;
         }
         super.update();
-    }
-
-    //TODO: optimize the usage of summonStand()
-    protected void summonStand( Char host, Mob stand ) {
-
-        ArrayList<Integer> spawnPoints = new ArrayList<>();
-
-        for (int i = 0; i < PathFinder.NEIGHBOURS8.length; i++) {
-            int p = host.pos + PathFinder.NEIGHBOURS8[i];
-            if (Actor.findChar(p) == null && (Dungeon.level.passable[p] || Dungeon.level.avoid[p])) {
-                spawnPoints.add(p);
-            }
-        }
-
-        if (spawnPoints.size() > 0) {
-
-            stand.pos = Random.element(spawnPoints);
-            //stand.alignment = Char.Alignment.ALLY;
-
-            GameScene.add(stand);
-            Actor.addDelayed(new Pushing(stand, host.pos, stand.pos), 1);
-        }
-
-
     }
 
 }

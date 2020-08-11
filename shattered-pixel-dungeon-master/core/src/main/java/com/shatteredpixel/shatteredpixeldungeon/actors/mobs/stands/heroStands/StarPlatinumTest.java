@@ -66,6 +66,8 @@ public class StarPlatinumTest extends Stand {
         range = rangeC;
         def = defA;
 
+        primaryColor = 0xEADD33;
+
         //HUNTING = new Hunting();
         //WANDERING = new Wandering();
     }
@@ -178,13 +180,120 @@ public class StarPlatinumTest extends Stand {
     public void abilityThree()
     {
         //timeStop();
-        tryToStopTime();
+        //tryToStopTime();
+        standUser.sprite.showStatus(primaryColor, "Star Platinum:", standUser);
+        standUser.sprite.showStatus(super.primaryColor, "The World!", standUser);
+        doTimeStop();
     }
+
+    protected boolean doTimeStop(){
+
+        //if this evaluates true have the user's sprite say some phrase about activating time stop
+
+
+        //check the users stamina
+        //while your standUser has more than 20 points time will be frozen
+        while(standUser.SP >= 20) {
+            Dungeon.timeFreeze = true;
+            GameScene.freezeEmitters = true;
+
+            //apply the TimeFreeze debuff to anyone that isn't yourself or your standUser for 1 full turn
+            for(Mob mobs : Dungeon.level.mobs.toArray(new Mob[0]))
+            {
+                if(mobs == this)
+                {
+                    continue;
+                }
+                Buff.prolong( mobs, TimeFreeze.class, 1 );
+            }
+            if(Dungeon.hero != standUser)
+            {
+                Buff.prolong( Dungeon.hero, TimeFreeze.class, 1 );
+            }
+
+            //decrement your stand users stamina by 20 points
+            standUser.SP -= 20;
+
+            if(standUser.SP < 20)
+            {
+                endTimeStop();
+            }
+
+            return true;
+        }
+
+
+        //make a call to endTimeStop()
+        endTimeStop();
+
+        //otherwise break and return false
+
+        return false;
+    }
+
+    //this will forcefully end time stop so that the AI can save stamina or the hero can forcefully end it
+    private boolean endTimeStop(){
+
+        //if we ever make it here and (Dungeon.timeFreeze == true) we need to cycle through all the characters,
+        if(Dungeon.timeFreeze == true)
+        {
+
+            //if we find any character that isn't frozen but isn't ourselves or our stand user
+            //we will return true (letting time remain frozen but becoming frozen ourselves)
+            for(Mob mobs : Dungeon.level.mobs.toArray(new Mob[0]))
+            {
+                if(!(mobs == this || mobs == standUser))
+                {
+                    //boolean notFrozen;
+
+                    //for(Buff buffs: chars.buffs())
+                    //{
+                        if(!mobs.buffs().contains(TimeFreeze.class))
+                        {
+                            return true;
+                        }
+
+                    //}
+                }
+
+
+
+            }
+
+
+
+            //if the cycle above executed without breaking we'll loop through again and unfreeze everyone
+            for(Mob mobs : Dungeon.level.mobs.toArray(new Mob[0]))
+            {
+                Buff.detach( mobs, TimeFreeze.class);
+            }
+
+            Buff.detach( Dungeon.hero, TimeFreeze.class);
+
+            //then set Dungeon.timeFreeze and Gamescene.freezeEmitters to false
+            Dungeon.timeFreeze = false;
+            GameScene.freezeEmitters = false;
+
+            //have the user's sprite say some phrase about deactivating time stop
+            standUser.sprite.showStatus(super.primaryColor, "Time has begun to move again", standUser);
+
+            //beta testing only
+            standUser.SP = standUser.ST;
+
+        }
+
+
+
+        return false;
+    }
+
+
 
     @Override
     public void cancelAbility()
     {
-        cancelTimeStop();
+        //cancelTimeStop();
+        endTimeStop();
     }
 
     public void cancelTimeStop()
@@ -282,6 +391,19 @@ public class StarPlatinumTest extends Stand {
             Buff.prolong( Dungeon.hero, TimeFreeze.class, ACTIONS_IN_FROZEN_TIME );
         }
         GameScene.freezeEmitters = true;
+    }
+
+
+    @Override
+    public boolean act()
+    {
+     //TODO: something needs to constantly call doTimeStop()
+        if(GameScene.freezeEmitters) //and we aren't frozen
+        {
+            doTimeStop();
+        }
+
+        return super.act();
     }
 
 

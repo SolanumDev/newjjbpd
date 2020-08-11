@@ -62,13 +62,15 @@ public class LootIndicator extends Tag {
 		
 		slot.setRect( x + 2, y + 3, width - 2, height - 6 );
 	}
-	
+
+	//TODO: stands should also be able to grab things *for* the player
+
 	@Override
 	public void update() {
 		
 		if (Dungeon.hero.ready) {
 			Heap heap = Dungeon.level.heaps.get( Dungeon.hero.pos );
-			if (heap != null) {
+			if (heap != null ) {
 				
 				Item item =
 					heap.type == Heap.Type.CHEST || heap.type == Heap.Type.MIMIC ? ItemSlot.CHEST :
@@ -87,7 +89,9 @@ public class LootIndicator extends Tag {
 				}
 				visible = true;
 				
-			} else {
+			}
+
+			else {
 				
 				lastItem = null;
 				visible = false;

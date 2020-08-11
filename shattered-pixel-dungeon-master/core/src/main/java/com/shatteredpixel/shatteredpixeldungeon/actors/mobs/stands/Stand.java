@@ -118,7 +118,7 @@ public abstract class Stand extends NPC{
         standMaster = bundle.getString(STANDUSER);
 
         //TODO: if this ends up working we need to change how Dungeon.hero.givenName() operates
-        if(standMaster.equals("you") )
+        if(standMaster.equals("Hero") )
         {
             setStandUser(Dungeon.hero);
             Dungeon.stand = this;
@@ -146,7 +146,8 @@ public abstract class Stand extends NPC{
 
 	public void setStandUser(Char standMaster)
 	{
-	    this.standMaster = standMaster.name;
+	    //this.standMaster = standMaster.name;
+	    this.standMaster = standMaster.getClass().getSimpleName();
 	    yell(this.standMaster);
 		this.standUser = standMaster;
 		HP = standMaster.HP;
@@ -377,12 +378,19 @@ public abstract class Stand extends NPC{
     @Override
     protected boolean act() {
 
+	    //FIXME: this is somewhat sloppy since it means that when loading the game a standUser
+        //will need to wait a turn before using a super involving their stand
+
+	    //couple the stand back to the user
 	    if(standUser == null)
         {
             for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0]))
             {
+                //TODO: if we ever have a stand with multiple users
+                //(eg D4C, King Crimson) we'll want to have internal IDs
+                //rather than just class names
 
-                if(mob.name.equals( standMaster))
+                if(mob.getClass().getSimpleName().equals( standMaster))
                 {
                     standUser = mob;
                     setStandUser(mob);

@@ -173,6 +173,7 @@ public class Hero extends Char {
 	public float awareness;
 	
 	public int lvl = 1;
+	//public int lvl = 50;
 	public int exp = 0;
 	
 	public int HTBoost = 0;
@@ -229,8 +230,13 @@ public class Hero extends Char {
 	private static final String LEVEL		= "lvl";
 	private static final String EXPERIENCE	= "exp";
 	private static final String HTBOOST     = "htboost";
-	
-	@Override
+    private static final String TIME     = "time";
+    private static final String TIMETOACT     = "timetoact";
+
+    public boolean timeStopper = false;
+    float timeToAct = 5;
+
+    @Override
 	public void storeInBundle( Bundle bundle ) {
 
 		super.storeInBundle( bundle );
@@ -247,6 +253,9 @@ public class Hero extends Char {
 		bundle.put( EXPERIENCE, exp );
 		
 		bundle.put( HTBOOST, HTBoost );
+
+		bundle.put(TIME, timeStopper);
+        bundle.put(TIMETOACT, timeToAct);
 
 		belongings.storeInBundle( bundle );
 	}
@@ -269,6 +278,9 @@ public class Hero extends Char {
 		exp = bundle.getInt( EXPERIENCE );
 		
 		HTBoost = bundle.getInt(HTBOOST);
+
+		timeStopper = bundle.getBoolean(TIME);
+		timeToAct = bundle.getFloat(TIMETOACT);
 		
 		belongings.restoreFromBundle( bundle );
 	}
@@ -475,8 +487,6 @@ public class Hero extends Char {
 	}
 
 
-	public boolean timeStopper = false;
-	float timeToAct = 5;
 
 	public void processTime(float time){
 		/*float partialTime = 1f;
@@ -487,9 +497,12 @@ public class Hero extends Char {
 			timeToAct --;
 		}
 */
-
-		timeToAct -= time;
-		if (timeToAct <= 0){
+		actPriority -= time;
+		Dungeon.stand.actPriority -= time;
+		next();
+		//timeToAct -= time;
+		//if (timeToAct <= 0){
+		if (actPriority <= TIME_STOP_PRIO - 5){
 			sprite.showStatus(0xEADD33, "Time has begun to move again", this);
 			timeStopper = false;
 			GameScene.freezeEmitters = false;
@@ -497,7 +510,10 @@ public class Hero extends Char {
 			{
 				mob.sprite.remove(CharSprite.State.PARALYSED);
 			}
-			timeToAct = 5;
+			actPriority = HERO_PRIO;
+			Dungeon.stand.actPriority = MOB_PRIO -1;
+			//timeToAct = 5;
+			Dungeon.level.triggerPresses();
 		}
 
 	}
@@ -513,6 +529,8 @@ public class Hero extends Char {
 		{
             processTime(time);
 		}
+
+
 		else if (buff != null)
 		{
 			buff.processTime(time);
@@ -938,6 +956,11 @@ public class Hero extends Char {
 
 				Buff buff = buff(TimekeepersHourglass.timeFreeze.class);
 				if (buff != null) buff.detach();
+
+				if(Dungeon.stand != null)
+				{
+
+				}
 
 				InterlevelScene.mode = InterlevelScene.Mode.ASCEND;
 				Game.switchScene( InterlevelScene.class );

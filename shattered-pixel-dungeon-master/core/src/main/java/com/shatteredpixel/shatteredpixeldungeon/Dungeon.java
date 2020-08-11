@@ -674,6 +674,11 @@ public class Dungeon {
 		hero = null;
 		hero = (Hero)bundle.get( HERO );
 
+		if(timeFreeze == true)
+		{
+			GameScene.freezeEmitters = true;
+		}
+
 		WndAlchemy.restoreFromBundle( bundle, hero );
 		
 		gold = bundle.getInt( GOLD );

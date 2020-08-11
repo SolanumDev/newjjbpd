@@ -113,7 +113,7 @@ public abstract class Char extends Actor {
 	
 	protected boolean[] fieldOfView = null;
 	
-	private HashSet<Buff> buffs = new HashSet<>();
+	protected HashSet<Buff> buffs = new HashSet<>();
 	
 	@Override
 	protected boolean act() {
@@ -130,6 +130,8 @@ public abstract class Char extends Actor {
 	private static final String TAG_HT		= "HT";
 	private static final String TAG_SHLD    = "SHLD";
 	private static final String BUFFS		= "buffs";
+    private static final String TAG_SP		= "SP";
+    private static final String TAG_ST		= "ST";
 	
 	@Override
 	public void storeInBundle( Bundle bundle ) {
@@ -141,6 +143,8 @@ public abstract class Char extends Actor {
 		bundle.put( TAG_HT, HT );
 		bundle.put( TAG_SHLD, SHLD );
 		bundle.put( BUFFS, buffs );
+        bundle.put( TAG_SP, SP );
+        bundle.put( TAG_ST, ST );
 	}
 	
 	@Override
@@ -152,6 +156,8 @@ public abstract class Char extends Actor {
 		HP = bundle.getInt( TAG_HP );
 		HT = bundle.getInt( TAG_HT );
 		SHLD = bundle.getInt( TAG_SHLD );
+        SP = bundle.getInt( TAG_SP );
+        ST = bundle.getInt( TAG_ST );
 		
 		for (Bundlable b : bundle.getCollection( BUFFS )) {
 			if (b != null) {

@@ -83,7 +83,7 @@ public class Burning extends Buff implements Hero.Doom {
 
 		if(Dungeon.timeFreeze == true)
 		{
-		    spend(TICK);
+			spend(TICK);
 			return true;
 		}
 		

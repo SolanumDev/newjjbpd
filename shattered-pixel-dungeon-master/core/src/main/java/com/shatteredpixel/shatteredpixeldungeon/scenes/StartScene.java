@@ -325,6 +325,9 @@ public class StartScene extends PixelScene {
 	private void startNewGame() {
 
 		Dungeon.hero = null;
+		Dungeon.stand = null;
+		Dungeon.timeFreeze = false;
+
 		InterlevelScene.mode = InterlevelScene.Mode.DESCEND;
 
 		if (SPDSettings.intro()) {

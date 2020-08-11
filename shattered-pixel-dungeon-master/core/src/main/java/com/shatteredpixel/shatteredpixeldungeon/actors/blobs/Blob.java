@@ -106,9 +106,6 @@ public class Blob extends Actor {
 
 		spend( TICK );
 
-		//TIMESTOPTODO: this seems to be adequate,
-		//however upon returning to the dungeon visuals are not frozen
-
 		//blobs shouldn't evolve during stopped time
 		if(Dungeon.timeFreeze)
 		{
