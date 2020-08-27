@@ -21,22 +21,14 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.DummyStand;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Hierophant;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Magician;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Stand;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HumanSprite;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
-
-import java.util.ArrayList;
 
 public abstract class StandUser extends Mob {
 	public Stand stand = null;
@@ -50,7 +42,6 @@ public abstract class StandUser extends Mob {
 	protected static final String STAND_LAST_POS	        = "last surprise";
 	protected static final String STANDS_ACTIVE	        = "active";
 
-	protected String standName = " ";
 	protected int standsActive = 0;
 	protected int standCap = 1;
 
@@ -70,14 +61,12 @@ public abstract class StandUser extends Mob {
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle(bundle);
 		bundle.put( STANDS_ACTIVE, standsActive);
-        bundle.put( STAND, standName);
 
 	}
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle(bundle);
 		standsActive = bundle.getInt(STANDS_ACTIVE);
-		standName = bundle.getString(STAND);
 	}
 
 
@@ -130,6 +119,14 @@ public abstract class StandUser extends Mob {
 		super.notice();
 	}
 
+	public void beckon( int cell ) {
+
+		if (state != HUNTING) {
+			state = WANDERING;
+		}
+		target = cell;
+	}
+
 	public Char chooseStandsEnemy() {
 		Char enemy = super.chooseEnemy();
 
@@ -159,7 +156,10 @@ public abstract class StandUser extends Mob {
 	//or more accurately desummonStand() - remove the stand without killing the user
 	public void killStand() {
 
-		stand.destroy();
+		//stand.destroy();
+		Dungeon.level.mobs.remove(stand);
+		Actor.remove(stand);
+
 		stand.sprite.die();
 		stand = null;
 		standsActive--;
@@ -201,7 +201,7 @@ public abstract class StandUser extends Mob {
 			standsActive++;
 			declareStand();
 			stand.setAlignment(this.alignment);
-			yell(stand.name + "!");
+			yellStand();
 			updateRange(stand.range);
 			stand.standPosition(this);
 
@@ -209,11 +209,22 @@ public abstract class StandUser extends Mob {
 
 	}
 
+	public void yellStand()
+	{
+		if(standIsActive())
+		{
+			yell(stand.name + "!");
+		}
+	}
+
+
+
 	//This function will summon a stand to a desired cell rather than just next to a stand user
 	//Useful for forcefully summoning a stand outside of its normal range or allowing the AI
 	//to create a pseudo-tandem setup
 	public void silentSummon(int position)
 	{
+	    standsActive++;
 		stand.standPosition(position);
 	}
 
@@ -226,6 +237,11 @@ public abstract class StandUser extends Mob {
 
     @Override
     protected boolean act() {
+		//TODO: if our stand has the parasitic trait it'll ignore this
+		if(standIsActive() && stand.alignment != this.alignment)
+		{
+			stand.alignment = alignment;
+		}
 
 	    return super.act();
     }
@@ -239,7 +255,7 @@ public abstract class StandUser extends Mob {
 		super.die(cause);
 		yell(Messages.get(this, "killed"));
 
-        if(stand!= null && stand.isAlive())
+        if(standIsActive() && stand.isAlive())
         {
             stand.destroy();
             stand.sprite.killAndErase();
@@ -268,7 +284,7 @@ public abstract class StandUser extends Mob {
 
 				for(Mob mob : Dungeon.level.mobs.toArray(new Mob[0]))
 				{
-					if(mob instanceof Magician) {
+					if(mob == stand) {
 						killStand();
 					}
 				}

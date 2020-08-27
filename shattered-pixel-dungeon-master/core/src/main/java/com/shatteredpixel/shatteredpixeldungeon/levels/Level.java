@@ -141,7 +141,7 @@ public abstract class Level implements Bundlable {
 	public boolean locked = false;
 	
 	public HashSet<Mob> mobs;
-	public HashSet<Char> chars;
+	public HashSet<Actor> backgroundActors;
 	public SparseArray<Heap> heaps;
 	public HashMap<Class<? extends Blob>,Blob> blobs;
 	public SparseArray<Plant> plants;
@@ -173,7 +173,7 @@ public abstract class Level implements Bundlable {
 	private static final String MOBS		= "mobs";
 	private static final String BLOBS		= "blobs";
 	private static final String FEELING		= "feeling";
-	//private static final String CHARS		= "chars";
+	private static final String BACKGROUND  = "background actors";
 
 	//TODO: freeze traps during stopped time
 	ArrayList<Integer> presses = new ArrayList<Integer>();
@@ -240,13 +240,13 @@ public abstract class Level implements Bundlable {
 			width = height = length = 0;
 
 			mobs = new HashSet<>();
-			//stands = new HashSet<>();
 			heaps = new SparseArray<>();
 			blobs = new HashMap<>();
 			plants = new SparseArray<>();
 			traps = new SparseArray<>();
 			customTiles = new HashSet<>();
 			customWalls = new HashSet<>();
+            backgroundActors = new HashSet<>();
 			
 		} while (!build());
 		
@@ -308,14 +308,14 @@ public abstract class Level implements Bundlable {
 		setSize( bundle.getInt(WIDTH), bundle.getInt(HEIGHT));
 		
 		mobs = new HashSet<>();
-		//stands = new HashSet<>();
 		heaps = new SparseArray<>();
 		blobs = new HashMap<>();
 		plants = new SparseArray<>();
 		traps = new SparseArray<>();
 		customTiles = new HashSet<>();
 		customWalls = new HashSet<>();
-		
+		backgroundActors = new HashSet<>();
+
 		map		= bundle.getIntArray( MAP );
 
 		visited	= bundle.getBooleanArray( VISITED );
@@ -411,15 +411,15 @@ public abstract class Level implements Bundlable {
 		int[] values = bundle.getIntArray( PRESSES );
 		for (int value : values)
 			presses.add(value);
-/*
-		collection = bundle.getCollection( CHARS );
+
+		collection = bundle.getCollection( BACKGROUND );
 		for (Bundlable m : collection) {
-			Char chara = (Char) m;
-			if (chara != null) {
-				chars.add( chara );
+			Actor actor = (Char) m;
+			if (actor != null) {
+				backgroundActors.add( actor );
 			}
 		}
-		*/
+
 	}
 
 
@@ -453,7 +453,7 @@ public abstract class Level implements Bundlable {
 		bundle.put( MOBS, mobs );
 		bundle.put( BLOBS, blobs.values() );
 		bundle.put( FEELING, feeling );
-		//bundle.put( CHARS, chars );
+		bundle.put( BACKGROUND, backgroundActors );
 
 		int[] values = new int[presses.size()];
 		for (int i = 0; i < values.length; i ++)
@@ -1136,4 +1136,5 @@ public abstract class Level implements Bundlable {
 				return "";
 		}
 	}
+
 }

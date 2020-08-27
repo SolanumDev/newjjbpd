@@ -24,7 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.sdc;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.StandUser;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Magician;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.AvdolSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SDCsprites.AvdolSprite;
 import com.watabou.utils.Random;
 
 public class Avdol extends StandUser {
@@ -52,7 +52,8 @@ public class Avdol extends StandUser {
 
 	@Override
 	public void declareStand() {
-		stand = new Magician(this);
+		stand = new Magician();
+		stand.setStandUser(this);
 	}
 
 	@Override

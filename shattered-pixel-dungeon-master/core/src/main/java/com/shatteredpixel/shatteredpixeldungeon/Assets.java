@@ -118,16 +118,19 @@ public class Assets {
 
 	public static final String WATER	= "water1.png";
 	public static final String WATER_BLOOD	= "water3.png";
+	public static final String WATER_OCEAN	= "waterOcean.png";
 
 	public static final String WEAK_FLOOR   = "custom_tiles/weak_floor.png";
 	public static final String PRISON_QUEST = "custom_tiles/prison_quests.png";
 	public static final String PRISON_EXIT  = "custom_tiles/prison_exit.png";
 
 	public static final String placeholder = "custom_tiles/placeholder.png";
+	public static final String SDC_KUJO_RESIDENCE = "custom_tiles/sdc_kujo_residence.png";
 	public static final String SDC_SCHOOL = "custom_tiles/sdc_school.png";
     public static final String SDC_SCHOOL_INFIRMARY = "custom_tiles/sdc_school_infirmary.png";
     public static final String SDC_SCHOOL_INFIRMARY_ALT = "custom_tiles/sdc_school_infirmary_alt.png";
-	
+	public static final String SDC_COURTYARD = "custom_tiles/sdc_mansion_courtyard.png";
+
 	public static final String BUFFS_SMALL	= "buffs.png";
 	public static final String BUFFS_LARGE	= "large_buffs.png";
 	public static final String SPELL_ICONS	= "spell_icons.png";
@@ -191,51 +194,56 @@ public class Assets {
 
 //part 3
 
-	public static final String JOTARO   = "jotaro.png";
-	public static final String STAR_PLATIUNM    = "starplatinum.png";
+	public static final String JOTARO   = "sdc/jotaro.png";
+	public static final String STAR_PLATIUNM    = "sdc/starplatinum.png";
 
-	public static final String OLD_JOSEPH = "josephpt3.png";
+	public static final String OLD_JOSEPH = "sdc/josephpt3.png";
 
-	public static final String IGGY   = "iggy.png";
-	public static final String THE_FOOL   = "thefool.png";
+	public static final String IGGY   = "sdc/iggy.png";
+	public static final String THE_FOOL   = "sdc/thefool.png";
 
-	public static final String POLNAREFF   = "polnareff.png";
-	public static final String CHARIOT    = "chariot.png";
+	public static final String HOLY   = "sdc/holykujo.png";
+
+	public static final String POLNAREFF   = "sdc/polnareff.png";
+	public static final String CHARIOT    = "sdc/chariot.png";
 
 	public static final String KAKYOIN = "sdc/kakyoin.png";
 	public static final String HIEROPHANT = "sdc/hierophant.png";
 
-	public static final String AVDOL = "avdol.png";
-	public static final String MAGICIAN = "magician.png";
+	public static final String AVDOL = "sdc/avdol.png";
+	public static final String MAGICIAN = "sdc/magician.png";
 
-	public static final String DIO   = "diopt3.png";
-	public static final String DIOTEST   = "diotest.png";
-	public static final String THE_WORLD   = "theworld.png";
-	public static final String ROAD_ROLLER   = "roadRoller.png";
+	public static final String DIO   = "sdc/diopt3.png";
+	public static final String DIOTEST   = "sdc/diotest.png";
+	public static final String THE_WORLD   = "sdc/theworld.png";
+	public static final String ROAD_ROLLER   = "sdc/roadRoller.png";
 
-	public static final String ENYA   = "enya.png";
-	public static final String JUSTICE   = "justice.png";
-	public static final String JUSTICE_HAND   = "justicehand.png";
-	public static final String JUSTICE_HEAD   = "justicehead.png";
+	public static final String ENYA   = "sdc/enya.png";
+	public static final String JUSTICE   = "sdc/justice.png";
+	public static final String JUSTICE_HAND   = "sdc/justicehand.png";
+	public static final String JUSTICE_HEAD   = "sdc/justicehead.png";
 
 	public static final String ICED   = "sdc/iced.png";
 	public static final String CREAM   = "sdc/cream.png";
 
-	public static final String HOL_HORSE   = "holhorse.png";
+	public static final String HOL_HORSE   = "sdc/holhorse.png";
 
-	public static final String GRAY_FLY   = "grayfly.png";
-	public static final String TOWER_OF_GRAY   = "graytower.png";
+	public static final String PET_SHOP   = "sdc/petshop.png";
+	public static final String HORUS   = "sdc/horus.png";
 
-	public static final String DEVO   = "devo.png";
-	public static final String EBONY_DEVIL   = "devildoll.png";
+	public static final String GRAY_FLY   = "sdc/grayfly.png";
+	public static final String TOWER_OF_GRAY   = "sdc/graytower.png";
 
-	public static final String RUBBER_SOUL   = "rsoul.png";
-	public static final String TEMPERANCE   = "temperance.png";
+	public static final String DEVO   = "sdc/devo.png";
+	public static final String EBONY_DEVIL   = "sdc/devildoll.png";
 
-	public static final String CHAKA   = "chaka.png";
-	public static final String GOD   = "khan.png";
+	public static final String RUBBER_SOUL   = "sdc/rsoul.png";
+	public static final String TEMPERANCE   = "sdc/temperance.png";
 
-	public static final String DEATH   = "death.png";
+	public static final String CHAKA   = "sdc/chaka.png";
+	public static final String GOD   = "sdc/khan.png";
+
+	public static final String DEATH   = "sdc/death.png";
 
 //part 4
 
@@ -243,5 +251,6 @@ public class Assets {
 //Other
 
 	public static final String KENSHIRO = "kenshiro.png";
+	public static final String COP = "cops.png";
 
 }

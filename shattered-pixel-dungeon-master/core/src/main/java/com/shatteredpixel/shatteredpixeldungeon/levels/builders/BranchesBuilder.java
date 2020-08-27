@@ -31,7 +31,7 @@ public class BranchesBuilder extends RegularBuilder {
 	
 	@Override
 	public ArrayList<Room> build(ArrayList<Room> rooms) {
-		
+
 		setupRooms( rooms );
 		
 		if (entrance == null){
@@ -55,7 +55,7 @@ public class BranchesBuilder extends RegularBuilder {
 		createBranches(rooms, branchable, roomsToBranch, branchTunnelChances);
 		
 		findNeighbours(rooms);
-		
+
 		for (Room r : rooms){
 			for (Room n : r.neigbours){
 				if (!n.connected.containsKey(r)
@@ -64,7 +64,7 @@ public class BranchesBuilder extends RegularBuilder {
 				}
 			}
 		}
-		
+
 		return rooms;
 	}
 }

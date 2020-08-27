@@ -32,7 +32,7 @@ public class LineBuilder extends RegularBuilder {
 
 	@Override
 	public ArrayList<Room> build(ArrayList<Room> rooms) {
-	
+
 		setupRooms(rooms);
 		
 		if (entrance == null){
@@ -99,7 +99,7 @@ public class LineBuilder extends RegularBuilder {
 				}
 			}
 		}
-		
+
 		return rooms;
 	
 	}

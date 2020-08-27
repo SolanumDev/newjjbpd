@@ -42,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfInvisibili
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfMindVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
@@ -175,8 +176,8 @@ public enum HeroClass {
 		PotionOfInvisibility ipots = new PotionOfInvisibility();
 		PotionOfLiquidFlame lpots = new PotionOfLiquidFlame();
 
-		Bomb bakudan = new Bomb();
-		bakudan.quantity(20).collect();
+		ScrollOfMirrorImage iscrolls = new ScrollOfMirrorImage();
+		iscrolls.identify().quantity(30).collect();
 
 		WarriorArmor defense = new WarriorArmor();
 		//defense.identify().collect();

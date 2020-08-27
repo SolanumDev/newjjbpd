@@ -22,6 +22,8 @@
 package com.watabou.noosa.tweeners;
 
 import com.watabou.noosa.Camera;
+import com.watabou.noosa.Gizmo;
+import com.watabou.noosa.Visual;
 import com.watabou.utils.PointF;
 
 public class CameraScrollTweener extends Tweener {
@@ -30,7 +32,10 @@ public class CameraScrollTweener extends Tweener {
 	
 	public PointF start;
 	public PointF end;
-	
+	public Visual visual;
+
+	//TODO: at some point in the future I'd like a way to make the camera be able to pan to visuals
+
 	public CameraScrollTweener( Camera camera, PointF pos, float time ) {
 		super( camera, time );
 		
@@ -39,8 +44,22 @@ public class CameraScrollTweener extends Tweener {
 		end = pos;
 	}
 
+	public CameraScrollTweener(PointF panTo, float time )
+	{
+		super( Camera.main, time );
+		start = camera.main.scroll;
+		end = panTo;
+
+	}
+
+/*
 	@Override
 	protected void updateValues( float progress ) {
 		camera.scroll = PointF.inter( start, end, progress );
+	}
+*/
+	@Override
+	protected void updateValues( float progress ) {
+		Camera.main.target.point( PointF.inter( start, end, progress ).offset( 0, 0 * 4 * progress * (1 - progress) ) );
 	}
 }

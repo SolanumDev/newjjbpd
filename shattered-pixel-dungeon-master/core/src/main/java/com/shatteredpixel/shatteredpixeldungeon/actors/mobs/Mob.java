@@ -79,12 +79,14 @@ public abstract class Mob extends Char {
 	public AiState WANDERING	= new Wandering();
 	public AiState FLEEING		= new Fleeing();
 	public AiState PASSIVE		= new Passive();
+	public AiState LISTENING 	= new Listening();
 	public AiState state = SLEEPING;
 	
 	public Class<? extends CharSprite> spriteClass;
 	
 	protected int target = -1;
-	
+	public int movieTarget = -1;
+
 	protected int defenseSkill = 0;
 	
 	public int EXP = 1;
@@ -99,6 +101,7 @@ public abstract class Mob extends Char {
 	private static final String STATE	= "state";
 	private static final String SEEN	= "seen";
 	private static final String TARGET	= "target";
+    private static final String MOVIE_TARGET	= "movie target";
 
 	protected Integer worldCell = -1;
 
@@ -145,6 +148,7 @@ public abstract class Mob extends Char {
 		}
 		bundle.put( SEEN, enemySeen );
 		bundle.put( TARGET, target );
+        bundle.put( MOVIE_TARGET, movieTarget );
 	}
 	
 	@Override
@@ -168,6 +172,7 @@ public abstract class Mob extends Char {
 		enemySeen = bundle.getBoolean( SEEN );
 
 		target = bundle.getInt( TARGET );
+        movieTarget = bundle.getInt( MOVIE_TARGET );
 	}
 	
 	public CharSprite sprite() {
@@ -679,6 +684,22 @@ public abstract class Mob extends Char {
 		}
 		target = cell;
 	}
+
+	//this should only be called for cutscenes
+	public void forcedPathfind(int cell)
+	{
+		target = cell;
+		getCloser(target);
+
+	}
+
+	//this should only be called for cutscenes
+	public void forcedAttack(Char enemy)
+	{
+		doAttack(enemy);
+	}
+
+
 	
 	public String description() {
 		return Messages.get(this, "desc");
@@ -854,6 +875,46 @@ public abstract class Mob extends Char {
 			spend( TICK );
 			return true;
 		}
+	}
+
+	protected class Listening implements AiState {
+
+		public static final String TAG	= "LISTENING";
+
+		@Override
+		public boolean act(boolean enemyInFOV, boolean justAlerted)
+		{
+			//by default we don't do anything
+			//if we have a location to go to we'll try to go there
+			//if we have an enemy we'll try to attack them
+
+
+            if(pos == movieTarget)
+            {
+                movieTarget = -1;
+            }
+			else if(movieTarget != -1)
+			{
+				target = movieTarget;
+
+				int oldPos = pos;
+				if (getCloser( target )) {
+
+					spend( 1 / speed() );
+					return moveSprite( oldPos,  pos );
+
+				}
+			}
+/*
+			if (enemyInFOV && canAttack( enemy )) {
+
+				return doAttack( enemy );
+			}
+*/
+			spend( TICK );
+		 	return true;
+		}
+
 	}
 }
 

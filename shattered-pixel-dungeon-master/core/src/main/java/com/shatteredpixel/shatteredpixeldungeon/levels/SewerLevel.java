@@ -55,7 +55,7 @@ public class SewerLevel extends RegularLevel {
 		color1 = 0x48763c;
 		color2 = 0x59994a;
 	}
-	
+
 	@Override
 	protected int standardRooms() {
 		//5 to 7, average 5.57

@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.effects;
 
+import android.media.effect.Effect;
+
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
@@ -71,7 +73,35 @@ public class Chains extends Group {
 
 		chains = new Image[numChains];
 		for (int i = 0; i < chains.length; i++){
-			chains[i] = new Image(Effects.get(Effects.Type.CHAIN));
+			chains[i] = new Image(Effects.get(Effects.Type.RIPPLE));
+			chains[i].angle = rotation;
+			chains[i].origin.set( chains[i].width()/ 2, chains[i].height() );
+			add(chains[i]);
+		}
+	}
+
+	public Chains(PointF from, PointF to, Effects.Type typeofEffect, Callback callback){
+		super();
+
+		this.callback = callback;
+
+		this.from = from;
+		this.to = to;
+
+		float dx = to.x - from.x;
+		float dy = to.y - from.y;
+		distance = (float)Math.hypot(dx, dy);
+
+
+		duration = distance/300f + 0.1f;
+
+		rotation = (float)(Math.atan2( dy, dx ) * A) + 90f;
+
+		numChains = Math.round(distance/6f)+1;
+
+		chains = new Image[numChains];
+		for (int i = 0; i < chains.length; i++){
+			chains[i] = new Image(Effects.get(typeofEffect));
 			chains[i].angle = rotation;
 			chains[i].origin.set( chains[i].width()/ 2, chains[i].height() );
 			add(chains[i]);

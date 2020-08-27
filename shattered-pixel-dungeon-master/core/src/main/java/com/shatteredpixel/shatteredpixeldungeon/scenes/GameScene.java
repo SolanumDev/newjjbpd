@@ -47,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.WandHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
+import com.shatteredpixel.shatteredpixeldungeon.levels.MovieLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
@@ -97,6 +98,7 @@ import com.watabou.glwrap.Blending;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Group;
+import com.watabou.noosa.Image;
 import com.watabou.noosa.NoosaScript;
 import com.watabou.noosa.NoosaScriptNoLighting;
 import com.watabou.noosa.SkinnedBlock;
@@ -342,6 +344,9 @@ public class GameScene extends PixelScene {
 			case 1:
 				//WndStory.showChapter( WndStory.ID_SEWERS );
 				break;
+			case 2:
+				WndStory.showChapter(WndStory.ID_JOTARO_INTRO);
+				break;
 			case 6:
 				//WndStory.showChapter( WndStory.ID_PRISON );
 				break;
@@ -412,6 +417,12 @@ public class GameScene extends PixelScene {
 			if (Dungeon.level instanceof RegularLevel &&
 					((RegularLevel) Dungeon.level).secretDoors > Random.IntRange(3, 4)) {
 				GLog.w(Messages.get(this, "secrets"));
+			}
+
+			if(Dungeon.level instanceof MovieLevel)
+			{
+				//Dungeon.level.mobs.remove(((MovieLevel)Dungeon.level).director);
+                ((MovieLevel)Dungeon.level).redirect();
 			}
 
 			InterlevelScene.mode = InterlevelScene.Mode.NONE;
@@ -648,7 +659,8 @@ public class GameScene extends PixelScene {
 		banner.y = align( uiCamera, (uiCamera.height - banner.height) / 3 );
 		addToFront( banner );
 	}
-	
+
+
 	// -------------------------------------------------------
 
 	public static void add( Plant plant ) {
@@ -853,6 +865,14 @@ public class GameScene extends PixelScene {
 			Sample.INSTANCE.play( Assets.SND_BOSS );
 		}
 	}
+
+    public static void showImage(Image image, int color, float fadetime, float showTime) {
+
+        Banner toProject = new Banner( image );
+        toProject.show( color, fadetime, showTime);
+        scene.showBanner( toProject );
+
+    }
 	
 	public static void handleCell( int cell ) {
 		cellSelector.select( cell );

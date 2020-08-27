@@ -41,39 +41,8 @@ public class Kakyoin extends StandUser {
 		defenseSkill = 2;
 
 		state = WANDERING;
-        standName = "Hierophant Green";
 
 	}
-
-	protected static final String STAND	        = "stand";
-/*
-
-	@Override
-	public void storeInBundle( Bundle bundle ) {
-		super.storeInBundle(bundle);
-		bundle.put( STAND, stand );
-	}
-
-	@Override
-	public void restoreFromBundle( Bundle bundle ) {
-		super.restoreFromBundle(bundle);
-		stand = (Hierophant)bundle.get(STAND);
-
-	}
-*/
-
-
-	@Override
-	public void damage(int dmg, Object src) {
-		super.damage(dmg, src);
-
-		if(standIsActive()) {
-			stand.HP = this.HP;
-		}
-
-	}
-
-
 
 	@Override
 	public void declareStand() {

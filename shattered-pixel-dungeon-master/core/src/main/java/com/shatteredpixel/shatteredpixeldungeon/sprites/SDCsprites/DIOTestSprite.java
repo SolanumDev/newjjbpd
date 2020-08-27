@@ -19,67 +19,58 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.sprites;
+package com.shatteredpixel.shatteredpixeldungeon.sprites.SDCsprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShaftParticle;
-import com.watabou.glwrap.Blending;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.Visual;
 import com.watabou.noosa.tweeners.Tweener;
 import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
 
-public class RoadRollerSprite extends MobSprite {
+public class DIOTestSprite extends MobSprite {
 
     private Tweener jumpTweener;
     private Callback jumpCallback;
-    public  static PointF arc;
 
-	public RoadRollerSprite() {
+	public DIOTestSprite() {
 		super();
 		
-		texture( Assets.ROAD_ROLLER );
+		texture( Assets.DIOTEST );
 		
 		TextureFilm frames = new TextureFilm( texture, 46, 41 );
 
 		idle = new Animation( 1, true );
-		idle.frames( frames, 1, 1, 1, 1, 1);
+		idle.frames( frames, 0+19-19, 0+19-19, 0+19-19, 1+19-19, 0+19-19, 0+19-19, 1+19-19, 1+19-19);
 
-		run = new Animation( 10, true );
-		run.frames( frames, 0, 0 );
+		run = new Animation(20, true );
+		run.frames(frames, 39-18-19, 40-18-19, 41-18-19, 42-18-19, 43-18-19, 44-18-19 );
 
-		attack = new Animation( 10, false );
-		attack.frames( frames, 1, 1, 1, 2, 2 , 2, 3 , 4 , 5 , 3 , 4 , 5  , 3, 4 ,5);
+		attack = new Animation( 15, false );
+		attack.frames( frames, 50-18-19, 51-18-19, 52-18-19, 37-18-19 );
 
-		die = new Animation( 8, false );
-		die.frames( frames, 8, 8, 8, 8, 8 );
-		
+		zap = attack.clone();
+
+		die = new Animation(20, false );
+		die.frames(frames, 45-18-19, 46-18-19, 47-18-19, 48-18-19, 49-18-19, 49-18-19 );
+
 		play( idle );
 	}
 
 	public void crush( int from, int to, Callback callback ){
 
-		Callback crushCallback = callback;
-		int distance = Dungeon.level.distance( from, to );
 
 		play( run );
-		LeapTweener leapTweener = new LeapTweener( this, worldToCamera( to ), -80, 1f);
-		leapTweener.listener = this;
-		parent.add( leapTweener );
-
-		play( attack );
-		LandTweener landTweener = new LandTweener( this, worldToCamera( to ), -80, 1f);
-		landTweener.listener = this;
-		parent.add( landTweener );
-
 
 	}
 
 	public void crush(){
+
+
 		play( run );
+
 	}
 
 
@@ -89,7 +80,7 @@ public class RoadRollerSprite extends MobSprite {
         jumpCallback = callback;
 
         int distance = Dungeon.level.distance( from, to );
-        jumpTweener = new LeapTweener( this, worldToCamera( to ), 100, 1f );
+        jumpTweener = new LeapTweener( this, worldToCamera( to ), 100, 7f );
         jumpTweener.listener = this;
         parent.add( jumpTweener );
 
@@ -113,10 +104,7 @@ public class RoadRollerSprite extends MobSprite {
 
 			this.visual = visual;
 			start = visual.point();
-
-			vertex = pos;
-			vertex = vertex.set((start.x ),(start.y - 100 ));
-            arc = vertex;
+			vertex.set((start.x + pos.x)/2,(start.y + pos.y)/2);
 			end = vertex;
 			this.height = height;
 		}
@@ -140,14 +128,14 @@ public class RoadRollerSprite extends MobSprite {
 			super( visual, time );
 
 			this.visual = visual;
-			start = arc;//visual.point();
+			start = visual.point();
 			end = pos;
 			this.height = height;
 		}
 
 		@Override
 		protected void updateValues( float progress ) {
-			visual.point( PointF.inter( start, end, progress ).offset( 0, height * 4 * progress * (1 - progress) ) );
+			visual.point( PointF.inter( start, end, progress ).offset( 0, -height * 4 * progress * (1 - progress) ) );
 		}
 	}
 

@@ -87,6 +87,7 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 	protected Animation operate;
 	protected Animation zap;
 	protected Animation die;
+	protected Animation vanish;
 
 	public Animation rushAttack;
 	
@@ -178,7 +179,10 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 			}
 		}
 	}
-	
+
+
+
+
 	public void idle() {
 		play(idle);
 	}
@@ -199,6 +203,21 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		}
 
 	}
+
+	public void warp( int from, int to ) {
+		turnTo( from , to );
+
+		motion = new PosTweener( this, worldToCamera( to ), MOVE_INTERVAL );
+		motion.listener = this;
+		parent.add( motion );
+
+		isMoving = true;
+
+		if (visible && Dungeon.level.water[from] && !ch.flying) {
+			GameScene.ripple( from );
+		}
+
+	}
 	
 	public void interruptMotion() {
 		if (motion != null) {
@@ -210,6 +229,18 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 		turnTo( ch.pos, cell );
 		play( attack );
 	}
+
+    public void fakeAttack() {
+        play( attack );
+
+        if (emo != null) {
+            emo.killAndErase();
+        }
+
+        if (health != null){
+            health.killAndErase();
+        }
+    }
 
 	public void rushAttack(int cell) {
 		turnTo(ch.pos, cell);
@@ -277,6 +308,19 @@ public class CharSprite extends MovieClip implements Tweener.Listener, MovieClip
 			health.killAndErase();
 		}
 	}
+
+	public void vanish() {
+		play(vanish);
+		if (emo != null) {
+			emo.killAndErase();
+		}
+
+		if (health != null){
+			health.killAndErase();
+		}
+
+	}
+
 	
 	public Emitter emitter() {
 		Emitter emitter = GameScene.emitter();

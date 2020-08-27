@@ -75,7 +75,23 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		ANGULAR_SPEEDS.put(ItemSpriteSheet.FISHING_SPEAR,   0);
 		ANGULAR_SPEEDS.put(ItemSpriteSheet.JAVELIN,         0);
 		ANGULAR_SPEEDS.put(ItemSpriteSheet.TRIDENT,         0);
-		
+
+		ANGULAR_SPEEDS.put(ItemSpriteSheet.MAGICIAN_ANKH      , 0);
+		ANGULAR_SPEEDS.put(ItemSpriteSheet.EMERALD            , 0);
+		ANGULAR_SPEEDS.put(ItemSpriteSheet.EMERALD_THREE      , 0);
+		ANGULAR_SPEEDS.put(ItemSpriteSheet.EMERALD_WAVE       , 0);
+		ANGULAR_SPEEDS.put(ItemSpriteSheet.CHARIOT_RAPIER     , 0);
+		ANGULAR_SPEEDS.put(ItemSpriteSheet.SAND_BALL          , 0); //TODO: speen
+		ANGULAR_SPEEDS.put(ItemSpriteSheet.BULLET             , 0); //TODO: speen
+		ANGULAR_SPEEDS.put(ItemSpriteSheet.MIRROR             , 0);
+		ANGULAR_SPEEDS.put(ItemSpriteSheet.ICE_MISSILE_LIGHT  , 0);
+		ANGULAR_SPEEDS.put(ItemSpriteSheet.ICE_MISSILE_MEDIUM , 0);
+		ANGULAR_SPEEDS.put(ItemSpriteSheet.LOTION             , 0);
+		ANGULAR_SPEEDS.put(ItemSpriteSheet.BLOWDRYER          , 0); //TODO: speen
+		ANGULAR_SPEEDS.put(ItemSpriteSheet.DIO_KNIVES_ONE     , 0);
+		ANGULAR_SPEEDS.put(ItemSpriteSheet.DIO_KNIVES_TWO     , 0);
+		ANGULAR_SPEEDS.put(ItemSpriteSheet.DIO_KNIVES_THREE   , 0);
+
 		for( int i = ItemSpriteSheet.TIPPED_DARTS; i < ItemSpriteSheet.TIPPED_DARTS+16; i++){
 			ANGULAR_SPEEDS.put(i, 0);
 		}

@@ -105,6 +105,7 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
+import com.shatteredpixel.shatteredpixeldungeon.levels.levels_SDC.SDC_MansionCourtyard;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Earthroot;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass;
@@ -940,8 +941,13 @@ public class Hero extends Char {
 		if (pos == stairs && pos == Dungeon.level.entrance) {
 			
 			if (Dungeon.depth == 1) {
-				
-				if (belongings.getItem( Amulet.class ) == null) {
+
+				if(Dungeon.level instanceof SDC_MansionCourtyard)
+				{
+					GameScene.show( new WndMessage("A strange gravity prevents you from leaving!"));
+					ready();
+				}
+				else if (belongings.getItem( Amulet.class ) == null) {
 					GameScene.show( new WndMessage( Messages.get(this, "leave") ) );
 					ready();
 				} else {

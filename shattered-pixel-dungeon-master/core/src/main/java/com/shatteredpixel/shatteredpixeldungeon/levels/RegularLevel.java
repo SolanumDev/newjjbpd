@@ -34,7 +34,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.GuidePage;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
+import com.shatteredpixel.shatteredpixeldungeon.levels.builders.BranchesBuilder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.Builder;
+import com.shatteredpixel.shatteredpixeldungeon.levels.builders.LineBuilder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.LoopBuilder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
@@ -130,10 +132,14 @@ public abstract class RegularLevel extends Level {
 	}
 	
 	protected Builder builder(){
-		return new LoopBuilder()
-				.setLoopShape( 2 ,
-						Random.Float(0.4f, 0.7f),
-						Random.Float(0f, 0.5f));
+//TODO: remember to restore this when done experimenting with layouts
+	//	return new LoopBuilder()
+	//			.setLoopShape( 2 ,
+	//					Random.Float(0.4f, 0.7f),
+	//					Random.Float(0f, 0.5f));
+
+		return new LoopBuilder().setPathLength(0.99f, new float[]{9})
+						.setTunnelLength(new float[]{13, 14, 15}, new float[]{1});
 	}
 	
 	protected abstract Painter painter();

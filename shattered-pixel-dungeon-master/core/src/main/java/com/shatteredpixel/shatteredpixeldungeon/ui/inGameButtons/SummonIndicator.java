@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.ui.inGameButtons;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -32,13 +33,18 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.StarPlatinum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.heroStands.StarPlatinumHero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.TheWorld;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.heroStands.StarPlatinumTest;
+import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CharSelectPT3;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Banner;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Tag;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndHero;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.Image;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -73,7 +79,7 @@ public class SummonIndicator extends Tag {
 	protected void createChildren() {
 		super.createChildren();
 
-        icon = Icons.SKULL.get();
+        icon = Icons.get(Dungeon.hero.heroClass);
         add( icon );
 	}
 
@@ -98,6 +104,42 @@ public class SummonIndicator extends Tag {
 	@Override
 	protected void onClick() {
 
+        //Banner stando = new Banner(Dungeon.hero.sprite );
+        //stando.show( 0xFFFFFF, 0.3f, 5f );
+        //GameScene.showImage( stando, 0xFFFFFF, 0.3f, 5f  );
+
+        //GameScene.show( new WndMessage( Messages.get(GameScene.class, "dont_know") ) ) ;
+        if (stand == null) {
+            switch (Dungeon.hero.heroClass)
+            {
+                //SDC
+                case JOTARO:
+                    stand = new StarPlatinumHero(Dungeon.hero);
+                    Dungeon.hero.summonStand(stand);
+                    GameScene.flash(0x7B588E);
+                    break;
+                case WARRIOR:
+                case MAGE:
+                case HUNTRESS:
+                case ROGUE:
+                    stand = new StarPlatinumTest();
+                    stand.setStandUser(Dungeon.hero);
+
+                    //Dungeon.hero.summonStand(stand);
+                    //GameScene.flash(0x7B588E);
+
+                    break;
+                case KAKYOIN:
+                    stand = new Hierophant();
+                    stand.setStandUser(Dungeon.hero);
+                    break;
+            }
+
+            Dungeon.hero.summonStand(stand);
+            GameScene.flash(stand.primaryColor);
+        }
+
+        /*
         if (stand == null) {
 
             if(Dungeon.currentScene == Dungeon.CHARS_ORIG) {
@@ -145,21 +187,8 @@ public class SummonIndicator extends Tag {
             {
 
             }
-            else
-            {
-                /*
-                GLog.w("Hey! You shouldn't be able to see this dialogue!!");
+        }*/
 
-                //TODO: find a way to punish cheaters
-
-                stand = new StarPlatinumHero(Dungeon.hero);
-                stand.setStandUser(Dungeon.hero);
-                stand.parasitic();
-                Dungeon.hero.summonStand(stand);
-                GameScene.flash(0x7B588E);
-                */
-            }
-        }
         else if(Dungeon.level.adjacent(stand.pos,Dungeon.hero.pos ) && stand != null){
 
             //prevents an "infinite" time stop (removing these would either crash the game
@@ -178,12 +207,10 @@ public class SummonIndicator extends Tag {
                 Dungeon.stand.cancelAbility();
             }
 */
+
             stand.destroy();
             stand.sprite.die();
             stand = null;
-            stand = null;
-
-
         }
 
         else
@@ -200,6 +227,7 @@ public class SummonIndicator extends Tag {
         return false;
     }
 */
+
     @Override
     public void update() {
 	    if(Dungeon.hero.isAlive() && Dungeon.currentScene > Dungeon.CHARS_BT)

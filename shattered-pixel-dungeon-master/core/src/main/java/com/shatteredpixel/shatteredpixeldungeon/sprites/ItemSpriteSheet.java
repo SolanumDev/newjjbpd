@@ -228,7 +228,7 @@ public class ItemSpriteSheet {
 		assignItemRect(BOOMERANG,       14, 14);
 		
 		assignItemRect(DART,            15, 15);
-		assignItemRect(THROWING_KNIFE,  12, 13);
+		//assignItemRect(THROWING_KNIFE,  12, 13);
 		assignItemRect(THROWING_STONE,  9,  9);
 		
 		assignItemRect(SHURIKEN,        12, 12);
@@ -504,22 +504,39 @@ public class ItemSpriteSheet {
 	}
 
 
-	private static final int SDC_PROJECTILES = 							xy(1, 29);
-	public static final int MAGICIAN_ANKH = SDC_PROJECTILES+0;
-	public static final int EMERALD = SDC_PROJECTILES+1;
-	public static final int EMERALD_THREE = SDC_PROJECTILES+2;
-	public static final int EMERALD_WAVE = SDC_PROJECTILES+3;
-	public static final int CHARIOT_RAPIER = SDC_PROJECTILES+4;
-	public static final int SAND_BALL = SDC_PROJECTILES+5;
-	public static final int BULLET = SDC_PROJECTILES+6;
-	public static final int MIRROR = SDC_PROJECTILES+7;
-	public static final int ICE_MISSILE_LIGHT = SDC_PROJECTILES+8;
+	private static final int SDC_PROJECTILES   = 							xy(1, 30);
+	public static final int MAGICIAN_ANKH      = SDC_PROJECTILES+0;
+	public static final int EMERALD            = SDC_PROJECTILES+1;
+	public static final int EMERALD_THREE      = SDC_PROJECTILES+2;
+	public static final int EMERALD_WAVE       = SDC_PROJECTILES+3;
+	public static final int CHARIOT_RAPIER     = SDC_PROJECTILES+4;
+	public static final int SAND_BALL          = SDC_PROJECTILES+5;
+	public static final int BULLET             = SDC_PROJECTILES+6;
+	public static final int MIRROR             = SDC_PROJECTILES+7;
+	public static final int ICE_MISSILE_LIGHT  = SDC_PROJECTILES+8;
 	public static final int ICE_MISSILE_MEDIUM = SDC_PROJECTILES+9;
-	public static final int LOTION = SDC_PROJECTILES+10;
-	public static final int BLOWDRYER = SDC_PROJECTILES+11;
-	public static final int DIO_KNIVES_ONE = SDC_PROJECTILES+12;
-	public static final int DIO_KNIVES_TWO = SDC_PROJECTILES+13;
-	public static final int DIO_KNIVES_THREE = SDC_PROJECTILES+14;
+	public static final int LOTION             = SDC_PROJECTILES+10;
+	public static final int BLOWDRYER          = SDC_PROJECTILES+11;
+	public static final int DIO_KNIVES_ONE     = SDC_PROJECTILES+12;
+	public static final int DIO_KNIVES_TWO     = SDC_PROJECTILES+13;
+	public static final int DIO_KNIVES_THREE   = SDC_PROJECTILES+14;
+    static {
+        assignItemRect(MAGICIAN_ANKH      , 16, 10);
+        assignItemRect(EMERALD            ,  7,  5);
+        assignItemRect(EMERALD_THREE      , 12, 11);
+        assignItemRect(EMERALD_WAVE       , 14, 14);
+        assignItemRect(CHARIOT_RAPIER     , 11, 11);
+        assignItemRect(SAND_BALL          , 10, 10);
+        assignItemRect(BULLET             ,  6,  6);
+        assignItemRect(MIRROR             , 10, 14);
+        assignItemRect(ICE_MISSILE_LIGHT  ,  7,  7);
+        assignItemRect(ICE_MISSILE_MEDIUM ,  7,  7);
+        assignItemRect(LOTION             ,  6, 10);
+        assignItemRect(BLOWDRYER          , 14, 14);
+        assignItemRect(DIO_KNIVES_ONE     , 12, 12);
+        assignItemRect(DIO_KNIVES_TWO     , 14, 14);
+        assignItemRect(DIO_KNIVES_THREE   , 16, 16);
+    }
 
 	private static void assignItemRect( int item, int width, int height){
 		int x = (item % WIDTH) * WIDTH;

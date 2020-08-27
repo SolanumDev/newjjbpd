@@ -30,6 +30,12 @@ import com.watabou.utils.Random;
 
 public class MobSprite extends CharSprite {
 
+	{/*
+		vanish = new Animation( 60, false );
+		vanish.frames = idle.frames;*/
+	}
+
+
 	private static final float FADE_TIME	= 3f;
 	private static final float FALL_TIME	= 1f;
 	
@@ -50,8 +56,14 @@ public class MobSprite extends CharSprite {
 				protected void onComplete() {
 					MobSprite.this.killAndErase();
 					parent.erase( this );
-				};
+				}
 			} );
+		}
+
+		else if( anim == rushAttack)
+		{
+			ch.onAttackComplete();
+			idle();
 		}
 	}
 	

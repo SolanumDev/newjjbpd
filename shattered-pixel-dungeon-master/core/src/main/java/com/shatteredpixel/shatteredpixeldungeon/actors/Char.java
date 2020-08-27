@@ -506,6 +506,37 @@ public abstract class Char extends Actor {
 			Dungeon.level.press( pos, this );
 		}
 	}
+
+    //forcefully move a character,
+    //a running animation is called
+    //(especially useful for cutscenes)
+	public void forceMove(int location)
+	{
+		sprite.move(pos, location);
+		pos = location;
+	}
+
+    //forcefully relocate a character,
+    //a running animation is not called
+    //(eg, DIO and Diavolo's teleports)
+    public void forceWarp(int location)
+    {
+        sprite.warp(pos, location);
+        pos = location;
+    }
+
+    //use CharSprite.showstatus() for non-ui dialogue
+    public void exposite(String phrase)
+	{
+		sprite.showStatus(0xC0C0C0, phrase, this);
+	}
+
+	//use CharSprite.showstatus() for non-ui dialogue
+	public void turnAndExposite(String phrase, int lookAt)
+	{
+		sprite.turnTo(this.pos, lookAt);
+		sprite.showStatus(0xC0C0C0, phrase, this);
+	}
 	
 	public int distance( Char other ) {
 		return Dungeon.level.distance( pos, other.pos );

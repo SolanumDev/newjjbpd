@@ -19,17 +19,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.sprites;
+package com.shatteredpixel.shatteredpixeldungeon.sprites.SDCsprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
 import com.watabou.noosa.TextureFilm;
 
-public class AvdolSprite extends HumanSprite{
+public class HolyKujoSprite extends MobSprite {
 
-	public AvdolSprite() {
+	public HolyKujoSprite() {
 		super();
 
-		texture( Assets.AVDOL );
+		texture( Assets.HOLY );
 
 		TextureFilm film = new TextureFilm( texture, 12, 15 );
 

@@ -179,7 +179,8 @@ public class CharSelectPT3 extends PixelScene {
 		float centralHeight = buttonY - title.y - title.height();
 
 		HeroClass[] classes = {
-				HeroClass.JOTARO, HeroClass.DIO, HeroClass.KAKYOIN, HeroClass.POLNAREFF
+				//HeroClass.JOTARO, HeroClass.DIO, HeroClass.KAKYOIN, HeroClass.POLNAREFF
+				HeroClass.KAKYOIN
 		};
 		for (HeroClass cl : classes) {
 			ClassShield shield = new ClassShield( cl );
@@ -187,7 +188,7 @@ public class CharSelectPT3 extends PixelScene {
 			add( shield );
 		}
 		if (SPDSettings.landscape()) {
-			float shieldW = width / 4;
+			float shieldW = width;
 			float shieldH = Math.min( centralHeight, shieldW );
 			top = title.y + title.height + (centralHeight - shieldH) / 2;
 			for (int i=0; i < classes.length; i++) {
@@ -203,7 +204,22 @@ public class CharSelectPT3 extends PixelScene {
 			add( challenge );
 
 		} else {
-			float shieldW = width / 2;
+
+
+			float shieldW = width/2;
+			float shieldH = Math.min( centralHeight / 2, shieldW * 1.2f );
+			top = title.y + title.height() + centralHeight / 2 - shieldH;
+			for (int i=0; i < classes.length; i++) {
+				ClassShield shield = shields.get( classes[i] );
+				shield.setRect(
+						shieldW,
+						top + (i / 2) * shieldH,
+						shieldW, shieldH );
+				align(shield);
+			}
+
+/*
+			float shieldW = width;
 			float shieldH = Math.min( centralHeight / 2, shieldW * 1.2f );
 			top = title.y + title.height() + centralHeight / 2 - shieldH;
 			for (int i=0; i < classes.length; i++) {
@@ -214,13 +230,16 @@ public class CharSelectPT3 extends PixelScene {
 						shieldW, shieldH );
 				align(shield);
 			}
+*/
 
+			/*
 			ChallengeButton challenge = new ChallengeButton();
 			challenge.setPos(
 					w/2 - challenge.width()/2,
 					top + shieldH - challenge.height()/2 );
 			align(challenge);
 			add( challenge );
+			*/
 
 		}
 

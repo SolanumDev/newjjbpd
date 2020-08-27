@@ -47,4 +47,22 @@ public class HumanSprite extends MobSprite {
 
 		play( idle );
 	}
+
+	protected void resetTextures()
+	{
+		TextureFilm film = new TextureFilm( texture, 12, 15 );
+
+		idle = new Animation( 1, true );
+		idle.frames(film,  0, 0, 0, 1, 0, 0, 1, 1 );
+
+		run = new Animation(20, true );
+		run.frames(film, 2, 3, 4, 5, 6, 7 );
+
+		die = new Animation(20, false );
+		die.frames(film, 8, 9, 10, 11, 12, 11 );
+
+		attack = new Animation( 15, false );
+		attack.frames( film, 13, 14, 15, 0 );
+	}
+
 }

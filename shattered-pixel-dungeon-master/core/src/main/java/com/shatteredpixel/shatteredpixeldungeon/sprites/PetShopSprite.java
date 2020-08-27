@@ -24,37 +24,27 @@ package com.shatteredpixel.shatteredpixeldungeon.sprites;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.watabou.noosa.TextureFilm;
 
-public class DIOSprite extends HumanSprite {
+public class PetShopSprite extends MobSprite {
 
-	private Animation taunt;
-	public DIOSprite() {
+	public PetShopSprite() {
 		super();
-
-		texture( Assets.DIO );
-
-		TextureFilm film = new TextureFilm( texture, 12, 15 );
-
-		idle = new Animation( 1, true );
-		idle.frames(film,  0, 0, 0, 1, 0, 0, 1, 1 );
-
-		run = new Animation(20, true );
-		run.frames(film, 2, 3, 4, 5, 6, 7 );
-
-		die = new Animation(20, false );
-		die.frames(film, 8, 9, 10, 11, 12, 11 );
-
+		
+		texture( Assets.PET_SHOP );
+		
+		TextureFilm frames = new TextureFilm( texture, 17, 22 );
+		
+		idle = new Animation( 2, true );
+		idle.frames( frames, 0, 0, 0, 1 );
+		
+		run = new Animation( 10, true );
+		run.frames( frames, 2, 2, 4, 5 );
+		
 		attack = new Animation( 15, false );
-		attack.frames( film, 13, 14, 15, 0 );
-
-		taunt = new Animation(10, false);
-		taunt.frames( film, 0,0,29,29,30,30);
-
+		attack.frames( frames, 3, 4, 5, 0 );
+		
+		die = new Animation( 10, false );
+		die.frames( frames, 8, 9, 10);
+		
 		play( idle );
 	}
-
-	public void taunt()
-	{
-		play(taunt);
-	}
-
 }

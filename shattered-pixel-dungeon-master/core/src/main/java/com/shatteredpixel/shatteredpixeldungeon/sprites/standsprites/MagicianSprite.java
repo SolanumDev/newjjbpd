@@ -25,8 +25,10 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Magician;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.AlterableProjectile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.DullKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
 import com.watabou.noosa.TextureFilm;
@@ -67,8 +69,8 @@ public class MagicianSprite extends MobSprite {
 
 	@Override
 	public void die() {
-		super.die();
 		remove( State.BURNING );
+		super.die();
 	}
 
 	public void zap( int cell ) {
@@ -79,7 +81,7 @@ public class MagicianSprite extends MobSprite {
 
 		((MissileSprite)parent.recycle( MissileSprite.class ))
 		.
-				reset( ch.pos, cell, new ThrowingKnife(), new Callback() {
+				reset( ch.pos, cell, new AlterableProjectile(ItemSpriteSheet.ANKH), new Callback() {
 					@Override
 					public void call() {
 						ch.onAttackComplete();

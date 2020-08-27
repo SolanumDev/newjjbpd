@@ -27,11 +27,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.AlterableProjectile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.standsprites.HierophantSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -152,10 +154,24 @@ public class Hierophant extends Stand implements Callback {
         for (int cell : visualCells){
             //this way we only get the cells at the tip, much better performance.
 
-            //TODO: the emerald splash should *feel* like the emerald splash
+            //TODO DEMO: the emerald splash should *feel* like the emerald splash
             //replace the knife placeholder with the emeralds
-            ((MissileSprite)this.sprite.parent.recycle( MissileSprite.class ))
-                    .reset( pos, cell, new ThrowingKnife(),null);
+            java.util.Random Randomizer = new java.util.Random();
+            int roller = Randomizer.nextInt(3);
+            switch(roller)
+            {
+                case 0:
+                    ((MissileSprite)this.sprite.parent.recycle( MissileSprite.class ))
+                        .reset( pos, cell, new AlterableProjectile(ItemSpriteSheet.EMERALD),null);
+                    break;
+                case 1: ((MissileSprite)this.sprite.parent.recycle( MissileSprite.class ))
+                        .reset( pos, cell, new AlterableProjectile(ItemSpriteSheet.EMERALD_THREE),null);
+                    break;
+                case 2: ((MissileSprite)this.sprite.parent.recycle( MissileSprite.class ))
+                        .reset( pos, cell, new AlterableProjectile(ItemSpriteSheet.EMERALD_WAVE),null);
+                    break;
+            }
+
 
         }
 /*
@@ -182,6 +198,7 @@ public class Hierophant extends Stand implements Callback {
             }
         }
         affectedCells = null;
+        visualCells = null;
     }
 
 

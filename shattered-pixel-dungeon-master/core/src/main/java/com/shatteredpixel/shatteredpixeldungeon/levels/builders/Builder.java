@@ -56,7 +56,7 @@ public abstract class Builder {
 		//shallow copy
 		ArrayList<Room> colliding = new ArrayList<>(collision);
 		do{
-			
+
 			//remove empty rooms and any rooms we aren't currently overlapping
 			Iterator<Room> it = colliding.iterator();
 			while (it.hasNext()){
@@ -133,7 +133,7 @@ public abstract class Builder {
 			} else {
 				colliding.clear();
 			}
-			
+
 			//loop until we are no longer colliding with any rooms
 		} while (!colliding.isEmpty());
 		

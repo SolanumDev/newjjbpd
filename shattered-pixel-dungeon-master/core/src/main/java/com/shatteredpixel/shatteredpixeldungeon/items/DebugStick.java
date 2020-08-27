@@ -25,16 +25,23 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Guard;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Kenshiro;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Spinner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.TrainingDummy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.sdc.Avdol;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.sdc.DIOShadow;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.sdc.Iced;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.sdc.Kakyoin;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.sdc.PetShop;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SDCsprites.VanillaIceSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
@@ -58,7 +65,7 @@ public class DebugStick extends Item {
 
 		bones = true;
 
-		defaultAction = AC_Debug;
+		defaultAction = AC_Warp;
 	}
 
 	@Override
@@ -77,7 +84,7 @@ public class DebugStick extends Item {
 		switch(action)
 		{
 			case AC_Debug:
-				toSpawn = new Kakyoin();
+				toSpawn = new PetShop();
 
 				ArrayList<Integer> spawnPoints = new ArrayList<>();
 

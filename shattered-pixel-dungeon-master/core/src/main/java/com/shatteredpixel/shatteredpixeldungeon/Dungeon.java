@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
@@ -53,14 +54,16 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.HallsLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LastLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LastShopLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.MovieLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SDC_PrisonLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SDC_SchoolExteriorLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.TestJotaroLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.levels_SDC.Debug_Room;
+import com.shatteredpixel.shatteredpixeldungeon.levels.levels_SDC.SDC_KujoResidence;
+import com.shatteredpixel.shatteredpixeldungeon.levels.levels_SDC.SDC_MansionCourtyard;
 import com.shatteredpixel.shatteredpixeldungeon.levels.levels_SDC.SDC_SchoolInfirmaryLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
@@ -75,7 +78,6 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndAlchemy;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
 import com.watabou.noosa.Game;
-import com.watabou.noosa.Scene;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.FileUtils;
@@ -291,7 +293,8 @@ public class Dungeon {
 		Level level;
 		switch (depth) {
 			case 1:
-				level = new TestJotaroLevel();
+
+				level = new com.shatteredpixel.shatteredpixeldungeon.levels.levels_SDC.SDC_PrisonLevel();
 				break;
 			default:
 				level = newLevel();
@@ -323,9 +326,15 @@ public class Dungeon {
 		Level level;
 		switch (depth) {
 		case 1:
-            level = new Debug_Room();
+			if(hero.heroClass == HeroClass.KAKYOIN) {
+				level = new SDC_MansionCourtyard();
+				break;
+			}
+            level = new com.shatteredpixel.shatteredpixeldungeon.levels.levels_SDC.SDC_PrisonLevel();
             break;
 		case 2:
+			level = new SDC_KujoResidence();
+			break;
 		case 3:
 		case 4:
 			level = new SewerLevel();
@@ -503,6 +512,7 @@ public class Dungeon {
 	private static final String SEED		= "seed";
 	private static final String CHALLENGES	= "challenges";
 	private static final String HERO		= "hero";
+	private static final String STAND		= "stand";
 	private static final String GOLD		= "gold";
 	private static final String DEPTH		= "depth";
 	private static final String DROPPED     = "dropped%d";
@@ -521,6 +531,7 @@ public class Dungeon {
 			bundle.put( SEED, seed );
 			bundle.put( CHALLENGES, challenges );
 			bundle.put( HERO, hero );
+			bundle.put( STAND, stand );
 			bundle.put( GOLD, gold );
 			bundle.put( DEPTH, depth );
 
@@ -674,6 +685,9 @@ public class Dungeon {
 		hero = null;
 		hero = (Hero)bundle.get( HERO );
 
+		stand = null;
+		stand = (Stand)bundle.get(STAND);
+
 		if(timeFreeze == true)
 		{
 			GameScene.freezeEmitters = true;
@@ -708,10 +722,11 @@ public class Dungeon {
 		Bundle bundle = FileUtils.bundleFromFile( GamesInProgress.depthFile( save, depth)) ;
 		
 		Level level = (Level)bundle.get( LEVEL );
-		
+
 		if (level == null){
 			throw new IOException();
 		} else {
+
 			return level;
 		}
 	}

@@ -250,11 +250,21 @@ public class StatusPane extends Component {
 			PixelScene.align(level);
 		}
 
+		if(Dungeon.stand == null)
+		{
+			abOne.visible = false;
+			abTwo.visible = false;
+			abThree.visible = false;
+		}
+
+		avatar.copy(Dungeon.hero.sprite);
+
 		int tier = Dungeon.hero.tier();
 		if (tier != lastTier) {
 			lastTier = tier;
 			avatar.copy( HeroSprite.avatar( Dungeon.hero.heroClass, tier ) );
 		}
+
 	}
 
 	public void pickup( Item item, int cell) {

@@ -19,21 +19,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.shatteredpixel.shatteredpixeldungeon.sprites;
+package com.shatteredpixel.shatteredpixeldungeon.sprites.SDCsprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.HumanSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.utils.Callback;
 
-public class DIOHighSprite extends HumanSprite {
+public class DIOShadowSprite extends HumanSprite {
 
 	public Animation taunt;
     public Animation checkmate;
     private int cellToAttack;
 
-	public DIOHighSprite() {
+	public DIOShadowSprite() {
 		super();
 
 		texture( Assets.DIO );
@@ -41,28 +43,27 @@ public class DIOHighSprite extends HumanSprite {
 		TextureFilm film = new TextureFilm( texture, 12, 15 );
 
 		idle = new Animation( 1, true );
-		idle.frames(film,  37, 37, 37, 38, 37, 37, 38, 38 );
+        idle.frames( film, 0, 0, 0, 1, 0, 0, 1, 1 );
 
-		run = new Animation(20, true );
-		run.frames(film, 39, 40, 41, 42, 43, 44 );
+        run = new Animation( 20, true );
+        run.frames( film, 2, 3, 4, 5, 6, 7 );
 
-		die = new Animation(20, false );
-		die.frames(film, 45, 46, 47, 48, 49, 49 );
+        die = new Animation( 20, false );
+        die.frames( film, 8, 9, 10, 11, 12, 11 );
 
-		attack = new Animation( 15, false );
-		attack.frames( film, 50, 51, 52, 37 );
+        attack = new Animation( 15, false );
+        attack.frames( film, 13, 14, 15, 0 );
 
-		zap = attack.clone();
+        zap = attack.clone();
 
-		taunt = new Animation(10, true);
-		taunt.frames( film, 37,37,29+37,66,67,67);
+        operate = new Animation( 8, false );
+        operate.frames( film, 16, 17, 16, 17 );
 
-		play( idle );
+        play(idle);
 	}
 
 	public void tauntEnemy(int curPos)
 	{
-
 			place(curPos);
 			play(taunt);
             showStatus(255, "WRRRRY",this);

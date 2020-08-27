@@ -46,9 +46,7 @@ public class WarlockSprite extends MobSprite {
 		attack = new Animation( 12, false );
 		attack.frames( frames, 0, 5, 6 );
 
-		//zap = attack.clone();
-		zap = new Animation(12, false);
-		zap.frames(frames, 0, 0, 0, 1, 0, 0, 1, 1, 0, 2, 3, 4, 0, 5, 6, 0, 7, 8, 9, 10);
+		zap = attack.clone();
 		
 		die = new Animation( 15, false );
 		die.frames( frames, 0, 7, 8, 8, 9, 10 );

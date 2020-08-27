@@ -51,7 +51,6 @@ public class Guard extends Mob {
 		HP = HT = 40;
 		defenseSkill = 10;
 
-		alignment = alignment.ALLY;
 		state = WANDERING;
 
 		EXP = 6;

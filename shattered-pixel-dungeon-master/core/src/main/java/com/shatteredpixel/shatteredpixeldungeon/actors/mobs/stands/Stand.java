@@ -24,7 +24,9 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.StandUser;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
@@ -39,6 +41,7 @@ import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public abstract class Stand extends NPC{
 
@@ -76,7 +79,7 @@ public abstract class Stand extends NPC{
 
     public boolean isActive = false;
 
-    protected int primaryColor = 0xFF00DC;
+    public static int primaryColor = 0xFF00DC;
 
     //TODO: Stands and users should have internal IDs so that things don't get wonky when translating the game
     private static final String STANDUSER = "standUser";
@@ -128,6 +131,13 @@ public abstract class Stand extends NPC{
 
     }
 
+    public void beckon( int cell ) {
+
+        if (state != HUNTING) {
+            state = WANDERING;
+        }
+        target = cell;
+    }
 
     public void parasitic()
 	{
@@ -148,7 +158,6 @@ public abstract class Stand extends NPC{
 	{
 	    //this.standMaster = standMaster.name;
 	    this.standMaster = standMaster.getClass().getSimpleName();
-	    yell(this.standMaster);
 		this.standUser = standMaster;
 		HP = standMaster.HP;
 		HT = standMaster.HT;
@@ -220,7 +229,7 @@ public abstract class Stand extends NPC{
     protected float attackDelay() {
 
         //TODO: Rushing Flurry should have links (eg Star Breaker Rush) as such
-        //more checks need to be will need to be implemented, this is simply the default case
+        //more checks will need to be implemented, this is simply the default case
         if(isRushing())
         {
             return rushDelay();
@@ -257,7 +266,6 @@ public abstract class Stand extends NPC{
         //TODO:
         //first check if we're a parasitic stand
         //if we are? return standUser
-
 
         //otherwise we will never attack something outside of the stand range
         if (enemy != null &&  Dungeon.level.distance(enemy.pos, standUser.pos) <= range){
@@ -358,8 +366,8 @@ public abstract class Stand extends NPC{
 
 			return true;
 		} else {
-			//Dungeon.hero.sprite.play(attack(this.pos));
-			this.sprite.showStatus(0xFF00DC,"MISS",this);
+			Dungeon.hero.sprite.attack(this.pos);
+			this.sprite.showStatus(primaryColor,"MISS",this);
 			return false;
 		}
 	}

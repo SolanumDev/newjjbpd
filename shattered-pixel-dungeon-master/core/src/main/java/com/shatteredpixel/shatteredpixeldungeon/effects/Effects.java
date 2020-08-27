@@ -35,7 +35,8 @@ public class Effects {
 		DEATH_RAY,
 		LIGHT_RAY,
 		HEALTH_RAY,
-		FINGER
+		FINGER,
+		HERMIT
 	};
 	
 	public static Image get( Type type ) {
@@ -68,6 +69,9 @@ public class Effects {
 			case FINGER:
                 icon.frame(icon.texture.uvRect(11, 26, 14, 41));
 				//icon.frame(icon.texture.uvRect(16, 38, 31, 41));
+				break;
+			case HERMIT:
+				icon.frame(icon.texture.uvRect(0, 30, 9, 41));
 				break;
 		}
 		return icon;

@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.levels_SDC;
 
+import android.os.Handler;
+
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -28,36 +30,59 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MovieActor;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.sdc.Avdol;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Chains;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Effects;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.MovieLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.levels_SDC.scripts.SDC_PrisonLevelDirector;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SDCsprites.CopSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SDCsprites.HolyKujoSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SDCsprites.JosephSDCsprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SeniorSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.noosa.Camera;
 import com.watabou.noosa.Group;
+import com.watabou.noosa.tweeners.CameraScrollTweener;
+import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
+import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
-public class SDC_PrisonLevel extends Level {
+import java.util.Collection;
+
+public class SDC_PrisonLevel extends MovieLevel {
 	
 	{
 		color1 = 0x4b6636;
 		color2 = 0xf2f2f2;
 	}
 
-
 	private static final int WIDTH = 23;
 	private static final int HEIGHT = 23;
 
+	private static MovieActor cop1, cop2, mom, oldman;
 
+	private static Avdol mohammed;
+
+	private SDC_PrisonLevelDirector mangaka;
 
     private enum State{
         DEFAULT,
         BF1,
         BF2,
+		STORY,
         SECBOSS
     }
 
@@ -81,6 +106,9 @@ public class SDC_PrisonLevel extends Level {
 	private static final String DOOR	= "door";
 	private static final String ENTERED	= "entered";
 	private static final String DROPPED	= "droppped";
+
+	private static final String ACTORS = "actors";
+
 	
 	@Override
 	public void storeInBundle( Bundle bundle ) {
@@ -89,6 +117,19 @@ public class SDC_PrisonLevel extends Level {
 		bundle.put( DOOR, arenaDoor );
 		bundle.put( ENTERED, enteredArena );
 		bundle.put( DROPPED, keyDropped );
+		bundle.put( ACTORS, mobs);
+
+		for(Mob mobs: Dungeon.level.mobs.toArray(new Mob[0]))
+		{
+			if(mobs instanceof MovieActor || mobs == mohammed)
+			{
+				mobs = null;
+				Dungeon.level.mobs.remove(mobs);
+			}
+		}
+
+		mohammed = null;
+
 	}
 	
 	@Override
@@ -98,10 +139,15 @@ public class SDC_PrisonLevel extends Level {
 		enteredArena = bundle.getBoolean( ENTERED );
 		keyDropped = bundle.getBoolean( DROPPED );
         state = bundle.getEnum( STATE, State.class );
+
 	}
 	
 	@Override
 	protected boolean build() {
+		directorChair = WIDTH * 20 - 12;
+		//set(directorChair, Terrain.EMPTY, (Level) this);
+		//GameScene.updateMap(directorChair);
+
 		setSize(WIDTH, HEIGHT);
 		//state = State.DEFAULT;
 
@@ -116,6 +162,7 @@ public class SDC_PrisonLevel extends Level {
 		//map[exit] = WIDTH * 10 - 1;
 
 		//= WIDTH * 11 - 1;
+
 		return true;
 	}
 
@@ -126,8 +173,59 @@ public class SDC_PrisonLevel extends Level {
 	
 	@Override
 	protected void createMobs() {
+		//Cop 1
+
+		//Cop 2
+
+		//Holly
+
+		//Joseph
+
+		//bring along our director for this test
+		//redirect();
+		mangaka = new SDC_PrisonLevelDirector();
+		mangaka.pos = directorChair;
+		mangaka.restartScript();
+		mobs.add(mangaka);
+
+        cop1 = new MovieActor();
+		cop2 = new MovieActor();
+		cop1.name = "Cop";
+		cop2.name = "Cop";
+		cop1.description = "One of this jail's many officers";
+		cop2.description = "One of this jail's many officers";
+
+		cop1.spriteClass = CopSprite.class;
+		cop2.spriteClass = CopSprite.class;
+		int inFrontOfCell = exit-10;
+		cop1.pos = inFrontOfCell -1;
+		cop2.pos = inFrontOfCell +1;
+
+		mom = new MovieActor();
+		mom.name = "Holly Kujo";
+		mom.description = "This cheerful woman is your mother";
+		mom.spriteClass = HolyKujoSprite.class;
+		mom.pos = inFrontOfCell;
+
+		mobs.add(cop1);
+        mobs.add(cop2);
+        mobs.add(mom);
+
+		mohammed = new Avdol();
+		mohammed.pos = inFrontOfCell + WIDTH * 2;
+		mohammed.alignment = Char.Alignment.NEUTRAL;
+		mobs.add( mohammed );
+
+		oldman = new MovieActor();
+		oldman.name = "Joseph Joestar";
+		oldman.description = "This grizzled old man happens to be your grandfather";
+		oldman.spriteClass = JosephSDCsprite.class;
+		oldman.pos = inFrontOfCell - WIDTH;
+		mobs.add(oldman);
+
+
 	}
-	
+
 	public Actor respawner() {
 		return null;
 	}
@@ -201,53 +299,17 @@ public class SDC_PrisonLevel extends Level {
 			}
 
 		}
-/*
-        if(state == State.BF1)
-        {
-			if(hero == Dungeon.hero && Dungeon.hero.pos == 3 + WIDTH * 9)
-            {
-                state = State.DEFAULT;
-                transition();
-            }
-            if(hero == Dungeon.hero && Dungeon.hero.pos == WIDTH * 10 - 2)
-            {
-                state = State.BF2;
-                transition();
-            }
-
-        }
-
-        if(state == State.BF2)
-        {
-			if(hero == Dungeon.hero && Dungeon.hero.pos == 3 + WIDTH * 9)
-			{
-				state = State.SECBOSS;
-				transition();
-			}
-			if(hero == Dungeon.hero && Dungeon.hero.pos == WIDTH * 10 - 2)
-            {
-                state = State.BF1;
-                transition();
-            }
-
-
-        }
-
-        if(state == State.SECBOSS)
-        {
-			if(hero == Dungeon.hero && Dungeon.hero.pos == 3 + WIDTH * 9)
-            {
-                state = State.BF2;
-                transition();
-            }
-        }
-
-*/
 	}
 
 	
 	private boolean insideCell( int cell ) {
-		return cell / width() < arenaDoor / width();
+
+		if(Dungeon.hero.pos == WIDTH * 6 + 11)
+		{
+			return false;
+		}
+
+		return cell < 7 * WIDTH + (width / 2 );
 	}
 
 	public void transition()
@@ -260,12 +322,17 @@ public class SDC_PrisonLevel extends Level {
                 changeMap(PrisonCell);
                 entrance = 16 + 2 * WIDTH;
                 exit = WIDTH * 10 - 2;
+
                 break;
             case BF1:
                 changeMap(StandardCell);
+                exit = 0;
                 break;
             case BF2:
+			case STORY:
                 changeMap(NeoCell);
+				entrance = 16 + 2 * WIDTH;
+				exit = WIDTH * 10 - 2;
                 break;
             case SECBOSS:
                 changeMap(SecretBossCell);
@@ -274,7 +341,6 @@ public class SDC_PrisonLevel extends Level {
         }
 
     }
-
 
 	@Override
 	public String tileName( int tile ) {
@@ -347,15 +413,14 @@ public class SDC_PrisonLevel extends Level {
         buildFlagMaps();
         cleanWalls();
 
-        if(state != State.DEFAULT || state != null) {
+        if(state != State.DEFAULT || state != null || state != State.STORY) {
             exit = entrance = 0;
-            /*
-            for (int i = 0; i < length(); i++)
-                if (map[i] == Terrain.ENTRANCE)
-                    entrance = i;
-                else if (map[i] == Terrain.EXIT)
-                    exit = i;
-                    */
+
+        }
+        else
+        {
+            entrance =  3 * WIDTH - 9;
+            exit = WIDTH * 10 - 2;
         }
         BArray.setFalse(visited);
         BArray.setFalse(mapped);
@@ -369,95 +434,327 @@ public class SDC_PrisonLevel extends Level {
         Dungeon.observe();
     }
 
+	@Override
+	public boolean redirect() {
+
+		if(mohammed == null && phase == 0 || phase == 1)
+		{
+			for(Mob mobs: Dungeon.level.mobs.toArray(new Mob[0])) {
+				if (mobs instanceof Avdol) {
+					mohammed = (Avdol) mobs;
+					return true;
+				}
+
+			}
+		}
+		else if(mohammed != null && phase == 0)
+		{
+			return true;
+		}
+
+		return  false;
+	}
+
+	@Override
+	public void script() {
+
+		if(mangaka.phase == 0)
+		{
+			if (redirect()) {
+				mohammed.spend(1);
+				mohammed.exposite("...");
+			}
+
+			switch (mangaka.counter) {
+				case 0:
+					break;
+				case 3:
+					focusCamera(oldman);
+					oldman.forceMove(oldman.pos - WIDTH);
+
+					oldman.sprite.idle();
+
+					//TODO: face off with Jotaro and Joseph
+					oldman.turnAndExposite("We've come for you, Jotaro", Dungeon.hero.pos);
+					oldman.exposite("Step out of the cell");
+
+					break;
+
+				default:
+					break;
+			}
+
+			if(mangaka.counter > 3 &&(Dungeon.hero.pos == oldman.pos - WIDTH*2) && mangaka.counter < mangaka.END_OF_SCENE - 1)
+			{
+				focusCamera(Dungeon.hero);
+				Dungeon.hero.exposite("Get lost, old man");
+
+				Dungeon.hero.sprite.parent.add(new Chains(Dungeon.hero.sprite.center(),
+						oldman.sprite.center(), Effects.Type.FINGER, new Callback() {
+					public void call() {
+					}
+				}));
+
+				//TODO: use avatar banners to show the face off
+
+				mangaka.counter = mangaka.END_OF_SCENE - 1;
+			}
+
+
+			if(mangaka.counter == mangaka.END_OF_SCENE)
+			{
+				focusCamera(oldman);
+				oldman.exposite("Fine, you'll just have to learn by fire!");
+				oldman.turnAndExposite("Avdol, you're up", mohammed.pos);
+				oldman.forceMove(oldman.pos+1);
+				mohammed.forceMove(mohammed.pos-1);
+				mangaka.nextScene();
+			}
+
+		}
+
+		if(mangaka.phase == 1)
+		{
+			redirect();
+
+			if(mangaka.counter == 0 )
+			{
+				mohammed.forceMove(mohammed.pos - WIDTH);
+				mohammed.state =  mohammed.LISTENING;
+
+
+				oldman.movieTarget = WIDTH * 12 + 10;
+			}
+
+			if(mangaka.counter == 1)
+			{
+				mohammed.forceMove(mohammed.pos - WIDTH - 1);
+				oldman.movieTarget = WIDTH * 12 + 10;
+			}
+
+			if(mangaka.counter == 2 || mangaka.counter == 3)
+			{
+				mohammed.forceMove(mohammed.pos - WIDTH + 1);
+				oldman.movieTarget = WIDTH * 12 + 10;
+			}
+
+			if(mangaka.counter == 5);
+			{
+
+				if(mangaka.counter == 5)
+				{
+					focusCamera(mohammed);
+					mohammed.turnAndExposite("The 'Evil Spirit' I control is called...", Dungeon.hero.pos);
+					mangaka.nextScene();
+					Dungeon.hero.spend(2);
+				}
+
+
+			}
+
+
+		}
+
+		if(mangaka.phase == 2)
+		{
+			if(mohammed.stand == null && mangaka.counter == 0)
+			{
+
+				mohammed.declareStand();
+				mohammed.alignment = mohammed.alignment.ENEMY;
+				mohammed.stand.setAlignment(mohammed.alignment);
+
+				mohammed.yellStand();
+				mohammed.updateRange(mohammed.stand.range);
+				if(Actor.findChar(mohammed.pos - (WIDTH * 2) - 1) == null)
+				{
+					mohammed.silentSummon(mohammed.pos - (WIDTH * 2) - 1);
+				}
+				else
+				{
+					mohammed.silentSummon(mohammed.pos - (WIDTH * 2) + 1);
+				}
+
+			}
+
+			mohammed.spend(1);
+
+			//TODO: if the player can significantly damage Avdol, Joseph will intervene
+			if(mohammed.HP <= (mohammed.HT /10))
+			{
+				oldman.turnAndExposite("That's enough, Jotaro!", Dungeon.hero.pos);
+				mangaka.nextScene();
+			}
+
+			//now the fight has begun
+
+			if(!insideCell(Dungeon.hero.pos) )
+			{
+				mangaka.nextScene();
+			}
+
+			if(Dungeon.stand != null)
+			{
+				state = State.STORY;
+				//map[WIDTH * 6 + 11] = E;
+				transition();
+				GameScene.resetMap();
+				//cleanWalls();
+			}
+
+		}
+
+		if(mangaka.phase == 3)
+		{
+			if(mangaka.counter == 0)
+			{
+				mohammed.alignment = mohammed.alignment.NEUTRAL;
+				mohammed.state = mohammed.LISTENING;
+
+				mohammed.stand.forceWarp(mohammed.pos -1);
+				mohammed.killStand();
+				mohammed.stand = null;
+
+				if(Dungeon.stand!= null)
+                {
+                    Dungeon.stand.enemy = null;
+                }
+
+				mohammed.spend(1);
+				mohammed.turnAndExposite("You are now out of the cell", Dungeon.hero.pos);
+				mohammed.movieTarget = exit;
+			}
+
+
+
+			if(mangaka.counter == 3)
+			{
+				mohammed.alignment = Char.Alignment.ALLY;
+				mohammed.state = mohammed.LISTENING;
+
+				focusCamera(oldman);
+				oldman.turnAndExposite("Come, we'll explain at home", Dungeon.hero.pos);
+
+				mohammed.movieTarget = exit;
+
+			}
+
+			if(mangaka.counter >=4)
+			{
+
+				for(Mob movieChars : mobs.toArray(new Mob[0]))
+				{
+					if((Actor.findChar(exit) instanceof MovieActor ||
+							Actor.findChar(exit) == mohammed )&& Actor.findChar(exit) != null)
+					{
+						GLog.i(Actor.findChar(exit).name + " left the room");
+						mobs.remove(Actor.findChar(exit));
+						Actor.findChar(exit).sprite.fakeAttack();
+
+						Actor.findChar(exit).sprite.move(exit, exit +1);
+						Actor.remove(Actor.findChar(exit));
+						nullifyCharacter(Actor.findChar(exit));
+					}
+
+					if(movieChars instanceof MovieActor)
+					{
+						movieChars.movieTarget = exit;
+					}
+				}
+			}
+
+		}
+	}
+
 	private static final int W = Terrain.WALL;
-	private static final int D = Terrain.DOOR;
-	private static final int T = Terrain.INACTIVE_TRAP;
-	private static final int N = Terrain.ENTRANCE;
-	private static final int E = Terrain.EMPTY;
-	private static final int M = Terrain.EMPTY_SP;
-	private static final int B = Terrain.BOOKSHELF;
-	private static final int X = Terrain.EXIT;
+    private static final int D = Terrain.DOOR;
+    private static final int T = Terrain.INACTIVE_TRAP;
+    private static final int N = Terrain.ENTRANCE;
+    private static final int E = Terrain.EMPTY;
+    private static final int M = Terrain.EMPTY_SP;
+    private static final int B = Terrain.BOOKSHELF;
+    private static final int X = Terrain.EXIT;
     private static final int P = Terrain.PEDESTAL;
     private static final int I = Terrain.IRON_BARS;
     private static final int L = Terrain.IRON_BARS_LOCKED;
 
     private static final int[] PrisonCell = {
-    		W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, E, E, E, E, W, W, W, B, B, E, E, E, P, P, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, I, I, I, I, W, W, W, I, I, I, D, I, I, I, W, W, W, I, I, I, I, W,
-			W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
-			W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
-			W, X, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, N, W,
-			W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
+            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+            W, E, E, E, E, W, W, W, B, B, E, E, E, P, P, W, W, W, E, E, E, E, W,
+            W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
+            W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
+            W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
+            W, I, I, I, I, W, W, W, I, I, I, L, I, I, I, W, W, W, I, I, I, I, W,
+            W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
+            W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
+            W, X, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, N, W,
+            W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
             W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
             W, I, I, I, I, W, W, W, I, I, I, D, I, I, I, W, W, W, I, I, I, I, W,
             W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
             W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
             W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
             W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
             W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-	};
-
-    private static final int[] StandardCell = {
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, I, I, I, I, W, W, W, I, I, I, D, I, I, I, W, W, W, I, I, I, I, W,
-			W, M, E, E, E, E, E, E, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
-			W, M, E, E, E, E, E, E, E, E, E, E, E, E, M, M, M, M, M, M, M, M, W,
-			W, N, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, M, X, W,
-			W, M, E, E, E, E, E, E, E, E, E, E, E, E, M, M, M, M, M, M, M, M, W,
-			W, M, E, E, E, E, E, E, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
-			W, I, I, I, I, W, W, W, I, I, I, D, I, I, I, W, W, W, I, I, I, I, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+            W, W, W, W, W, W, W, W, W, W, W, E, W, W, W, W, W, W, W, W, W, W, W,
+            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
     };
 
-	private static final int[] NeoCell = {
+    private static final int[] StandardCell = {
+            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+            W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
+            W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
+            W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
+            W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
+            W, I, I, I, I, W, W, W, I, I, I, D, I, I, I, W, W, W, I, I, I, I, W,
+            W, M, E, E, E, E, E, E, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
+            W, M, E, E, E, E, E, E, E, E, E, E, E, E, M, M, M, M, M, M, M, M, W,
+            W, N, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, E, M, X, W,
+            W, M, E, E, E, E, E, E, E, E, E, E, E, E, M, M, M, M, M, M, M, M, W,
+            W, M, E, E, E, E, E, E, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
+            W, I, I, I, I, W, W, W, I, I, I, D, I, I, I, W, W, W, I, I, I, I, W,
+            W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
+            W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
+            W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
+            W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
+            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+    };
+
+    private static final int[] NeoCell = {
 			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
 			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
+			W, E, E, E, E, W, W, W, B, B, E, E, E, P, P, W, W, W, E, E, E, E, W,
 			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
 			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
 			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
 			W, I, I, I, I, W, W, W, I, I, I, E, I, I, I, W, W, W, I, I, I, I, W,
-			W, M, M, M, M, W, W, W, M, M, M, M, M, M, M, W, W, W, M, M, M, M, W,
 			W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
-			W, N, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, X, W,
 			W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
+			W, X, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, N, W,
+			W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
+			W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
+			W, I, I, I, I, W, W, W, I, I, I, D, I, I, I, W, W, W, I, I, I, I, W,
+			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
+			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
+			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
+			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
 			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-	};
+			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, W, W, W, W, E, W, W, W, W, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
+    };
 
     private static final int[] SecretBossCell = {
             W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
@@ -486,57 +783,3 @@ public class SDC_PrisonLevel extends Level {
     };
 
 }
-/*
-Jotaro
-            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, E, E, E, E, W, W, W, B, B, E, E, E, P, P, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, I, I, I, I, W, W, W, I, I, I, D, I, I, I, W, W, W, I, I, I, I, W,
-			W, M, M, M, M, W, W, W, M, M, M, M, M, M, M, W, W, W, M, M, M, M, W,
-			W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
-			W, N, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, X, W,
-			W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
-Others
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, E, E, E, E, W, W, W, B, B, E, E, E, P, P, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, I, I, I, I, W, W, W, I, I, I, D, I, I, I, W, W, W, I, I, I, I, W,
-			W, M, M, M, M, W, W, W, M, M, M, M, M, M, M, W, W, W, M, M, M, M, W,
-			W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
-			W, N, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, X, W,
-			W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
-
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-            W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-			W, E, E, E, E, W, W, W, B, B, E, E, E, P, P, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, I, I, I, I, W, W, W, I, I, I, D, I, I, I, W, W, W, I, I, I, I, W,
-			W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
-			W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
-			W, N, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, X, W,
-			W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
-            W, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, M, W,
-            W, I, I, I, I, W, W, W, I, I, I, D, I, I, I, W, W, W, I, I, I, I, W,
-            W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-            W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-            W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-            W, E, E, E, E, W, W, W, E, E, E, E, E, E, E, W, W, W, E, E, E, E, W,
-			W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W, W,
-
-
-
-
- */
