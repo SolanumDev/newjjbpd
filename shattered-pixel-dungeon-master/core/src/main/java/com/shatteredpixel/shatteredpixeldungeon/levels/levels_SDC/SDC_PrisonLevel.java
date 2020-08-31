@@ -72,9 +72,9 @@ public class SDC_PrisonLevel extends MovieLevel {
 	private static final int WIDTH = 23;
 	private static final int HEIGHT = 23;
 
-	private static MovieActor cop1, cop2, mom, oldman;
+	private MovieActor cop1, cop2, mom, oldman;
 
-	private static Avdol mohammed;
+	private Avdol mohammed;
 
 	private SDC_PrisonLevelDirector mangaka;
 
@@ -145,8 +145,6 @@ public class SDC_PrisonLevel extends MovieLevel {
 	@Override
 	protected boolean build() {
 		directorChair = WIDTH * 20 - 12;
-		//set(directorChair, Terrain.EMPTY, (Level) this);
-		//GameScene.updateMap(directorChair);
 
 		setSize(WIDTH, HEIGHT);
 		//state = State.DEFAULT;
@@ -158,10 +156,6 @@ public class SDC_PrisonLevel extends MovieLevel {
 
 		entrance =  3 * WIDTH - 9;
         exit = WIDTH * 10 - 2;
-        //map[Terrain.TRAP] = 2 + WIDTH * 10;
-		//map[exit] = WIDTH * 10 - 1;
-
-		//= WIDTH * 11 - 1;
 
 		return true;
 	}
@@ -557,6 +551,9 @@ public class SDC_PrisonLevel extends MovieLevel {
 
 		if(mangaka.phase == 2)
 		{
+			mohammed.alignment = mohammed.alignment.ENEMY;
+			mohammed.state = mohammed.LISTENING;
+
 			if(mohammed.stand == null && mangaka.counter == 0)
 			{
 

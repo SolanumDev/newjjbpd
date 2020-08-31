@@ -28,14 +28,20 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.sdc.Kakyoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Director;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.MovieLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTiledVisual;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BossHealthBar;
 import com.shatteredpixel.shatteredpixeldungeon.utils.BArray;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndStory;
 import com.watabou.noosa.Group;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
@@ -44,19 +50,21 @@ import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
-public class SDC_SchoolInfirmaryLevel extends Level {
+public class SDC_SchoolInfirmaryLevel extends MovieLevel {
 
 	{
 		color1 = 0x6a723d;
 		color2 = 0x88924c;
 	}
 
-
+    private Director nurse;
 
 	public int WIDTH = 14;
 	public int HEIGHT = 14;
 
-	//keep track of that need to be removed as the level is changed. We dump 'em back into the level at the end.
+    private Kakyoin threat;
+
+    //keep track of that need to be removed as the level is changed. We dump 'em back into the level at the end.
 	private ArrayList<Item> storedItems = new ArrayList<>();
 	
 	@Override
@@ -108,7 +116,7 @@ public class SDC_SchoolInfirmaryLevel extends Level {
 
 
 		entrance = WIDTH * 2 + 3;
-		exit  = WIDTH + 3;
+		exit  = -1;
 
 		return true;
 	}
@@ -120,6 +128,14 @@ public class SDC_SchoolInfirmaryLevel extends Level {
 	
 	@Override
 	protected void createMobs() {
+	    nurse = new Director();
+	    nurse.pos = 39;
+	    mobs.add(nurse);
+
+		threat = new Kakyoin();
+		threat.pos = 165;
+		threat.state = threat.LISTENING;
+		mobs.add(threat);
 
 	}
 	
@@ -129,7 +145,18 @@ public class SDC_SchoolInfirmaryLevel extends Level {
 
 	@Override
 	protected void createItems() {
+		//TODO: put a medkit down here at pos 164
 	}
+
+	protected boolean engageKakyoin(int cell)
+    {
+         if(cell > 58 && cell < 67)
+         {
+             return true;
+         }
+
+     return false;
+    }
 
 
 	@Override
@@ -138,8 +165,18 @@ public class SDC_SchoolInfirmaryLevel extends Level {
 		super.press(cell, ch);
 
 		if (ch == Dungeon.hero){
-			//TODO: upon entering the doors, go to the infirmary
+
+            //TODO: when the player reaches the first set of curtains have Kakyoin run to pos 105
+			/*
+            if(engageKakyoin(cell))
+            {
+            	if(threat!= null)
+				{
+					threat.movieTarget = 105;
+				}
+            }*/
 		}
+
 	}
 
 	@Override
@@ -175,33 +212,58 @@ public class SDC_SchoolInfirmaryLevel extends Level {
 		}
 	}
 
+    @Override
+    public void script() {
+	    if(getPhase() == 0)
+        {
+            if(threat != null && engageKakyoin(Dungeon.hero.pos) && (threat.HP == threat.HT) && threat.state == threat.LISTENING)
+            {
+                GameScene.show( new WndStory("Dear Jotaro Kujo, \n \nToday I will kill you with my stand! " +
+                        "\n\n Sincerely, \nNoriaki Kakyoin"));
 
-	private void changeMap(int[] map){
-		this.map = map.clone();
-		buildFlagMaps();
-		cleanWalls();
+				threat.state = threat.HUNTING;
+				threat.declareStand();
+				threat.silentSummon(Dungeon.hero.pos + WIDTH * 2);
 
-		exit = entrance = 0;
-		for (int i = 0; i < length(); i ++)
-			if (map[i] == Terrain.ENTRANCE)
-				entrance = i;
-			else if (map[i] == Terrain.EXIT)
-				exit = i;
+				threat.forceWarp(threat.stand.pos + WIDTH * 2);
 
-		BArray.setFalse(visited);
-		BArray.setFalse(mapped);
-		
-		for (Blob blob: blobs.values()){
-			blob.fullyClear();
-		}
-		addVisuals(); //this also resets existing visuals
-
-		GameScene.resetMap();
-		Dungeon.observe();
-	}
+                exit = -1;
+                entrance = -1;
+            }
 
 
-	@Override
+            if(threat != null && (threat.HP <= threat.HT /2 ) )
+            {
+				entrance = WIDTH * 2 + 3;
+				exit  = WIDTH + 3;
+
+				map = BUSTED_WALL.clone();
+
+				buildFlagMaps();
+				cleanWalls();
+				addVisuals();
+
+				GameScene.resetMap();
+
+				exit = 173;
+
+				threat.sprite.die();
+				threat.state = threat.LISTENING;
+				threat.alignment = threat.alignment.ALLY;
+				threat.stand.alignment = threat.alignment.ALLY;
+				threat.killStand();
+				threat.forceWarp(exit - WIDTH);
+				focusCamera(threat);
+				threat.exposite("Such a powerful stand...");
+
+				threat.destroy();
+				threat = null;
+            }
+        }
+
+    }
+
+    @Override
 	public Group addVisuals() {
 		super.addVisuals();
 		PrisonLevel.addPrisonVisuals(this, visuals);
@@ -246,6 +308,25 @@ public class SDC_SchoolInfirmaryLevel extends Level {
 			};
 
 
+	private static final int[] BUSTED_WALL =
+			{
+					V, V, V, V, V, V, V, V, V, V, V, V, V, V,
+					V, W, W, D, W, W, W, W, W, W, W, W, W, V,
+					V, W, e, E, e, e, e, e, e, e, e, e, W, V,
+					V, W, e, e, e, e, e, e, e, e, e, e, W, V,
+					V, W, C, C, C, T, T, T, T, T, C, C, W, V,
+					V, W, P, P, e, e, e, e, e, e, P, P, W, V,
+					V, W, e, e, e, e, e, e, e, e, e, e, W, V,
+					V, W, C, C, C, e, e, e, e, e, e, C, W, V,
+					V, W, P, P, e, e, e, e, e, e, P, P, W, V,
+					V, W, e, e, e, e, e, e, e, e, e, e, W, V,
+					V, W, C, C, C, e, e, C, C, C, C, C, W, V,
+					V, W, e, e, e, e, e, e, e, e, e, e, W, V,
+					V, W, W, W, W, e, e, W, W, W, W, W, W, V,
+					V, V, V, V, V, V, V, V, V, V, V, V, V, V,
+
+			};
+
 	public static class infirmaryVisual extends CustomTiledVisual {
 
 		private static short[] render = new short[]{
@@ -289,7 +370,7 @@ public class SDC_SchoolInfirmaryLevel extends Level {
 		private static short[] render = new short[]{
 
 				1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-				1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 				1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
 				1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
 				1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
@@ -300,7 +381,7 @@ public class SDC_SchoolInfirmaryLevel extends Level {
 				1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
 				1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
 				1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
-				1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+				1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1,
 				1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 
 		};

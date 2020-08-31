@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.sdc.Kakyoin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.sdc.PetShop;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -49,8 +50,6 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 
 public class DebugStick extends Item {
-	
-	private static final float TIME_TO_DEBUG = 1;
 	
 	private static final String AC_Debug = "Debug";
 	private static final String AC_Warp = "Warp";
@@ -126,11 +125,6 @@ public class DebugStick extends Item {
                 break;
 
 		}
-		//if (action.equals(AC_Debug)) {
-
-
-			
-		//}
 	}
 	
 	@Override
@@ -174,10 +168,15 @@ public class DebugStick extends Item {
     };
 
 	@Override
+	public String desc() {
+		return super.desc() + "\n \nCurrent Level: " + Dungeon.level.getClass().getSimpleName()
+				+ "\nCurrent position: " + Dungeon.hero.pos;
+	}
+
+	@Override
 	public int price() {
 		return 30 * quantity;
 	}
-
 		}
 
 

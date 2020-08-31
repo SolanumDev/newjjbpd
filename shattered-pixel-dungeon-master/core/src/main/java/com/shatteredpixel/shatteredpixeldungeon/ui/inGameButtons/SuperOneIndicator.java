@@ -54,7 +54,7 @@ public class SuperOneIndicator extends Tag {
 
 
 	public SuperOneIndicator() {
-		super( COLOR );
+		super( 0xE15B02 );
 		flip(true);
 		setSize( 24, 24 );
 

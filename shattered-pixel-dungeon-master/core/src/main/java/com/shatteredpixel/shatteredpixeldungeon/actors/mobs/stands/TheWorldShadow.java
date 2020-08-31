@@ -21,37 +21,18 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands;
 
-import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.standsprites.TheWorldShadowSprite;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.standsprites.TheWorldSprite;
-import com.watabou.utils.Random;
 
+import com.shatteredpixel.shatteredpixeldungeon.sprites.standsprites.TheWorldShadowSprite;
 public class TheWorldShadow extends Stand {
 
 	{
 		spriteClass = TheWorldShadowSprite.class;
 
-		HP = HT = 50;
-		defenseSkill = 2;
+		primaryColor = 0xEADD33;
 	}
 
 	public void standCrash(Object cause){
 	    super.die(cause);
     }
 
-	@Override
-	public int damageRoll() {
-		return Random.NormalIntRange( 1, 4 );
-	}
-	
-	@Override
-	public int attackSkill( Char target ) {
-		return 8;
-	}
-	
-	@Override
-	public int drRoll() {
-		return Random.NormalIntRange(0, 1);
-	}
 }

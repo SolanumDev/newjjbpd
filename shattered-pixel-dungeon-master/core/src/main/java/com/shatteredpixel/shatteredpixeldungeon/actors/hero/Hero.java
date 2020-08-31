@@ -918,6 +918,7 @@ public class Hero extends Char {
 			
 			curAction = null;
 
+
 			Buff buff = buff(TimekeepersHourglass.timeFreeze.class);
 			if (buff != null) buff.detach();
 			

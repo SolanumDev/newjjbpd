@@ -63,6 +63,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.SewerBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.levels_SDC.Debug_Room;
 import com.shatteredpixel.shatteredpixeldungeon.levels.levels_SDC.SDC_KujoResidence;
+import com.shatteredpixel.shatteredpixeldungeon.levels.levels_SDC.SDC_KujoResidenceDepart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.levels_SDC.SDC_MansionCourtyard;
 import com.shatteredpixel.shatteredpixeldungeon.levels.levels_SDC.SDC_SchoolInfirmaryLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
@@ -336,11 +337,13 @@ public class Dungeon {
 			level = new SDC_KujoResidence();
 			break;
 		case 3:
+			level = new com.shatteredpixel.shatteredpixeldungeon.levels.levels_SDC.SDC_SchoolExteriorLevel();
+			break;
 		case 4:
-			level = new SewerLevel();
+			level = new SDC_SchoolInfirmaryLevel();
 			break;
 		case 5:
-			level = new SewerBossLevel();
+			level = new SDC_KujoResidenceDepart();
 			break;
 		case 6:
 		case 7:
@@ -387,7 +390,8 @@ public class Dungeon {
 			level = new DeadEndLevel();
 			Statistics.deepestFloor--;
 		}
-		
+
+		//TODO: level.create may need to be broken
 		level.create();
 		
 		Statistics.qualifiedForNoKilling = !bossLevel();
@@ -427,6 +431,14 @@ public class Dungeon {
 	public static boolean bossLevel( int depth ) {
 		return depth == 5 || depth == 10 || depth == 15 || depth == 20 || depth == 25;
 	}
+
+	public static boolean originalFour(){
+		return (Dungeon.hero.heroClass == HeroClass.WARRIOR
+				|| Dungeon.hero.heroClass == HeroClass.MAGE
+				|| Dungeon.hero.heroClass == HeroClass.ROGUE
+				|| Dungeon.hero.heroClass == HeroClass.HUNTRESS);
+	}
+
 	
 	@SuppressWarnings("deprecation")
 	public static void switchLevel( final Level level, int pos ) {

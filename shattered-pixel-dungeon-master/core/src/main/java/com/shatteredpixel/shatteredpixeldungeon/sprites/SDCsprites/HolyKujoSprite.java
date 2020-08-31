@@ -27,6 +27,8 @@ import com.watabou.noosa.TextureFilm;
 
 public class HolyKujoSprite extends MobSprite {
 
+	private Animation collapse;
+
 	public HolyKujoSprite() {
 		super();
 
@@ -46,6 +48,16 @@ public class HolyKujoSprite extends MobSprite {
 		attack = new Animation( 15, false );
 		attack.frames( film, 13, 14, 15, 0 );
 
+		collapse = new Animation(15, false);
+		collapse.frames( film, 0, 8, 9 );
+
 		play( idle );
 	}
+
+	public void collapse()
+	{
+		play(collapse);
+	}
+
+
 }

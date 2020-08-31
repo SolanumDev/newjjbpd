@@ -145,7 +145,11 @@ public abstract class Mob extends Char {
 			bundle.put( STATE, Fleeing.TAG );
 		} else if (state == PASSIVE) {
 			bundle.put( STATE, Passive.TAG );
+		} else if  (state == LISTENING) {
+			bundle.put( STATE, Listening.TAG);
 		}
+
+
 		bundle.put( SEEN, enemySeen );
 		bundle.put( TARGET, target );
         bundle.put( MOVIE_TARGET, movieTarget );
@@ -167,7 +171,10 @@ public abstract class Mob extends Char {
 			this.state = FLEEING;
 		} else if (state.equals( Passive.TAG )) {
 			this.state = PASSIVE;
+		} else if (state.equals( Listening.TAG)) {
+			this.state = LISTENING;
 		}
+
 
 		enemySeen = bundle.getBoolean( SEEN );
 

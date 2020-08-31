@@ -21,18 +21,18 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.sdc;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.StandUser;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.Stand;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.stands.TheWorldShadow;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.SDCsprites.DIOShadowSprite;
-import com.watabou.utils.PathFinder;
+import com.watabou.noosa.Camera;
+import com.watabou.noosa.audio.Music;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Random;
-
-import java.util.ArrayList;
-
 
 public class DIOShadow extends StandUser {
 
@@ -75,7 +75,7 @@ public class DIOShadow extends StandUser {
 
 	@Override
 	protected boolean act() {
-		//will randomly heal 2 health per turn
+		//1/6 chance to heal 2 health per turn
 		if(Random.NormalIntRange( 1, 6 ) == 5)
 		{
 			HP = Math.min( HT, HP+2 );
@@ -95,6 +95,22 @@ public class DIOShadow extends StandUser {
 	}
 
 	@Override
+	public void notice() {
+
+		//what is it that you desire?
+		if(enemy == Dungeon.hero) {
+			Sample.INSTANCE.play(Assets.SND_DIO_DESIRE);
+			yell(Messages.get(this, "notice", Dungeon.hero.givenName()));
+
+			Camera.main.target = sprite;
+
+			Music.INSTANCE.mute();
+			Music.INSTANCE.play( Assets.THEME, true );
+		}
+
+	}
+
+	@Override
 	public void declareStand() {
 		stand = new TheWorldShadow();
 		stand.setStandUser(this);
@@ -105,8 +121,13 @@ public class DIOShadow extends StandUser {
 		return Random.NormalIntRange( 1, 4 );
 
 	}
-	
+
 	@Override
+    public void yellStand() {
+
+    }
+
+        @Override
 	public int attackSkill( Char target ) {
 		return 8;
 	}

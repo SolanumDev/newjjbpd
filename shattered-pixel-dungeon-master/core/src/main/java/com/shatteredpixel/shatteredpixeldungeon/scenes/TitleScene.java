@@ -115,7 +115,8 @@ public class TitleScene extends PixelScene {
 		DashboardItem btnPlay = new DashboardItem( Messages.get(this, "play"), 0 ) {
 			@Override
 			protected void onClick() {
-				ShatteredPixelDungeon.switchNoFade( StartScene.class );
+				//ShatteredPixelDungeon.switchNoFade( StartScene.class );
+				ShatteredPixelDungeon.switchNoFade( TestScene.class );
 				Dungeon.currentScene = Dungeon.CHARS_ORIG;
 			}
 		};

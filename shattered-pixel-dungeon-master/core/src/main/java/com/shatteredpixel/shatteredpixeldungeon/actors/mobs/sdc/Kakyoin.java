@@ -37,7 +37,7 @@ public class Kakyoin extends StandUser {
 	{
 		spriteClass = KakyoinSprite.class;
 
-		HP = HT = 100;
+		HP = HT = 25;
 		defenseSkill = 2;
 
 		state = WANDERING;

@@ -47,9 +47,10 @@ public class MovieActor extends NPC {
 
 	public void initialize(String name, String desc, Class costume, int startpos)
     {
-
-
-     Dungeon.level.mobs.add(this);
+        this.name = name;
+        this.description = desc;
+        spriteClass = costume;
+        pos = startpos;
     }
 
 	@Override

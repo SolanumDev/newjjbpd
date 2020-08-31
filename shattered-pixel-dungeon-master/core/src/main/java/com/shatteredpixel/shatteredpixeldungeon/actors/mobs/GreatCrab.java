@@ -31,7 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GreatCrabSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
-public class GreatCrab extends Crab {
+public class 	GreatCrab extends Crab {
 
 	{
 		spriteClass = GreatCrabSprite.class;

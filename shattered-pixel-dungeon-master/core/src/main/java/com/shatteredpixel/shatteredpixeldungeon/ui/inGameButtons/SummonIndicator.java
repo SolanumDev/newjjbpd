@@ -61,7 +61,7 @@ public class SummonIndicator extends Tag {
 
 
 	public SummonIndicator() {
-		super( COLOR );
+		super( 0xFF4C4C );
 		flip(true);
 		setSize( 24, 16 );
 

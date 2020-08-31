@@ -32,7 +32,7 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.Visual;
 import com.watabou.utils.Bundle;
 
-public abstract class Director extends MovieActor {
+public class Director extends MovieActor {
 
     public static int phase = 0;
     public static int counter = 0;
@@ -50,49 +50,61 @@ public abstract class Director extends MovieActor {
 
     protected int directorChair = 2;
 
-        //TODO: what's the longest scene in JoJo that translates well into an interactive cutscene?
+    //TODO: what's the longest scene in JoJo that translates well into an interactive cutscene?
+    {
+        name = "Narrator";
+        actPriority = HERO_PRIO + 1;
+    }
 
+
+    @Override
+    public boolean act()
+    {
+        if(Dungeon.level instanceof MovieLevel)
         {
-            name = "Narrator";
-            actPriority = HERO_PRIO + 1;
+            script();
         }
 
+        //For testing viewing scripts only
+        //sprite.showStatus(0xC0C0C0, "Phase: " + phase + ", Count: " + counter);
+        counter++;
 
-        @Override
-        public boolean act()
+        if(cutsceneActive)
         {
-            if(cutsceneActive)
-            {
-                Dungeon.hero.spend(1);
-            }
-
-            spend(TICK);
-            return true;
+            Dungeon.hero.spend(1);
         }
 
-        public void focusCamera(Visual visual)
-        {
-            //GameScene.scenePause = true;
-            Camera.main.target = visual;
-        }
+        spend(TICK);
+        return true;
+    }
 
-        public void focusCamera(Char actor)
-        {
-            Camera.main.target = actor.sprite;
-        }
+    public void focusCamera(Visual visual)
+    {
+        //GameScene.scenePause = true;
+        Camera.main.target = visual;
+    }
 
-        public abstract void script();
+    public void focusCamera(Char actor)
+    {
+        Camera.main.target = actor.sprite;
+    }
 
-        @Override
-        public void damage( int dmg, Object src ) {
-        //the director has god mode
-        }
 
-        @Override
-        public void die( Object cause ) {
-            //if he can somehow be damaged he certainly won't die
-            HP = HT;
-        }
+    public void script() {
+        updateValues();
+        ((MovieLevel)Dungeon.level).script();
+    }
+
+    @Override
+    public void damage( int dmg, Object src ) {
+    //the director has god mode
+    }
+
+    @Override
+    public void die( Object cause ) {
+        //if he can somehow be damaged he certainly won't die
+        HP = HT;
+    }
 
 
     public void nextScene()
@@ -127,6 +139,12 @@ public abstract class Director extends MovieActor {
     {
         phase = 0;
         counter = 0;
+    }
+
+    public void updateValues()
+    {
+        ((MovieLevel)Dungeon.level).setPhase(phase);
+        ((MovieLevel)Dungeon.level).setCounter(counter);
     }
 
     @Override

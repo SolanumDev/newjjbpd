@@ -46,7 +46,7 @@ public class SuperThreeIndicator extends Tag {
 
 
 	public SuperThreeIndicator() {
-		super( COLOR );
+		super( 0x0030FF );
 		flip(true);
 		setSize( 24, 24 );
 	}

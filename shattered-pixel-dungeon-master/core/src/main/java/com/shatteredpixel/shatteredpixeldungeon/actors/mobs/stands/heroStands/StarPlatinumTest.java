@@ -66,7 +66,7 @@ public class StarPlatinumTest extends Stand {
         range = rangeC;
         def = defA;
 
-        primaryColor = 0xEADD33;
+        primaryColor = 0x7B588E;
 
         //HUNTING = new Hunting();
         //WANDERING = new Wandering();

@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.effects;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.watabou.noosa.Image;
 
 public class BannerSprites {
@@ -55,4 +56,66 @@ public class BannerSprites {
 		}
 		return icon;
 	}
+
+	public enum Character{
+		DIO_PB,
+		DIO_SDC,
+		DIO_SO,
+		THE_WORLD,
+		JOTARO,
+		JOSEPH_BT,
+		Joseph_SDC,
+	}
+
+	public static Image getCharacterBanner( Character character, int pose)
+	{
+		Image icon;
+		switch (character)
+		{
+			case DIO_SDC:
+				icon = new Image(Assets.DIO);
+				switch (pose)
+				{
+					case 0:
+						icon.frame( icon.texture.uvRect( 0, 106, 21, 135 ) );
+						break;
+
+					case 1:
+						break;
+
+					case 2:
+						break;
+
+					case 3:
+						break;
+
+					case 4:
+						icon.frame( icon.texture.uvRect( 96, 106, 116, 135 ) );
+						break;
+
+					case 5:
+						icon.frame( icon.texture.uvRect( 119, 106, 139, 135 ) );
+						break;
+
+					case 6:
+						break;
+
+					//shadow dio posing with the world
+					case 7:
+						icon.frame( icon.texture.uvRect( 35, 202, 67, 233 ) );
+						break;
+
+
+				}
+				break;
+
+
+			default:
+				icon = new Image(Assets.ITEMS);
+				break;
+		}
+
+		return icon;
+	}
+
 }

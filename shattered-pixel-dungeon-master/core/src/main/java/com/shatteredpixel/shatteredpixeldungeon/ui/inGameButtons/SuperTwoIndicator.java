@@ -46,7 +46,7 @@ public class SuperTwoIndicator extends Tag {
 
 
 	public SuperTwoIndicator() {
-		super( COLOR );
+		super( 0x00DD2A );
 		flip(true);
 		setSize( 24, 24 );
 

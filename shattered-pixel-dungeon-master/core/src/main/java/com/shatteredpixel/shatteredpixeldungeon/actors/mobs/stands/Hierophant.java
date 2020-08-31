@@ -154,8 +154,6 @@ public class Hierophant extends Stand implements Callback {
         for (int cell : visualCells){
             //this way we only get the cells at the tip, much better performance.
 
-            //TODO DEMO: the emerald splash should *feel* like the emerald splash
-            //replace the knife placeholder with the emeralds
             java.util.Random Randomizer = new java.util.Random();
             int roller = Randomizer.nextInt(3);
             switch(roller)

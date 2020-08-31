@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
@@ -161,7 +162,7 @@ public class GameScene extends PixelScene {
 	
 	@Override
 	public void create() {
-		
+
 		Music.INSTANCE.play( Assets.TUNE, true );
 
 		SPDSettings.lastClass(Dungeon.hero.heroClass.ordinal());
@@ -345,7 +346,7 @@ public class GameScene extends PixelScene {
 				//WndStory.showChapter( WndStory.ID_SEWERS );
 				break;
 			case 2:
-				WndStory.showChapter(WndStory.ID_JOTARO_INTRO);
+				//WndStory.showChapter(WndStory.ID_JOTARO_INTRO);
 				break;
 			case 6:
 				//WndStory.showChapter( WndStory.ID_PRISON );
@@ -360,7 +361,9 @@ public class GameScene extends PixelScene {
 				//WndStory.showChapter( WndStory.ID_HALLS );
 				break;
 			}
-			if (Dungeon.hero.isAlive() && Dungeon.depth != 22) {
+
+			//TODO: reward this secret factor for JoJo sharacters?
+			if (Dungeon.hero.isAlive() && Dungeon.depth != 22 && Dungeon.originalFour()) {
 				Badges.validateNoKilling();
 			}
 			break;
@@ -391,7 +394,11 @@ public class GameScene extends PixelScene {
 		if (InterlevelScene.mode != InterlevelScene.Mode.NONE) {
 			if (Dungeon.depth == Statistics.deepestFloor
 					&& (InterlevelScene.mode == InterlevelScene.Mode.DESCEND || InterlevelScene.mode == InterlevelScene.Mode.FALL)) {
-				GLog.h(Messages.get(this, "descend"), Dungeon.depth);
+				if(Dungeon.originalFour())
+				{
+					GLog.h(Messages.get(this, "descend"), Dungeon.depth);
+				}
+
 				Sample.INSTANCE.play(Assets.SND_DESCEND);
 			} else if (InterlevelScene.mode == InterlevelScene.Mode.RESET) {
 				GLog.h(Messages.get(this, "warp"));

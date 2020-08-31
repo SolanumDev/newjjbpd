@@ -127,7 +127,7 @@ public class StartScene extends PixelScene {
 			public void onClick()
 			{
 				Dungeon.currentScene = Dungeon.CHARS_SDC;
-				Game.switchScene(CharSelectPT3.class);
+				Game.switchScene(TestScene.class);
 			}
 
 			@Override

@@ -37,6 +37,8 @@ public class Avdol extends StandUser {
 
 		state = WANDERING;
 
+		EXP = 100;
+
 		maxLvl = 5;
 	}
 

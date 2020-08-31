@@ -179,7 +179,7 @@ public class CharSelectPT3 extends PixelScene {
 		float centralHeight = buttonY - title.y - title.height();
 
 		HeroClass[] classes = {
-				//HeroClass.JOTARO, HeroClass.DIO, HeroClass.KAKYOIN, HeroClass.POLNAREFF
+				HeroClass.JOTARO,//, HeroClass.DIO, HeroClass.KAKYOIN, HeroClass.POLNAREFF
 				HeroClass.KAKYOIN
 		};
 		for (HeroClass cl : classes) {
@@ -205,7 +205,7 @@ public class CharSelectPT3 extends PixelScene {
 
 		} else {
 
-
+/*
 			float shieldW = width/2;
 			float shieldH = Math.min( centralHeight / 2, shieldW * 1.2f );
 			top = title.y + title.height() + centralHeight / 2 - shieldH;
@@ -217,8 +217,8 @@ public class CharSelectPT3 extends PixelScene {
 						shieldW, shieldH );
 				align(shield);
 			}
+*/
 
-/*
 			float shieldW = width;
 			float shieldH = Math.min( centralHeight / 2, shieldW * 1.2f );
 			top = title.y + title.height() + centralHeight / 2 - shieldH;
@@ -230,16 +230,16 @@ public class CharSelectPT3 extends PixelScene {
 						shieldW, shieldH );
 				align(shield);
 			}
-*/
 
-			/*
+
+
 			ChallengeButton challenge = new ChallengeButton();
 			challenge.setPos(
 					w/2 - challenge.width()/2,
 					top + shieldH - challenge.height()/2 );
 			align(challenge);
 			add( challenge );
-			*/
+
 
 		}
 
@@ -253,7 +253,7 @@ public class CharSelectPT3 extends PixelScene {
 
 		GamesInProgress.curSlot = 0;
 		ActionIndicator.action = null;
-		//updateClass( HeroClass.values()[SPDSettings.lastClass()] );
+		updateClass( HeroClass.values()[SPDSettings.lastClass()] );
 
 		fadeIn();
 

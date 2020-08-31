@@ -120,7 +120,7 @@ public class TestScene extends PixelScene {
 		buttonX = left;
 		buttonY = bottom - BUTTON_HEIGHT;
 
-
+/*
 		ResumeIndicator nextPage = new ResumeIndicator(){
 
 			@Override
@@ -142,17 +142,17 @@ public class TestScene extends PixelScene {
 		nextPage.setPos(Camera.main.width - nextPage.width(), Camera.main.height / 2 - nextPage.height() / 2);
 		nextPage.visible = true;
 		add( nextPage );
+*/
 
-
-		btnNewGame = new GameButton( Messages.get(this, "new") ) {
+		btnNewGame = new GameButton( Messages.get(StartScene.class, "new") ) {
 			@Override
 			protected void onClick() {
 				if (GamesInProgress.check( GamesInProgress.curSlot ) != null) {
 					TestScene.this.add(new WndOptions(
-							Messages.get(TestScene.class, "really"),
-							Messages.get(TestScene.class, "warning"),
-							Messages.get(TestScene.class, "yes"),
-							Messages.get(TestScene.class, "no") ) {
+							Messages.get(StartScene.class, "really"),
+							Messages.get(StartScene.class, "warning"),
+							Messages.get(StartScene.class, "yes"),
+							Messages.get(StartScene.class, "no") ) {
 						@Override
 						protected void onSelect( int index ) {
 							if (index == 0) {
@@ -168,7 +168,7 @@ public class TestScene extends PixelScene {
 		};
 		add( btnNewGame );
 
-		btnLoad = new GameButton( Messages.get(this, "load") ) {
+		btnLoad = new GameButton( Messages.get(StartScene.class, "load") ) {
 			@Override
 			protected void onClick() {
 				InterlevelScene.mode = InterlevelScene.Mode.CONTINUE;
@@ -180,7 +180,8 @@ public class TestScene extends PixelScene {
 		float centralHeight = buttonY - title.y - title.height();
 
 		HeroClass[] classes = {
-				HeroClass.JOTARO, HeroClass.DIO, HeroClass.KAKYOIN, HeroClass.POLNAREFF
+				HeroClass.JOTARO,// HeroClass.DIO, HeroClass.KAKYOIN, HeroClass.POLNAREFF
+				HeroClass.KAKYOIN
 		};
 		for (HeroClass cl : classes) {
 			ClassShield shield = new ClassShield( cl );
@@ -283,9 +284,9 @@ public class TestScene extends PixelScene {
 			if (info != null) {
 
 				btnLoad.visible = true;
-				btnLoad.secondary( Messages.format( Messages.get(this, "depth_level"), info.depth, info.level ), info.challenges != 0 );
+				btnLoad.secondary( Messages.format( Messages.get(StartScene.class, "depth_level"), info.depth, info.level ), info.challenges != 0 );
 				btnNewGame.visible = true;
-				btnNewGame.secondary( Messages.get(this, "erase"), false );
+				btnNewGame.secondary( Messages.get(StartScene.class, "erase"), false );
 
 				float w = (Camera.main.width - GAP) / 2 - buttonX;
 

@@ -43,7 +43,7 @@ public class PetShopSprite extends MobSprite {
 		attack.frames( frames, 3, 4, 5, 0 );
 		
 		die = new Animation( 10, false );
-		die.frames( frames, 8, 9, 10);
+		die.frames( frames, 7, 8, 9);
 		
 		play( idle );
 	}

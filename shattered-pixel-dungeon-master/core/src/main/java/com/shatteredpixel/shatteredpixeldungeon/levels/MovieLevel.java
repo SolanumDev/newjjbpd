@@ -67,55 +67,6 @@ public abstract class MovieLevel extends Level{
 
     protected int directorChair = 2;
 
-    public static abstract class Director extends TrainingDummy {
-
-        //TODO: what's the longest scene in JoJo that translates well into an interactive cutscene?
-
-        {
-            //we technically don't act at all
-            actPriority = BUFF_PRIO -1;
-
-        }
-
-
-        @Override
-        public boolean act()
-        {
-            if(cutsceneActive)
-            {
-                Dungeon.hero.spend(1);
-            }
-
-            spend(TICK);
-            return true;
-        }
-
-        public void focusCamera(Visual visual)
-        {
-            //GameScene.scenePause = true;
-            Camera.main.target = visual;
-        }
-
-        public void focusCamera(Char actor)
-        {
-            Camera.main.target = actor.sprite;
-        }
-
-        public abstract void script();
-
-        @Override
-        public void damage( int dmg, Object src ) {
-        //the director has god mode
-        }
-
-        @Override
-        public void die( Object cause ) {
-            //if he can somehow be damaged he certainly won't die
-            HP = HT;
-        }
-
-    }
-
     public boolean redirect()
     {
         GLog.w("Error: no script found");
