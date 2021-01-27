@@ -150,7 +150,7 @@ public class SDC_SchoolInfirmaryLevel extends MovieLevel {
 
 	protected boolean engageKakyoin(int cell)
     {
-         if(cell > 58 && cell < 67)
+         if(cell > 58 && cell <= 67)
          {
              return true;
          }
@@ -216,6 +216,11 @@ public class SDC_SchoolInfirmaryLevel extends MovieLevel {
     public void script() {
 	    if(getPhase() == 0)
         {
+        	if(engageKakyoin(Dungeon.hero.pos))
+			{
+				GameScene.show(new WndStory("crude text lol"));
+			}
+
             if(threat != null && engageKakyoin(Dungeon.hero.pos) && (threat.HP == threat.HT) && threat.state == threat.LISTENING)
             {
                 GameScene.show( new WndStory("Dear Jotaro Kujo, \n \nToday I will kill you with my stand! " +

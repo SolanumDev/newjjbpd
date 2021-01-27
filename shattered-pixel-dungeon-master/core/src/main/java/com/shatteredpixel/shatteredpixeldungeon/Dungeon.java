@@ -260,12 +260,13 @@ public class Dungeon {
 		
 		Badges.reset();
 
-		if(currentScene == CHARS_SDC)
+		if(currentScene == CHARS_SDC )
         {
             CharSelectPT3.selectedClass.initHero(hero);
         }
         else {
-            StartScene.selectedClass.initHero(hero);
+            TestScene.selectedClass.initHero(hero);
+            //StartScene.selectedClass.initHero(hero);
         }
 
 	}
